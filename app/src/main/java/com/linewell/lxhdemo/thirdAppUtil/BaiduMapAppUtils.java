@@ -161,7 +161,7 @@ public class BaiduMapAppUtils {
         }
         try {
             PackageManager packageManager = context.getPackageManager();
-            packageManager.getPackageInfo(BAIDU_MAP_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
+            packageManager.getPackageInfo(BAIDU_MAP_PACKAGE_NAME,0);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             Log.d(TAG, "Baidu Map is not installed");
