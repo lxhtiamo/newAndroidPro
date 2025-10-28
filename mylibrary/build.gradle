@@ -1,0 +1,93 @@
+apply plugin: 'com.android.library'
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.libMinSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+    //强制第三方依赖使用同一个
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == 'com.android.support') {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion "$rootProject.supportVersion"
+                }
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api files('libs\\okgo-3.0.4.jar')
+    api files('libs\\okserver-2.0.5.jar')
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    testImplementation 'junit:junit:4.13.2'
+    api "androidx.appcompat:appcompat:$rootProject.androidxVersion"
+    api 'androidx.core:core:1.13.0'
+    api 'com.google.android.material:material:1.10.0'
+    /*循环的Banner库*/
+    api 'com.squareup.okhttp3:okhttp:3.8.1'
+    api 'com.google.code.gson:gson:2.8.6'
+    api 'com.readystatesoftware.chuck:library:1.1.0'
+    /*下载进度条/https://github.com/daimajia/NumberProgressBar*/
+    api 'com.daimajia.numberprogressbar:library:1.4@aar'
+    /*一个强大的RecyclerAdapter框架/https://www.jianshu.com/p/b343fcff51b0*/
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
+    //上拉加载下拉刷新//https://github.com/scwang90/SmartRefreshLayout
+    api 'io.github.scwang90:refresh-layout-kernel:3.0.0-alpha'
+    api 'com.github.bumptech.glide:glide:3.7.0'
+    //一个通用的RecyclerView的分割线
+    /*动态权限*/
+    api 'com.yanzhenjie:permission:2.0.2'
+    //Zxing核心包
+    api 'com.google.zxing:core:3.5.3'
+
+    // 吐司工具类：https://github.com/getActivity/ToastUtils
+    api 'com.github.getActivity:Toaster:13.6'
+    // 状态栏沉浸：https://github.com/gyf-dev/ImmersionBar
+    api 'com.geyifeng.immersionbar:immersionbar:3.2.2'
+    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    api 'io.reactivex.rxjava2:rxjava:2.2.21'
+    api 'com.github.getActivity:XXPermissions:26.5'
+// 友盟基础组件库（所有友盟业务SDK都依赖基础组件库）
+    api 'com.umeng.umsdk:common:9.8.8'//必选
+    api 'com.umeng.umsdk:asms:1.8.7.2'//必选
+    // 分享相关库
+    api 'com.umeng.umsdk:share-core:7.3.7'//分享核心库，必选
+    api 'com.umeng.umsdk:share-board:7.3.7'//分享面板功能，可选
+    // 第三方平台相关库，可根据需要自行选择
+    api 'com.umeng.umsdk:share-wx:7.3.7' //微信完整版
+    api 'com.tencent.mm.opensdk:wechat-sdk-android:+'//微信官方依赖库，必选
+    api 'com.umeng.umsdk:share-qq:7.3.7'//QQ完整版
+    api 'com.tencent.tauth:qqopensdk:3.53.0'//QQ官方依赖库，必选
+    api 'com.umeng.umsdk:share-sina:7.3.7'//新浪微博完整版
+    /*api('io.github.sinaweibosdk:core:13.10.8') {
+        exclude module: 'unspecified'
+    }*/
+    //抖音
+    api 'com.bytedance.ies.ugc.aweme:opensdk-china-external:0.2.0.8'
+    api 'com.bytedance.ies.ugc.aweme:opensdk-common:0.2.0.8'
+    //钉钉
+    api 'com.alibaba.android:ddsharesdk:1.2.2'
+    api 'com.umeng.umsdk:share-dingding:+'
+//友盟的支付宝
+    api 'com.umeng.umsdk:share-alipay:+'
+//支付宝官方
+    api 'com.alipay.sdk:alipaysdk-android:+@aar'
+
+    //百度地
+    api 'com.baidu.lbsyun:BaiduMapSDK_Map:7.6.4'
+    api 'com.baidu.lbsyun:BaiduMapSDK_Location:9.6.4'
+    api 'com.baidu.lbsyun:BaiduMapSDK_Search:7.6.4'
+}

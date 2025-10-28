@@ -1,0 +1,387 @@
+package com.linx.mylibrary.utils;
+
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.text.TextUtils;
+
+import com.linx.mylibrary.utils.klog.KLog;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.security.MessageDigest;
+import java.util.List;
+
+
+/**
+ * 主要功能:获取App应用版本信息
+ *
+ * @Prject: CommonUtilLibrary
+ * @date: 2017年05月03日 16:37
+ * @Copyright: 个人版权所有
+ * @Company:
+ * @version: 1.0.0
+ */
+@SuppressWarnings("rawtypes")
+public class RxAppApplicationMgr {
+
+
+    /**
+     * 获取本地apk的名称
+     *
+     * @param context 上下文
+     * @return String
+     */
+    public static String getAppName(Context context) {
+        try {
+            PackageManager e = context.getPackageManager();
+            PackageInfo packageInfo = e.getPackageInfo(context.getPackageName(), 0);
+            int labelRes = packageInfo.applicationInfo.labelRes;
+            return context.getResources().getString(labelRes);
+        } catch (NameNotFoundException var4) {
+            var4.printStackTrace();
+            return "unKnown";
+        }
+    }
+
+    /**
+     * 获取本地Apk版本名称
+     *
+     * @param context 上下文
+     * @return String
+     */
+    public static String getVersionName(Context context) {
+        String verName = "";
+        try {
+            verName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (NameNotFoundException e) {
+            KLog.e("RxAppApplicationMgr-->>getVerName()", e.getMessage() + "获取本地Apk版本名称失败！");
+            e.printStackTrace();
+        }
+        return verName;
+    }
+
+
+    /**
+     * 获取本地Apk版本号
+     *
+     * @param context 上下文
+     * @return int
+     */
+    public static int getVersionCode(Context context) {
+        int verCode = -1;
+        try {
+            verCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        } catch (NameNotFoundException e) {
+            KLog.e("RxAppApplicationMgr-->>getVerCode()", e.getMessage() + "获取本地Apk版本号失败！");
+            e.printStackTrace();
+        }
+        return verCode;
+    }
+
+
+    /**
+     * 获取应用图标
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static Drawable getAppIcon(Context context, String packageName) {
+        PackageManager pm = context.getPackageManager();
+        Drawable appIcon = null;
+        try {
+            ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, 0);
+            appIcon = applicationInfo.loadIcon(pm);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return appIcon;
+    }
+
+    /**
+     * 获取应用第一次安装日期
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static long getAppFirstInstallTime(Context context, String packageName) {
+        long lastUpdateTime = 0;
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
+            lastUpdateTime = packageInfo.firstInstallTime;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return lastUpdateTime;
+    }
+
+    /**
+     * 获取应用更新日期
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static long getAppLastUpdateTime(Context context, String packageName) {
+        long lastUpdateTime = 0;
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
+            lastUpdateTime = packageInfo.lastUpdateTime;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return lastUpdateTime;
+    }
+
+    /**
+     * 获取应用大小
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static long getAppSize(Context context, String packageName) {
+        long appSize = 0;
+        try {
+            ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(packageName, 0);
+            appSize = new File(applicationInfo.sourceDir).length();
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return appSize;
+    }
+
+    /**
+     * 获取应用apk文件
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static String getAppApk(Context context, String packageName) {
+        String sourceDir = null;
+        try {
+            ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(packageName, 0);
+            sourceDir = applicationInfo.sourceDir;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return sourceDir;
+    }
+
+    /**
+     * 获取应用签名
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static String getAppSign(Context context, String packageName) {
+        try {
+            PackageInfo pis = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+            return hexdigest(pis.signatures[0].toByteArray());
+        } catch (NameNotFoundException e) {
+            throw new RuntimeException(RxAppApplicationMgr.class.getName() + "the " + packageName + "'s application not found");
+        }
+    }
+
+    public static String hexdigest(byte[] paramArrayOfByte) {
+        final char[] hexDigits = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102};
+        try {
+            MessageDigest localMessageDigest = MessageDigest.getInstance("MD5");
+            localMessageDigest.update(paramArrayOfByte);
+            byte[] arrayOfByte = localMessageDigest.digest();
+            char[] arrayOfChar = new char[32];
+            for (int i = 0, j = 0; ; i++, j++) {
+                if (i >= 16) {
+                    return new String(arrayOfChar);
+                }
+                int k = arrayOfByte[i];
+                arrayOfChar[j] = hexDigits[(0xF & k >>> 4)];
+                arrayOfChar[++j] = hexDigits[(k & 0xF)];
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * 获取应用兼容sdk
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static int getAppTargetSdkVersion(Context context, String packageName) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, 0);
+            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            return applicationInfo.targetSdkVersion;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * 应用是否安装
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static boolean isInstalled(Context context, String packageName) {
+        boolean installed = false;
+        if (TextUtils.isEmpty(packageName)) {
+            return false;
+        }
+        List<ApplicationInfo> installedApplications = context.getPackageManager().getInstalledApplications(0);
+        for (ApplicationInfo in : installedApplications) {
+            if (packageName.equals(in.packageName)) {
+                installed = true;
+                break;
+            } else {
+                installed = false;
+            }
+        }
+        return installed;
+    }
+
+
+    /**
+     * 卸载应用
+     *
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static boolean uninstallApk(Context context, String packageName) {
+        if (TextUtils.isEmpty(packageName)) {
+            return false;
+        }
+        Intent i = new Intent(Intent.ACTION_DELETE, Uri.parse("package:" + packageName));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
+        return true;
+    }
+
+    /**
+     * 服务是否在运行
+     *
+     * @param context
+     * @param className
+     * @return
+     */
+    public static boolean isServiceRunning(Context context, String className) {
+        boolean isRunning = false;
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<RunningServiceInfo> servicesList = activityManager.getRunningServices(Integer.MAX_VALUE);
+        for (RunningServiceInfo si : servicesList) {
+            if (className.equals(si.service.getClassName())) {
+                isRunning = true;
+            }
+        }
+        return isRunning;
+    }
+
+    /**
+     * 停止服务
+     *
+     * @param context
+     * @param className
+     * @return
+     */
+    public static boolean stopRunningService(Context context, String className) {
+        Intent intent_service = null;
+        boolean ret = false;
+        try {
+            intent_service = new Intent(context, Class.forName(className));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (intent_service != null) {
+            ret = context.stopService(intent_service);
+        }
+        return ret;
+    }
+
+    /**
+     * 结束进程
+     *
+     * @param context
+     * @param pid
+     * @param processName
+     */
+    @SuppressLint("MissingPermission")
+    public static void killProcesses(Context context, int pid, String processName) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        String packageName;
+        try {
+            if (!processName.contains(":")) {
+                packageName = processName;
+            } else {
+                packageName = processName.split(":")[0];
+            }
+            activityManager.killBackgroundProcesses(packageName);
+            Method forceStopPackage = activityManager.getClass().getDeclaredMethod("forceStopPackage", String.class);
+            forceStopPackage.setAccessible(true);
+            forceStopPackage.invoke(activityManager, packageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 启动应用
+     *
+     * @param context
+     * @param packagename
+     */
+    public static void runApp(Context context, String packagename) {
+        context.startActivity(new Intent(context.getPackageManager().getLaunchIntentForPackage(packagename)));
+    }
+
+
+//  /**
+//   * 获得当前版本信息
+//   * @param keyValues key信息
+//   * @return RequestParams
+//   */
+//  public static RequestParams getRequestParams(HashMap<String,String> keyValues){
+//      RequestParams params = new RequestParams();
+//      Iterator iterator = keyValues.entrySet().iterator();
+//        while(iterator.hasNext()){
+//            Map.Entry entry = (Map.Entry) iterator.next();
+//            Object key = entry.getKey();
+//            params.put((String) key, entry.getValue().toString());
+//        }
+//      return params;
+//  }
+
+    /**
+     * 获得包名
+     *
+     * @param context 上下文
+     * @return 包名
+     */
+    public static String getPackageName(Context context) {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).packageName;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}

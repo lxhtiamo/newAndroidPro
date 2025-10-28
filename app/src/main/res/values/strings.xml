@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">demo</string>
+
+
+    <string name="updatecontent">1.修复BUG\n2.优化界面\n3.向天空大声的呼喊\n4.欢迎</string>
+    <string name="login_">登录</string>
+    <string name="login_forget_pwd">忘记密码</string>
+    <string name="registerNewUser">注册新用户</string>
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!--背景色-->
+    <color name="gray_back">#f0f0f0</color>
+    <color name="white_back">#ffffff</color>
+
+
+
+
+
+    <color name="background_home">#F4F6F5</color>
+    <color name="_999999">#999999</color>
+    <color name="eeeeee">#EEEEEE</color>
+    <color name="cccccc">#CCCCCC</color>
+    <color name="bt_login">#c61a04</color>
+    <color name="text_login_">#b0b8b2</color>
+    <color name="hot_pink">#FD4C5B</color><!-- Acfun主题色 -->
+    <color name="brown1">#766156</color>
+    <color name="versionchecklib_theme_color">#000000</color>
+    <color name="black">#000000</color>
+    <color name="alertdialog_line">#c6c6c6</color>
+    <color name="actionsheet_blue">#037BFF</color>
+    <color name="actionsheet_red">#FD4A2E</color>
+    <color name="red">#ff0006</color>
+    <color name="blue">#3F51B5</color>
+    <color name="_8c">#8c8c8c</color>
+    <!--分割线色值-->
+    <color name="divider_line">#d7d7d7</color>
+</resources>

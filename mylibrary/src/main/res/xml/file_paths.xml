@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+
+    <root-path
+        name="root_path"
+        path="." />
+    <!-- 外部存储根目录（共享公共文件，如下载的图片） -->
+    <external-path
+        name="external_files"
+        path="." />
+
+
+    <!-- 第三方 友盟SDK 必须的根目录别名友盟（若确定需要则保留） -->
+    <root-path
+        name="opensdk_root"
+        path="" />
+    <!-- 应用外部私有目录下的友盟缓存（仅本应用可访问，更安全） -->
+    <external-files-path
+        name="umeng_cache"
+        path="umeng_cache/" />
+
+    <!-- 可选：应用内部私有文件目录（更安全，仅本应用可写） -->
+    <files-path
+        name="internal_files"
+        path="." />
+    <!-- QQ 官方分享SDK 共享路径 -->
+    <external-files-path
+        name="opensdk_external"
+        path="Images/tmp" />
+    <external-files-path
+        name="share_files"
+        path="." />
+
+    <external-files-path
+        name="imagedata"
+        path="imageData/" />
+    <external-files-path
+        name="videodata"
+        path="videoData/" />
+    <external-files-path
+        name="newmedia"
+        path="newMedia/" />
+    <!-- 友盟微信分享SDK 共享路径-->
+    <external-files-path
+        name="umeng_cache"
+        path="umeng_cache/" />
+
+</paths>

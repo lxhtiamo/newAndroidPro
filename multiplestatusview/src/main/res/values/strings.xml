@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">multipleStatusView</string>
+    <string name="empty_view_hint">暂无数据</string>
+    <string name="error_view_hint">加载失败</string>
+    <string name="no_network_view_hint">网络异常</string>
+
+
+    <!-- 第二种加载view加载状态相关提示 -->
+    <string name="view_empty">没有数据</string>
+    <string name="view_network_error">网络异常</string>
+    <string name="view_no_network">没有网络</string>
+    <string name="loading">加载中...</string>
+    <string name="load_success">加载成功</string>
+    <string name="load_fail">加载失败</string>
+</resources>

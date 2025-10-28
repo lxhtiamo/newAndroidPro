@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_rl"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+
+        <LinearLayout
+            android:id="@+id/line_bar_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|center">
+
+            <ImageView
+                android:id="@+id/bar_iv_left"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:padding="6dp"
+                android:scaleType="center" />
+
+            <Button
+                android:id="@+id/bar_bt_left"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@null"
+                android:padding="6dp"
+                android:scaleType="center"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_left_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="@dimen/dp_10"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/line_bar_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/bar_relright"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/bar_bt_right"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:padding="6dp"
+                    android:scaleType="center"
+                    android:textSize="@dimen/sp_12"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/bar_iv_right"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/dp_6"
+                    android:scaleType="center"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/bar_tv_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:padding="@dimen/dp_10"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_16"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_right_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="@dimen/dp_10"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/line_bar_right"
+            android:layout_toRightOf="@+id/line_bar_left"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_18" />
+
+    </RelativeLayout>
+
+</LinearLayout>
