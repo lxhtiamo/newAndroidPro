@@ -135,7 +135,7 @@ public class BaiduMapAppUtils {
         if (TextUtils.isEmpty(appSource)) {
             throw new IllegalArgumentException("appSource cannot be empty");
         }
-        this.mAppSource = context.getPackageName();
+        this.mAppSource ="andr."+ appSource;
     }
 
     /**
@@ -170,7 +170,7 @@ public class BaiduMapAppUtils {
     }
 
     /**
-     * 跳转到应用市场下载百度地图
+     * 跳转到应用市场下载安装百度地图
      *
      * @param context 上下文
      */
@@ -228,7 +228,7 @@ public class BaiduMapAppUtils {
             StringBuilder sb = new StringBuilder("baidumap://map/show");
             sb.append("?center=").append(lat).append(",").append(lng);
             sb.append("&coord_type=").append(mCoordType);
-            sb.append("&traffic=on").append(mCoordType);
+            sb.append("&traffic=on");
             if (zoom != null && zoom >= 1 && zoom <= 21) {
                 sb.append("&zoom=").append(zoom);
             } else {
@@ -330,7 +330,7 @@ public class BaiduMapAppUtils {
         try {
             StringBuilder sb = new StringBuilder("baidumap://map/geocoder");
             sb.append("?address=").append(encodeUrl(address));
-            sb.append("&src=").append(mCoordType);
+            sb.append("&src=").append(mAppSource);
 
             if (!TextUtils.isEmpty(city)) {
                 sb.append("&city=").append(encodeUrl(city));
@@ -358,7 +358,7 @@ public class BaiduMapAppUtils {
             StringBuilder sb = new StringBuilder("baidumap://map/geocoder");
             sb.append("?location=").append(lat).append(",").append(lng);
             sb.append("&coord_type=").append(mCoordType);
-            sb.append("&src=").append(mCoordType);
+            sb.append("&src=").append(mAppSource);
 
             if (pois != null && pois) {
                 sb.append("&pois=1");

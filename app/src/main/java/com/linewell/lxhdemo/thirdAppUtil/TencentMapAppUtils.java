@@ -8,7 +8,7 @@ import android.net.Uri;
 /**
  * 腾讯地图工具类（支持referer参数动态传入或使用默认固定值）
  */
-public class TencentMapUtils {
+public class TencentMapAppUtils {
 
     // 腾讯地图包名
     private static final String TENCENT_MAP_PACKAGE_NAME = "com.tencent.map";
@@ -18,6 +18,7 @@ public class TencentMapUtils {
     private static final String ROUTE_PLAN_PATH = "routeplan";
     // 地点标注路径
     private static final String MARKER_PATH = "marker";
+    private static final String MARKER_AUTO_PATH = "geocoder";
     // 下载页链接（开发者Key占位符）
     private static final String DOWNLOAD_URL = "https://pr.map.qq.com/j/tmap/download?key=%s";
 
@@ -83,6 +84,7 @@ public class TencentMapUtils {
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString()));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage(TENCENT_MAP_PACKAGE_NAME);
         context.startActivity(intent);
     }
 
@@ -117,8 +119,37 @@ public class TencentMapUtils {
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString()));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 添加标志
+        intent.setPackage(TENCENT_MAP_PACKAGE_NAME);
         context.startActivity(intent);
     }
+
+
+    /**
+     * 打开自动地点标注（referer支持传入或使用默认值）
+     * @param context  上下文
+     * @param coord 标注坐标（格式：lat,lng，必填）
+     * @param referer 发者Key（可选，传入则使用，否则用默认值）
+     */
+    public static void openMarker(Context context, String coord, String referer) {
+        if (!isTencentMapInstalled(context)) {
+            // 未安装时打开下载页，传入的referer优先，否则用默认
+            openDownloadPage(context, referer);
+            return;
+        }
+
+        // 确定最终使用的referer
+        String finalReferer = isEmpty(referer) ? DEFAULT_REFERER : referer;
+
+        StringBuilder sb = new StringBuilder(SCHEME_PREFIX).append(MARKER_AUTO_PATH).append("?");
+        sb.append("marker=coord:").append(coord);
+        sb.append("&referer=").append(finalReferer);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 添加标志
+        intent.setPackage(TENCENT_MAP_PACKAGE_NAME);
+        context.startActivity(intent);
+    }
+
 
     /**
      * 打开腾讯地图下载页（referer支持传入或使用默认值）
@@ -127,6 +158,17 @@ public class TencentMapUtils {
      * @param referer 开发者Key（可选）
      */
     public static void openDownloadPage(Context context, String referer) {
+        try {
+            if (context == null) return;
+            // 优先尝试系统默认应用市场
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + TENCENT_MAP_PACKAGE_NAME));
+            marketIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(marketIntent);
+            return;
+        } catch (Exception e) {
+            // 应用市场跳转失败，使用官网下载
+        }
+
         String finalReferer = isEmpty(referer) ? DEFAULT_REFERER : referer;
         String url = String.format(DOWNLOAD_URL, finalReferer);
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
