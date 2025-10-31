@@ -12,16 +12,20 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.linx.mylibrary.R;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.security.MessageDigest;
 
 /**
  * @author xh
@@ -125,7 +129,6 @@ public class RxGlideTool {
                 .load(url)
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
                 .centerCrop()
                 .into(imageView);
     }
@@ -142,7 +145,7 @@ public class RxGlideTool {
                 .load(uri)
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
+
                 .centerCrop()
                 .into(imageView);
     }
@@ -159,7 +162,7 @@ public class RxGlideTool {
                 .load(resourceId)
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
+
                 .centerCrop()
                 .into(imageView);
     }
@@ -176,7 +179,7 @@ public class RxGlideTool {
                 .load(file)
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
+
                 .centerCrop()
                 .into(imageView);
     }
@@ -195,7 +198,7 @@ public class RxGlideTool {
                     .load(url)
                     .placeholder(R.mipmap.icon_stub)
                     .error(R.mipmap.icon_error)
-                    .crossFade()
+
                     .centerCrop()
                     .into(imageView);
         } else if (o instanceof Uri) {
@@ -204,7 +207,7 @@ public class RxGlideTool {
                     .load(uri)
                     .placeholder(R.mipmap.icon_stub)
                     .error(R.mipmap.icon_error)
-                    .crossFade()
+
                     .centerCrop()
                     .into(imageView);
         } else if (o instanceof File) {
@@ -213,7 +216,7 @@ public class RxGlideTool {
                     .load(file)
                     .placeholder(R.mipmap.icon_stub)
                     .error(R.mipmap.icon_error)
-                    .crossFade()
+
                     .centerCrop()
                     .into(imageView);
         } else if (o instanceof Integer) {
@@ -222,61 +225,12 @@ public class RxGlideTool {
                     .load(resourcesID)
                     .placeholder(R.mipmap.icon_stub)
                     .error(R.mipmap.icon_error)
-                    .crossFade()
+
                     .centerCrop()
                     .into(imageView);
         }
     }
 
-    /**
-     * 加载图片不缓存 对应更图片不更换url的情况
-     *
-     * @param mContext
-     * @param imageView
-     */
-    public void loadImageUpdate(Context mContext, Object o, ImageView imageView) {
-        if (o instanceof String) {
-            String url = (String) o;
-            Glide.with(mContext)
-                    .load(url)
-                    .signature(new StringSignature(System.currentTimeMillis() + ""))
-                    .placeholder(R.mipmap.icon_stub)
-                    .error(R.mipmap.icon_error)
-                    .crossFade()
-                    .centerCrop()
-                    .into(imageView);
-        } else if (o instanceof Uri) {
-            Uri uri = (Uri) o;
-            Glide.with(mContext)
-                    .load(uri)
-                    .signature(new StringSignature(System.currentTimeMillis() + ""))
-                    .placeholder(R.mipmap.icon_stub)
-                    .error(R.mipmap.icon_error)
-                    .crossFade()
-                    .centerCrop()
-                    .into(imageView);
-        } else if (o instanceof File) {
-            File file = (File) o;
-            Glide.with(mContext)
-                    .load(file)
-                    .signature(new StringSignature(System.currentTimeMillis() + ""))
-                    .placeholder(R.mipmap.icon_stub)
-                    .error(R.mipmap.icon_error)
-                    .crossFade()
-                    .centerCrop()
-                    .into(imageView);
-        } else if (o instanceof Integer) {
-            Integer resourcesID = (Integer) o;
-            Glide.with(mContext)
-                    .load(resourcesID)
-                    .signature(new StringSignature(System.currentTimeMillis() + ""))
-                    .placeholder(R.mipmap.icon_stub)
-                    .error(R.mipmap.icon_error)
-                    .crossFade()
-                    .centerCrop()
-                    .into(imageView);
-        }
-    }
 
 
     /**
@@ -289,10 +243,10 @@ public class RxGlideTool {
     public void loadCircleImage(Context mContext, String url, ImageView imageView) {
         Glide.with(mContext)
                 .load(url)
-                .bitmapTransform(new GlideCircleTransform(mContext))
+                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                .transform(new GlideCircleTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
                 .centerCrop()
                 .into(imageView);
     }
@@ -307,10 +261,10 @@ public class RxGlideTool {
     public void loadCircleImage(Context mContext, File file, ImageView imageView) {
         Glide.with(mContext)
                 .load(file)
-                .bitmapTransform(new GlideCircleTransform(mContext))
+                .transform(new GlideCircleTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
+
                 .centerCrop()
                 .into(imageView);
     }
@@ -325,10 +279,10 @@ public class RxGlideTool {
     public void loadCircleImage(Context mContext, Uri uri, ImageView imageView) {
         Glide.with(mContext)
                 .load(uri)
-                .bitmapTransform(new GlideCircleTransform(mContext))
+                .transform(new GlideCircleTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
+
                 .centerCrop()
                 .into(imageView);
     }
@@ -343,10 +297,10 @@ public class RxGlideTool {
     public void loadCircleImage(Context mContext, Integer resourceId, ImageView imageView) {
         Glide.with(mContext)
                 .load(resourceId)
-                .bitmapTransform(new GlideCircleTransform(mContext))
+                .transform(new GlideCircleTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
+
                 .centerCrop()
                 .into(imageView);
     }
@@ -362,10 +316,10 @@ public class RxGlideTool {
     public void loadCircleImage(Context mContext, File file, ImageView imageView, int borderWidth, int borderColor) {
         Glide.with(mContext)
                 .load(file)
-                .bitmapTransform(new GlideCircleTransform(mContext, borderWidth, borderColor))
+                .transform(new GlideCircleTransform(mContext, borderWidth, borderColor))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
+
                 .centerCrop()
                 .into(imageView);
     }
@@ -380,10 +334,9 @@ public class RxGlideTool {
     public void loadRoundImage(Context mContext, String url, ImageView imageView) {
         Glide.with(mContext)
                 .load(url)
-                .bitmapTransform(new GlideRoundTransform(mContext))
+                .transform(new GlideRoundTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
                 .centerCrop()
                 .into(imageView);
     }
@@ -398,10 +351,10 @@ public class RxGlideTool {
     public void loadRoundImage(Context mContext, File file, ImageView imageView) {
         Glide.with(mContext)
                 .load(file)
-                .bitmapTransform(new GlideRoundTransform(mContext))
+                .transform(new GlideRoundTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
+
                 .centerCrop()
                 .into(imageView);
     }
@@ -416,10 +369,9 @@ public class RxGlideTool {
     public void loadRoundImage(Context mContext, Integer resourceId, ImageView imageView) {
         Glide.with(mContext)
                 .load(resourceId)
-                .bitmapTransform(new GlideRoundTransform(mContext))
+                .transform(new GlideRoundTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
                 .centerCrop()
                 .into(imageView);
     }
@@ -434,10 +386,10 @@ public class RxGlideTool {
     public void loadRoundImage(Context mContext, Uri uri, ImageView imageView) {
         Glide.with(mContext)
                 .load(uri)
-                .bitmapTransform(new GlideRoundTransform(mContext))
+                .transform(new GlideRoundTransform(mContext))
+
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .crossFade()
                 .centerCrop()
                 .into(imageView);
     }
@@ -453,7 +405,7 @@ public class RxGlideTool {
         private float mBorderWidth;
 
         public GlideCircleTransform(Context context) {
-            super(context);
+            super();
         }
 
         /**
@@ -464,7 +416,7 @@ public class RxGlideTool {
          * @param borderColor 边框颜色
          */
         public GlideCircleTransform(Context context, int borderWidth, int borderColor) {
-            super(context);
+            super();
             mBorderWidth = Resources.getSystem().getDisplayMetrics().density * borderWidth;
 
             mBorderPaint = new Paint();
@@ -507,9 +459,10 @@ public class RxGlideTool {
             return result;
         }
 
+
         @Override
-        public String getId() {
-            return getClass().getName();
+        public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+
         }
     }
 
@@ -533,7 +486,7 @@ public class RxGlideTool {
          * @param dp
          */
         public GlideRoundTransform(Context context, int dp) {
-            super(context);
+            super();
             this.radius = Resources.getSystem().getDisplayMetrics().density * dp;
         }
 
@@ -559,9 +512,10 @@ public class RxGlideTool {
             return result;
         }
 
+
         @Override
-        public String getId() {
-            return getClass().getName() + Math.round(radius);
+        public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+
         }
     }
 

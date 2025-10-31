@@ -34,7 +34,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     testImplementation 'junit:junit:4.13.2'
     api "androidx.appcompat:appcompat:$rootProject.androidxVersion"
-    api 'androidx.core:core:1.13.0'
+    api 'androidx.core:core:1.16.0'
     api 'com.google.android.material:material:1.10.0'
     /*循环的Banner库*/
     api 'com.squareup.okhttp3:okhttp:3.8.1'
@@ -46,7 +46,7 @@ dependencies {
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
     //上拉加载下拉刷新//https://github.com/scwang90/SmartRefreshLayout
     api 'io.github.scwang90:refresh-layout-kernel:3.0.0-alpha'
-    api 'com.github.bumptech.glide:glide:3.7.0'
+    api 'com.github.bumptech.glide:glide:5.0.5'
     //一个通用的RecyclerView的分割线
     /*动态权限*/
     api 'com.yanzhenjie:permission:2.0.2'
