@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">My Library</string>
     <string name="versionchecklib_confirm">确认</string>
     <string name="versionchecklib_cancel">取消</string>
     <string name="versionchecklib_retry">重试</string>
@@ -13,9 +12,40 @@
     <string name="versionchecklib_write_permission_deny">下载安装包需要读写文件权限。</string>
     <string name="versionchecklib_download_apkname">%s.apk</string>
     <string name="title_dialog">温馨提示</string>
-    <string name="message_permission_always_failed">我们需要以下权限，请在设置中为我们开启：\n\n%1$s</string>
-    <string name="message_permission_rationale">请允许以下权限以便程序继续执行：\n\n%1$s</string>
     <string name="setting">设置</string>
     <string name="resume">继续</string>
     <string name="cancel">取消</string>
+
+    <!--权限提示-->
+    <string name="message_permission_always_failed">我们需要以下权限，请在设置中为我们开启：\n\n%1$s</string>
+    <string name="message_permission_rationale">请允许以下权限以便程序继续执行：\n\n%1$s</string>
+    <string name="common_permission_alert">授权提醒</string>
+    <string name="common_permission_fail_2">获取权限失败，请手动授予权限</string>
+    <string name="common_permission_fail_3">获取权限失败，请手动授予%s</string>
+    <string name="common_permission_goto">前往授权</string>
+    <string name="common_permission_calendar">日历</string>
+    <string name="common_permission_camera">相机</string>
+    <string name="common_permission_contacts">通讯录</string>
+    <string name="common_permission_location">定位</string>
+    <string name="common_permission_location_background">后台定位</string>
+    <string name="common_permission_microphone">麦克风</string>
+    <string name="common_permission_phone">电话</string>
+    <string name="common_permission_call_log">通话记录</string>
+    <string name="common_permission_sensors">身体传感器</string>
+    <string name="common_permission_activity_recognition">健身运动</string>
+    <string name="common_permission_sms">短信</string>
+    <string name="common_permission_storage">存储</string>
+    <string name="common_permission_install">安装应用</string>
+    <string name="common_permission_notification">通知栏</string>
+    <string name="common_permission_window">悬浮窗</string>
+    <string name="common_permission_setting">系统设置</string>
+    <string name="permission_location_text">请授权位置权限，以便定位您当前位置，将用于向您提供位置导航、天气预报、景点推荐、同城活动、定位打卡等信息</string>
+    <string name="permission_camera_text">请授权相机权限，以便您使用拍照录像、人脸识别、活体检测、场景记录、上传头像等服务。</string>
+    <string name="permission_microphone_text">请授录音权限，以便您使用录制视频等服务。</string>
+    <string name="permission_phone_text">请授权电话信息权限,为了快速完成账号登录、绑定手机号，需要获取本机号码信息，我们不会将号码用于其他用途</string>
+    <string name="permission_storage_text">请授权存储权限，用于保存照片、文件到本地、读取手机中的图片、文档上传等服务</string>
+    <string name="permission_notification_text">请授通知栏权限，便于您及时接收系统推送的消息和通知</string>
+    <string name="permission_content">要正常体验[%1$s]的全部功能，您需要申请%2$s等权限。</string>
+    <string name="permission_no_content">您还没有授予权限，将无法体验【%s】的全部功能，是否去设置界面打开权限？?</string>
+
 </resources>

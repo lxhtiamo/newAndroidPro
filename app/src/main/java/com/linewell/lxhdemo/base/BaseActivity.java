@@ -75,6 +75,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     // 沉浸式状态栏
     private ImmersionBar mImmersionBar;
 
+    public Context getContext() {
+        return this;
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

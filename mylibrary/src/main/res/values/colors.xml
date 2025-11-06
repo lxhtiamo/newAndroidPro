@@ -11,7 +11,7 @@
 
 
 
-
+    <color name="transparent">#00000000</color>
     <color name="background_home">#F4F6F5</color>
     <color name="_999999">#999999</color>
     <color name="eeeeee">#EEEEEE</color>

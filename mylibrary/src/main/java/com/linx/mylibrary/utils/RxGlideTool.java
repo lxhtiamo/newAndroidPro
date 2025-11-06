@@ -5,14 +5,20 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.net.Uri;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -25,7 +31,9 @@ import com.linx.mylibrary.R;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Objects;
 
 /**
  * @author xh
@@ -232,7 +240,6 @@ public class RxGlideTool {
     }
 
 
-
     /**
      * 加载圆形图片
      *
@@ -300,8 +307,6 @@ public class RxGlideTool {
                 .transform(new GlideCircleTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-
-                .centerCrop()
                 .into(imageView);
     }
 
@@ -319,8 +324,15 @@ public class RxGlideTool {
                 .transform(new GlideCircleTransform(mContext, borderWidth, borderColor))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
+                .into(imageView);
+    }
 
-                .centerCrop()
+    public void loadCircleImage(Context mContext, Integer resourceId, ImageView imageView, int borderWidth, int borderColor) {
+        Glide.with(mContext)
+                .load(resourceId)
+                .transform(new GlideCircleTransform(mContext, borderWidth, borderColor))
+                .placeholder(R.mipmap.icon_stub)
+                .error(R.mipmap.icon_error)
                 .into(imageView);
     }
 
@@ -337,7 +349,6 @@ public class RxGlideTool {
                 .transform(new GlideRoundTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .centerCrop()
                 .into(imageView);
     }
 
@@ -354,8 +365,6 @@ public class RxGlideTool {
                 .transform(new GlideRoundTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-
-                .centerCrop()
                 .into(imageView);
     }
 
@@ -372,7 +381,15 @@ public class RxGlideTool {
                 .transform(new GlideRoundTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .centerCrop()
+                .into(imageView);
+    }
+
+    public void loadRoundImage2(Context mContext, Integer resourceId, ImageView imageView) {
+        Glide.with(mContext)
+                .load(resourceId)
+                .transform(new CircleCrop())
+                .placeholder(R.mipmap.icon_stub)
+                .error(R.mipmap.icon_error)
                 .into(imageView);
     }
 
@@ -387,10 +404,8 @@ public class RxGlideTool {
         Glide.with(mContext)
                 .load(uri)
                 .transform(new GlideRoundTransform(mContext))
-
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .centerCrop()
                 .into(imageView);
     }
 
@@ -404,6 +419,7 @@ public class RxGlideTool {
         private Paint mBorderPaint;
         private float mBorderWidth;
 
+        // 无参构造（无边框）
         public GlideCircleTransform(Context context) {
             super();
         }
@@ -428,7 +444,7 @@ public class RxGlideTool {
         }
 
         @Override
-        protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+        protected Bitmap transform(@NonNull BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
             return circleCrop(pool, toTransform);
         }
 
@@ -441,9 +457,9 @@ public class RxGlideTool {
 
             Bitmap squared = Bitmap.createBitmap(source, x, y, size, size);
 
-            Bitmap result = pool.get(size, size, Bitmap.Config.ARGB_4444);
+            Bitmap result = pool.get(size, size, Bitmap.Config.ARGB_8888);
             if (result == null) {
-                result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_4444);
+                result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
             }
 
             Canvas canvas = new Canvas(result);
@@ -472,54 +488,73 @@ public class RxGlideTool {
      * 图片转换圆角图片
      */
     public class GlideRoundTransform extends BitmapTransformation {
-
         private float radius = 0f;
+        private static final String TRANSFORM_ID = "com.yourpackage.GlideRoundTransform";
+        // 用于标识变换的哈希值（固定，避免频繁计算）
+        private final byte[] TRANSFORM_ID_BYTES = TRANSFORM_ID.getBytes(StandardCharsets.UTF_8);
 
         public GlideRoundTransform(Context context) {
-            this(context, 4);
+            this(context, 8);
         }
 
-        /**
-         * 自定义圆角大小
-         *
-         * @param context
-         * @param dp
-         */
         public GlideRoundTransform(Context context, int dp) {
-            super();
-            this.radius = Resources.getSystem().getDisplayMetrics().density * dp;
+            // 使用应用上下文的资源获取密度，避免系统资源与应用资源差异
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            this.radius = metrics.density * dp; // dp 转 px，确保不同设备圆角一致
         }
 
         @Override
-        protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-            return roundCrop(pool, toTransform);
+        protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform,
+                                   int outWidth, int outHeight) {
+            // 关键：使用 Glide 计算的目标尺寸（outWidth/outHeight）绘制，而非原图尺寸
+            return roundCrop(pool, toTransform, outWidth, outHeight);
         }
 
-        private Bitmap roundCrop(BitmapPool pool, Bitmap source) {
+        private Bitmap roundCrop(BitmapPool pool, Bitmap source, int targetWidth, int targetHeight) {
             if (source == null) return null;
 
-            Bitmap result = pool.get(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+            // 1. 计算原图到目标尺寸的缩放比例，避免绘制时拉伸导致的锯齿
+            float scaleX = (float) targetWidth / source.getWidth();
+            float scaleY = (float) targetHeight / source.getHeight();
+
+            // 2. 从缓存池获取合适的 Bitmap，优先复用，减少内存占用
+            Bitmap result = pool.get(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
             if (result == null) {
-                result = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+                result = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
             }
 
+            // 3. 配置画布和画笔，增强抗锯齿和平滑度
             Canvas canvas = new Canvas(result);
-            Paint paint = new Paint();
-            paint.setShader(new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
-            paint.setAntiAlias(true);
-            RectF rectF = new RectF(0f, 0f, source.getWidth(), source.getHeight());
+            Paint paint = getPaint(source, scaleX, scaleY);
+            // 5. 绘制圆角矩形（使用目标尺寸的 RectF）
+            RectF rectF = new RectF(0f, 0f, targetWidth, targetHeight);
             canvas.drawRoundRect(rectF, radius, radius, paint);
             return result;
         }
 
+        private Paint getPaint(Bitmap source, float scaleX, float scaleY) {
+            Paint paint = new Paint();
+            paint.setAntiAlias(true); // 基础抗锯齿
+            paint.setFilterBitmap(true); // 缩放时启用滤波，减少锯齿
+            paint.setDither(true); // 抖动处理，提升色彩过渡平滑度
+            // 4. 为 Shader 设置缩放矩阵，确保图片适配目标尺寸，避免拉伸导致的边缘粗糙
+            BitmapShader shader = new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            Matrix matrix = new Matrix();
+            matrix.setScale(scaleX, scaleY); // 按目标尺寸缩放原图
+            shader.setLocalMatrix(matrix);
+            paint.setShader(shader);
+            return paint;
+        }
 
         @Override
         public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
-
+            // 加入目标尺寸和圆角半径，确保不同参数的变换缓存唯一
+            messageDigest.update(TRANSFORM_ID_BYTES);
+            messageDigest.update(String.valueOf(radius).getBytes(StandardCharsets.UTF_8));
         }
     }
 
-/*----------------------------------------------------清除glide缓存---------------------------------------*/
+    /*----------------------------------------------------清除glide缓存---------------------------------------*/
 
     /**
      * 清除图片所有缓存

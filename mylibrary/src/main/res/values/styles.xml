@@ -63,4 +63,17 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <!--权限提示框样式-->
+    <style name="PermissionTipDialogStyle" parent="Theme.AppCompat.Dialog">
+        <!-- 去除标题栏 -->
+        <item name="windowNoTitle">true</item>
+        <!-- 背景透明（避免默认白色背景） -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 去除边框阴影 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 点击外部不消失 -->
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>
