@@ -8,6 +8,7 @@
     tools:context=".mvp.example.MainActivity">
 
     <LinearLayout
+        android:padding="30dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -44,19 +45,46 @@
             android:text="申请权限" />
 
         <ImageView
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
             android:id="@+id/iv_load_image"
             android:layout_width="100dp"
             android:layout_height="100dp" />
 
         <ImageView
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
             android:id="@+id/iv_load_image2"
             android:layout_width="100dp"
             android:layout_height="100dp" />
 
 
         <ImageView
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
             android:id="@+id/iv_load_image3"
             android:layout_width="100dp"
             android:layout_height="100dp" />
+        <ImageView
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:id="@+id/iv_load_image4"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <ImageView
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:id="@+id/iv_load_image5"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:id="@+id/iv_image"
+            android:layout_width="100dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_height="100dp"
+            app:shapeAppearance="@style/ImageView_roundedCorner" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

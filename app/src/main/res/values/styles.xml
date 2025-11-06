@@ -39,4 +39,9 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+
+    <style name="ImageView_roundedCorner">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/dp_12</item>
+    </style>
 </resources>

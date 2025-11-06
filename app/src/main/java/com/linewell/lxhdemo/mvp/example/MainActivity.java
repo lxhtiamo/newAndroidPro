@@ -49,10 +49,14 @@ public class MainActivity extends MvpActivity<MainContract.IMainPresenter> imple
         ImageView iv_load_image = findViewById(R.id.iv_load_image);
         ImageView iv_load_image2 = findViewById(R.id.iv_load_image2);
         ImageView iv_load_image3 = findViewById(R.id.iv_load_image3);
+        ImageView iv_load_image4 = findViewById(R.id.iv_load_image4);
+        ImageView iv_load_image5 = findViewById(R.id.iv_load_image5);
         int borderColor = ContextCompat.getColor(getContext(), R.color.colorAccent);
-        RxGlideTool.getInstance().loadCircleImage(getContext(),R.mipmap.ic_launcher,iv_load_image,10,borderColor);
-        RxGlideTool.getInstance().loadRoundImage(getContext(),R.mipmap.ic_launcher,iv_load_image2);
-        RxGlideTool.getInstance().loadRoundImage2(getContext(),R.mipmap.ic_launcher,iv_load_image3);
+        RxGlideTool.getInstance().loadCircleRingImage(getContext(),R.mipmap.ic_launcher,iv_load_image4,10,borderColor);
+        RxGlideTool.getInstance().loadCircleRingImage1(getContext(),R.mipmap.ic_launcher,iv_load_image5,10,borderColor);
+       // RxGlideTool.getInstance().loadCircleImage3(getContext(),R.mipmap.ic_launcher,iv_load_image3);
+        //RxGlideTool.getInstance().loadCircleImage5(getContext(),R.mipmap.ic_launcher,iv_load_image4);
+       // RxGlideTool.getInstance().loadCircleImage6(getContext(),R.mipmap.ic_launcher,iv_load_image4,10,borderColor);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

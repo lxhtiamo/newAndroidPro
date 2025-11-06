@@ -1,7 +1,6 @@
 package com.linx.mylibrary.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -11,18 +10,18 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
+import com.bumptech.glide.load.engine.cache.DiskCache;
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -33,86 +32,14 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.Objects;
 
 /**
  * @author xh
  * @Description (Glide图片加载工具类)
- * @date 2018/1/31 13:19
  */
 public class RxGlideTool {
-//--------------------------------------------------说明-----------------------------------------------
-    //  with(Context context). 使用Application上下文，Glide请求将不受Activity/Fragment生命周期控制。
-    //  with(Activity activity).使用Activity作为上下文，Glide的请求会受到Activity生命周期控制。
-    //  with(FragmentActivity activity).Glide的请求会受到FragmentActivity生命周期控制。
-    //  with(android.app.Fragment fragment).Glide的请求会受到Fragment 生命周期控制。
-    //  with(android.support.v4.app.Fragment fragment).Glide的请求会受到Fragment生命周期控制。
-    //-----------------------------
-    //  Glide基本可以load任何可以拿到的媒体资源，如：
-    //  load SD卡资源：load("file://"+ Environment.getExternalStorageDirectory().getPath()+"/test.jpg")
-    //  load assets资源：load("file:///android_asset/f003.gif")
-    //  load raw资源：load("android.resource://com.frank.glide/raw/raw_1")或load("android.resource://com.frank.glide/raw/"+R.raw.raw_1)
-    //  load drawable资源：load("android.resource://com.frank.glide/drawable/news")或load("android.resource://com.frank.glide/drawable/"+R.drawable.news)
-    //  load ContentProvider资源：load("content://media/external/images/media/139469")
-    //  load http资源：load("http://img.my.csdn.net/uploads/201508/05/1438760757_3588.jpg")
-    //  load https资源：load("https://img.alicdn.com/tps/TB1uyhoMpXXXXcLXVXXXXXXXXXX-476-538.jpg_240x5000q50.jpg_.webp")
-    //  当然，load不限于String类型，还可以：
-    //  load(Uri uri)，load(File file)，load(Integer resourceId)，load(URL url)，load(byte[] model, final String id)，load(byte[] model)，load(T model)。
-    //  而且可以使用自己的ModelLoader进行资源加载：
-    //  using(ModelLoader<A, T> modelLoader, Class<T> dataClass)，using(final StreamModelLoader<T> modelLoader)，using(StreamByteArrayLoader modelLoader)，using(final FileDescriptorModelLoader<T> modelLoader)。
-    //  返回RequestBuilder实例
-    //--------------------------------------
-    //  * thumbnail(float sizeMultiplier). 请求给定系数的缩略图。如果缩略图比全尺寸图先加载完，
-    //        就显示缩略图，否则就不显示。系数sizeMultiplier必须在(0,1)之间，可以递归调用该方法。
 
-    //  * sizeMultiplier(float sizeMultiplier). 在加载资源之前给Target大小设置系数。
-
-    //  * skipMemoryCache(boolean skip). 设置是否跳过内存缓存，但不保证一定不被缓存
-    //     （比如请求已经在加载资源且没设置跳过内存缓存，这个资源就会被缓存在内存中）。
-    //  *  diskCacheStrategy(DiskCacheStrategy strategy).设置缓存策略。
-    //     DiskCacheStrategy.SOURCE：缓存原始数据，
-    //     DiskCacheStrategy.RESULT：缓存变换修改后的资源数据，
-    //     DiskCacheStrategy.NONE：什么都不缓存，
-    //     DiskCacheStrategy.ALL：缓存所有图片  默认
-    //          默认采用DiskCacheStrategy.RESULT策略，对于download only操作要使用DiskCacheStrategy.SOURCE。
-
-    //  * priority(Priority priority). 指定加载的优先级，优先级越高越优先加载，但不保证所有图片都按序加载。
-    //       枚举Priority.IMMEDIATE，Priority.HIGH，Priority.NORMAL，Priority.LOW。默认为Priority.NORMAL。
-    //  * crossFade(5000) //设置淡入淡出效果，默认300ms，可以传参
-    //  * dontAnimate(). 移除所有的动画。
-    //  * animate(int animationId). 在异步加载资源完成时会执行该动画。
-    //  * animate(ViewPropertyAnimation.Animator animator). 在异步加载资源完成时会执行该动画。
-    //  * placeholder(int resourceId). 设置资源加载过程中的占位Drawable。
-    //  * placeholder(Drawable drawable). 设置资源加载过程中的占位Drawable。
-
-    //  * fallback(int resourceId). 设置model为空时要显示的Drawable。如果没设置fallback，
-    //    model为空时将显示error的Drawable，如果error的Drawable也没设置，就显示placeholder的Drawable。
-    //  * fallback(Drawable drawable).设置model为空时显示的Drawable。
-    //  * error(int resourceId).设置load失败时显示的Drawable。
-    //  * error(Drawable drawable).设置load失败时显示的Drawable。
-
-    //  * Glide支持两种图片缩放形式，CenterCrop 和 FitCenter
-    //    CenterCrop：等比例缩放图片， 直到图片的狂高都大于等于ImageView的宽度，然后截取中间的显示。
-    //    FitCenter：等比例缩放图片，宽或者是高等于ImageView的宽或者是高。
-
-    //  * 当列表在滑动的时候，调用pauseRequests()取消请求，滑动停止时，调用resumeRequests()恢复请求
-
-    //  * listener(RequestListener<? super ModelType, TranscodeType> requestListener).
-    //        监听资源加载的请求状态，可以使用两个回调：
-    //     onResourceReady(R resource, T model, Target<R> target, boolean isFromMemoryCache, boolean isFirstResource)
-    //       和onException(Exception e, T model, Target&lt;R&gt; target, boolean isFirstResource)，
-    //       但不要每次请求都使用新的监听器，要避免不必要的内存申请，可以使用单例进行统一的异常监听和处理。
-    //  * clear() 清除掉所有的图片加载请求
-    //  * override(int width, int height). 重新设置Target的宽高值（单位为pixel）。
-    //  * into(Y target).设置资源将被加载到的Target。
-    //  * into(ImageView view). 设置资源将被加载到的ImageView。取消该ImageView之前所有的加载并释放资源。
-    //  * into(int width, int height). 后台线程加载时要加载资源的宽高值（单位为pixel）。
-    //  * preload(int width, int height). 预加载resource到缓存中（单位为pixel）。
-    //  * asBitmap(). 无论资源是不是gif动画，都作为Bitmap对待。如果是gif动画会停在第一帧。
-    //  * asGif().把资源作为GifDrawable对待。如果资源不是gif动画将会失败，会回调.error()。
-    //------------------------------------------------------------------------------------------------------
-
-    private static RxGlideTool instance;
+    private static volatile RxGlideTool instance;
 
     public static RxGlideTool getInstance() {
         if (instance == null) {
@@ -126,199 +53,92 @@ public class RxGlideTool {
     }
 
     /**
-     * 加载网络图片
-     *
-     * @param mContext
-     * @param url
-     * @param imageView
+     * 加载图片
      */
-    public void loadImage(Context mContext, String url, ImageView imageView) {
+    public void loadImage(Context mContext, Object url, ImageView imageView) {
+        loadImage(mContext, url, imageView, R.mipmap.icon_stub, R.mipmap.icon_error);
+    }
+
+    /**
+     * 加载图片 设置默认缓冲图 错误图
+     */
+    public void loadImage(Context mContext, Object url, ImageView imageView, int placeholder, int error) {
         Glide.with(mContext)
                 .load(url)
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-                .centerCrop()
+                .placeholder(placeholder)
+                .error(error)
                 .into(imageView);
     }
 
     /**
-     * 加载本地网络图片
-     *
-     * @param mContext
-     * @param uri
-     * @param imageView
+     * 加载图片 设置默认展位图 失败图
      */
-    public void loadImage(Context mContext, Uri uri, ImageView imageView) {
+    public void loadImage(Context mContext, Object url, ImageView imageView, Drawable placeholder, Drawable error) {
         Glide.with(mContext)
-                .load(uri)
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-
-                .centerCrop()
+                .load(url)
+                .placeholder(placeholder)
+                .error(error)
                 .into(imageView);
     }
 
+
     /**
-     * 加载图片
-     *
-     * @param mContext
-     * @param resourceId 本地资源
-     * @param imageView
+     * 加载圆形图片 默认展位图 失败图
      */
-    public void loadImage(Context mContext, Integer resourceId, ImageView imageView) {
+    public void loadCircleImage(Context mContext, Object url, ImageView imageView) {
+        loadCircleImage(mContext, url, imageView, R.mipmap.icon_stub, R.mipmap.icon_error);
+    }
+
+    /**
+     * 加载圆形图片 设置圆形图片 默认展位图 失败图
+     */
+    public void loadCircleImage(Context mContext, Object url, ImageView imageView, int placeholder, int error) {
         Glide.with(mContext)
-                .load(resourceId)
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-
-                .centerCrop()
+                .load(url)
+                .transform(new CircleCrop())
+                .placeholder(placeholder)
+                .error(error)
                 .into(imageView);
     }
 
     /**
-     * 加载本地图片
-     *
-     * @param mContext
-     * @param file
-     * @param imageView
+     * 加载圆形图片2 默认圆形图片 默认展位图 失败图
      */
-    public void loadImage(Context mContext, File file, ImageView imageView) {
-        Glide.with(mContext)
-                .load(file)
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-
-                .centerCrop()
-                .into(imageView);
-    }
-
-    /**
-     * 加载图片
-     *
-     * @param mContext
-     * @param o
-     * @param imageView
-     */
-    public void loadImage(Context mContext, Object o, ImageView imageView) {
-        if (o instanceof String) {
-            String url = (String) o;
-            Glide.with(mContext)
-                    .load(url)
-                    .placeholder(R.mipmap.icon_stub)
-                    .error(R.mipmap.icon_error)
-
-                    .centerCrop()
-                    .into(imageView);
-        } else if (o instanceof Uri) {
-            Uri uri = (Uri) o;
-            Glide.with(mContext)
-                    .load(uri)
-                    .placeholder(R.mipmap.icon_stub)
-                    .error(R.mipmap.icon_error)
-
-                    .centerCrop()
-                    .into(imageView);
-        } else if (o instanceof File) {
-            File file = (File) o;
-            Glide.with(mContext)
-                    .load(file)
-                    .placeholder(R.mipmap.icon_stub)
-                    .error(R.mipmap.icon_error)
-
-                    .centerCrop()
-                    .into(imageView);
-        } else if (o instanceof Integer) {
-            Integer resourcesID = (Integer) o;
-            Glide.with(mContext)
-                    .load(resourcesID)
-                    .placeholder(R.mipmap.icon_stub)
-                    .error(R.mipmap.icon_error)
-
-                    .centerCrop()
-                    .into(imageView);
-        }
-    }
-
-
-    /**
-     * 加载圆形图片
-     *
-     * @param mContext
-     * @param url
-     * @param imageView
-     */
-    public void loadCircleImage(Context mContext, String url, ImageView imageView) {
+    public void loadCircleImage2(Context mContext, Object url, ImageView imageView) {
         Glide.with(mContext)
                 .load(url)
                 .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .transform(new GlideCircleTransform(mContext))
                 .placeholder(R.mipmap.icon_stub)
                 .error(R.mipmap.icon_error)
-                .centerCrop()
                 .into(imageView);
     }
 
     /**
-     * 加载圆形图片
-     *
-     * @param mContext
-     * @param file
-     * @param imageView
+     * 加载圆角图片 自定义的圆角  默认圆形图片 默认展位图 失败图
      */
-    public void loadCircleImage(Context mContext, File file, ImageView imageView) {
-        Glide.with(mContext)
-                .load(file)
-                .transform(new GlideCircleTransform(mContext))
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-
-                .centerCrop()
-                .into(imageView);
+    public void loadRoundedImage(Context mContext, Object resourceId, ImageView imageView, int roundedCorner) {
+        loadRoundedImage(mContext, resourceId, imageView, roundedCorner, R.mipmap.icon_stub, R.mipmap.icon_error);
     }
 
     /**
-     * 加载圆形图片
-     *
-     * @param mContext
-     * @param uri       本地资源
-     * @param imageView
+     * 加载圆角图片 自定义的圆角 设置圆形图片 默认展位图 失败图
      */
-    public void loadCircleImage(Context mContext, Uri uri, ImageView imageView) {
-        Glide.with(mContext)
-                .load(uri)
-                .transform(new GlideCircleTransform(mContext))
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-
-                .centerCrop()
-                .into(imageView);
-    }
-
-    /**
-     * 加载圆形图片
-     *
-     * @param mContext
-     * @param resourceId 本地资源
-     * @param imageView
-     */
-    public void loadCircleImage(Context mContext, Integer resourceId, ImageView imageView) {
+    public void loadRoundedImage(Context mContext, Object resourceId, ImageView imageView, int roundedCorner, int placeholder, int error) {
         Glide.with(mContext)
                 .load(resourceId)
-                .transform(new GlideCircleTransform(mContext))
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
+                .transform(new GlideRoundTransform(mContext, roundedCorner))
+                .placeholder(placeholder)
+                .error(error)
                 .into(imageView);
     }
 
     /**
-     * 加载圆形图片支持设置边框的宽度和颜色
-     *
+     * 加载圆环图片支持设置边框的宽度和颜色
      * @param mContext
-     * @param file
      * @param borderWidth 边框宽度
      * @param borderColor 边框颜色
      */
-    public void loadCircleImage(Context mContext, File file, ImageView imageView, int borderWidth, int borderColor) {
+    public void loadCircleRingImage(Context mContext, Object file, ImageView imageView, int borderWidth, int borderColor) {
         Glide.with(mContext)
                 .load(file)
                 .transform(new GlideCircleTransform(mContext, borderWidth, borderColor))
@@ -327,97 +147,16 @@ public class RxGlideTool {
                 .into(imageView);
     }
 
-    public void loadCircleImage(Context mContext, Integer resourceId, ImageView imageView, int borderWidth, int borderColor) {
-        Glide.with(mContext)
-                .load(resourceId)
-                .transform(new GlideCircleTransform(mContext, borderWidth, borderColor))
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-                .into(imageView);
-    }
-
+    /*----------------------------图片转圆环图片------------------------------*/
     /**
-     * 加载圆角图片
-     *
-     * @param mContext
-     * @param url
-     * @param imageView
-     */
-    public void loadRoundImage(Context mContext, String url, ImageView imageView) {
-        Glide.with(mContext)
-                .load(url)
-                .transform(new GlideRoundTransform(mContext))
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-                .into(imageView);
-    }
-
-    /**
-     * 加载圆角图片
-     *
-     * @param mContext
-     * @param file
-     * @param imageView
-     */
-    public void loadRoundImage(Context mContext, File file, ImageView imageView) {
-        Glide.with(mContext)
-                .load(file)
-                .transform(new GlideRoundTransform(mContext))
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-                .into(imageView);
-    }
-
-    /**
-     * 加载圆角图片
-     *
-     * @param mContext
-     * @param resourceId 本地资源
-     * @param imageView
-     */
-    public void loadRoundImage(Context mContext, Integer resourceId, ImageView imageView) {
-        Glide.with(mContext)
-                .load(resourceId)
-                .transform(new GlideRoundTransform(mContext))
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-                .into(imageView);
-    }
-
-    public void loadRoundImage2(Context mContext, Integer resourceId, ImageView imageView) {
-        Glide.with(mContext)
-                .load(resourceId)
-                .transform(new CircleCrop())
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-                .into(imageView);
-    }
-
-    /**
-     * 加载圆角图片
-     *
-     * @param mContext
-     * @param uri       本地资源
-     * @param imageView
-     */
-    public void loadRoundImage(Context mContext, Uri uri, ImageView imageView) {
-        Glide.with(mContext)
-                .load(uri)
-                .transform(new GlideRoundTransform(mContext))
-                .placeholder(R.mipmap.icon_stub)
-                .error(R.mipmap.icon_error)
-                .into(imageView);
-    }
-
-
-    //--------------------------------------------------
-
-    /**
-     * 图片转圆形 ---->ps加载圆形图片支持设置边框的宽度和颜色
+     * 自定义加载圆环图片 ----Glide圆形图片转换器（支持边框宽度和颜色）加载圆形图片支持设置边框的宽度和颜色
      */
     public class GlideCircleTransform extends BitmapTransformation {
+        private static final String ID = "com.example.GlideCircleTransform";
+        private  final byte[] ID_BYTES = ID.getBytes(StandardCharsets.UTF_8);
+
         private Paint mBorderPaint;
-        private float mBorderWidth;
+        private float mBorderWidth; // 边框宽度（像素值）
 
         // 无参构造（无边框）
         public GlideCircleTransform(Context context) {
@@ -427,20 +166,28 @@ public class RxGlideTool {
         /**
          * 加载圆形图片支持设置边框的宽度和颜色
          *
-         * @param context
-         * @param borderWidth 边框宽度
+         * @param context     上下文
+         * @param borderWidth 边框宽度（单位：dp）
          * @param borderColor 边框颜色
          */
         public GlideCircleTransform(Context context, int borderWidth, int borderColor) {
             super();
-            mBorderWidth = Resources.getSystem().getDisplayMetrics().density * borderWidth;
+            // 更准确的dp转像素（适配不同屏幕密度）
+            mBorderWidth = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    borderWidth,
+                    context.getResources().getDisplayMetrics()
+            );
 
             mBorderPaint = new Paint();
-            mBorderPaint.setDither(true);
-            mBorderPaint.setAntiAlias(true);
+            mBorderPaint.setDither(true); // 防抖动，增强色彩过渡平滑度
+            mBorderPaint.setAntiAlias(true); // 抗锯齿
             mBorderPaint.setColor(borderColor);
             mBorderPaint.setStyle(Paint.Style.STROKE);
             mBorderPaint.setStrokeWidth(mBorderWidth);
+            // 边框笔触圆角处理，避免边框转角生硬
+            mBorderPaint.setStrokeCap(Paint.Cap.ROUND);
+            mBorderPaint.setStrokeJoin(Paint.Join.ROUND);
         }
 
         @Override
@@ -451,34 +198,91 @@ public class RxGlideTool {
         private Bitmap circleCrop(BitmapPool pool, Bitmap source) {
             if (source == null) return null;
 
+            // 裁剪出正方形（取原图最小边为边长，确保圆形比例正确）
             int size = Math.min(source.getWidth(), source.getHeight());
             int x = (source.getWidth() - size) / 2;
             int y = (source.getHeight() - size) / 2;
-
+            // 裁剪时保留边缘像素，避免裁剪导致的细节丢失
             Bitmap squared = Bitmap.createBitmap(source, x, y, size, size);
 
+            // 从缓存池获取目标Bitmap，减少内存分配
             Bitmap result = pool.get(size, size, Bitmap.Config.ARGB_8888);
             if (result == null) {
                 result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
             }
 
             Canvas canvas = new Canvas(result);
+            // 清除画布为透明（关键：避免默认黑色背景影响边缘）
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+
+            // 绘制内部圆形的画笔（核心优化）
             Paint paint = new Paint();
-            paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
-            paint.setAntiAlias(true);
-            float r = size / 2f;
-            canvas.drawCircle(r, r, r, paint);
-            if (mBorderPaint != null) {
-                float borderRadius = r - mBorderWidth / 2;
-                canvas.drawCircle(r, r, borderRadius, mBorderPaint);
+            paint.setDither(true); // 防抖动，让图片色彩过渡更平滑
+            paint.setAntiAlias(true); // 抗锯齿，减少边缘锯齿
+            // 设置图片Shader，确保图片拉伸无变形
+            paint.setShader(new BitmapShader(squared, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+
+            // 计算中心坐标（浮点数，提高精度）
+            float centerX = size / 2f;
+            float centerY = size / 2f;
+
+            // 计算内部圆形半径（核心优化：避开像素边界）
+            float innerRadius;
+            if (mBorderPaint != null && mBorderWidth > 0) {
+                // 有边框时：内部半径 = (总尺寸 - 边框宽度*2)/2 - 0.5f（避开像素边界）
+                innerRadius = (size - 2 * mBorderWidth) / 2f - 0.5f;
+                // 防止边框过宽导致内部半径为负数
+                if (innerRadius < 0) {
+                    innerRadius = size / 2f - 0.5f;
+                    mBorderWidth = 0;
+                    mBorderPaint = null;
+                }
+            } else {
+                // 无边框时：半径 = 尺寸/2 - 0.5f（落在像素中心，减少锯齿）
+                innerRadius = size / 2f - 0.5f;
             }
+
+            // 绘制内部圆形（边缘更平滑）
+            canvas.drawCircle(centerX, centerY, innerRadius, paint);
+
+            // 绘制边框（若有）
+            if (mBorderPaint != null && mBorderWidth > 0) {
+                // 边框半径 = 内部半径 + 边框宽度/2（确保边框在内部圆形外侧，无缝衔接）
+                float borderRadius = innerRadius + mBorderWidth / 2f;
+                canvas.drawCircle(centerX, centerY, borderRadius, mBorderPaint);
+            }
+
+            // 回收裁剪的临时Bitmap（减少内存占用）
+            if (squared != source) {
+                squared.recycle();
+            }
+
             return result;
         }
 
-
+        // 完善缓存逻辑（避免不同参数的图片缓存冲突）
         @Override
         public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+            messageDigest.update(ID_BYTES);
+            // 加入边框参数（宽度和颜色），确保缓存唯一
+            String params = mBorderWidth + "," + (mBorderPaint != null ? mBorderPaint.getColor() : 0);
+            messageDigest.update(params.getBytes(StandardCharsets.UTF_8));
+        }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            GlideCircleTransform that = (GlideCircleTransform) o;
+            return Float.compare(that.mBorderWidth, mBorderWidth) == 0 &&
+                    (mBorderPaint != null ? mBorderPaint.getColor() == that.mBorderPaint.getColor() : that.mBorderPaint == null);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Float.hashCode(mBorderWidth);
+            result = 31 * result + (mBorderPaint != null ? mBorderPaint.getColor() : 0);
+            return result;
         }
     }
 
@@ -488,13 +292,14 @@ public class RxGlideTool {
      * 图片转换圆角图片
      */
     public class GlideRoundTransform extends BitmapTransformation {
-        private float radius = 0f;
+        private float radius = 4f;
+        private static final int defaultRadius = 4;
         private static final String TRANSFORM_ID = "com.yourpackage.GlideRoundTransform";
         // 用于标识变换的哈希值（固定，避免频繁计算）
         private final byte[] TRANSFORM_ID_BYTES = TRANSFORM_ID.getBytes(StandardCharsets.UTF_8);
 
         public GlideRoundTransform(Context context) {
-            this(context, 8);
+            this(context, defaultRadius);
         }
 
         public GlideRoundTransform(Context context, int dp) {
@@ -562,7 +367,8 @@ public class RxGlideTool {
     public void clearImageAllCache(Context context) {
         clearImageDiskCache(context);
         clearImageMemoryCache(context);
-        String ImageExternalCatchDir = context.getExternalCacheDir() + ExternalCacheDiskCacheFactory.DEFAULT_DISK_CACHE_DIR;
+       // String ImageExternalCatchDir = context.getExternalCacheDir() + ExternalCacheDiskCacheFactory.DEFAULT_DISK_CACHE_DIR;
+        String ImageExternalCatchDir = context.getExternalCacheDir() + DiskCache.Factory.DEFAULT_DISK_CACHE_DIR;
         deleteFolderFile(ImageExternalCatchDir, true);
     }
 
