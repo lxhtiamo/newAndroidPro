@@ -53,7 +53,7 @@ public class MainActivity extends MvpActivity<MainContract.IMainPresenter> imple
         ImageView iv_load_image5 = findViewById(R.id.iv_load_image5);
         int borderColor = ContextCompat.getColor(getContext(), R.color.colorAccent);
         RxGlideTool.getInstance().loadCircleRingImage(getContext(),R.mipmap.ic_launcher,iv_load_image4,10,borderColor);
-        RxGlideTool.getInstance().loadCircleRingImage1(getContext(),R.mipmap.ic_launcher,iv_load_image5,10,borderColor);
+       // RxGlideTool.getInstance().loadCircleRingImage1(getContext(),R.mipmap.ic_launcher,iv_load_image5,10,borderColor);
        // RxGlideTool.getInstance().loadCircleImage3(getContext(),R.mipmap.ic_launcher,iv_load_image3);
         //RxGlideTool.getInstance().loadCircleImage5(getContext(),R.mipmap.ic_launcher,iv_load_image4);
        // RxGlideTool.getInstance().loadCircleImage6(getContext(),R.mipmap.ic_launcher,iv_load_image4,10,borderColor);
