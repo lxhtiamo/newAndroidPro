@@ -22,6 +22,8 @@ import com.hjq.permissions.permission.base.IPermission;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.mvp.MvpActivity;
 import com.linewell.lxhdemo.thirdAppUtil.UMShareManager;
+import com.linx.mylibrary.scaner.ActivityScanerCode;
+import com.linx.mylibrary.scaner.ActivityScanerCode_Two;
 import com.linx.mylibrary.utils.RxGlideTool;
 import com.linx.mylibrary.utils.permissionUtil.PermissionTipDialogUtils;
 
@@ -46,6 +48,9 @@ public class MainActivity extends MvpActivity<MainContract.IMainPresenter> imple
     protected void initView(Bundle savedInstanceState) {
         // 配置各平台密钥（替换为你的申请值）
         Button button = findViewById(R.id.bt_bt);
+        Button bt_bt3 = findViewById(R.id.bt_bt3);
+        Button bt_sm1 = findViewById(R.id.bt_sm1);
+        Button bt_sm2 = findViewById(R.id.bt_sm2);
         ImageView iv_load_image = findViewById(R.id.iv_load_image);
         ImageView iv_load_image2 = findViewById(R.id.iv_load_image2);
         ImageView iv_load_image3 = findViewById(R.id.iv_load_image3);
@@ -116,6 +121,20 @@ public class MainActivity extends MvpActivity<MainContract.IMainPresenter> imple
                 objects.add(PermissionLists.getCameraPermission());
                 PermissionTipDialogUtils.getInstance().showPermissionTipDialog(getContext(),"温馨提示","权限的使用说明",objects);
                 requestPermissions();
+
+            }
+        });
+        bt_sm1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readyGo(ActivityScanerCode.class);
+
+            }
+        });
+        bt_sm2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readyGo(ActivityScanerCode_Two.class);
 
             }
         });

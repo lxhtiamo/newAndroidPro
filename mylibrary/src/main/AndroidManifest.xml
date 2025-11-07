@@ -5,6 +5,7 @@
     <!--权限-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <!--end-->
     <application
@@ -15,6 +16,8 @@
             android:name="com.umeng.socialize.media.DouYinEntryActivity"
             android:exported="true"
             tools:ignore="MissingClass" />
+        <activity android:name="com.linx.mylibrary.scaner.ActivityScanerCode" />
+        <activity android:name="com.linx.mylibrary.scaner.ActivityScanerCode_Two" />
     </application>
 
 </manifest>

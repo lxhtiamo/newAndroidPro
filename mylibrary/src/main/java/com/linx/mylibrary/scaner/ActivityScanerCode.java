@@ -71,6 +71,14 @@ public class ActivityScanerCode extends AppCompatActivity {
         inactivityTimer = new InactivityTimer(this);
     }
 
+    SurfaceView surfaceView;
+    SurfaceHolder surfaceHolder;
+
+    int screenLeft = -1;
+    int screenTop = -1;
+    int screenRight = -1;
+    int screenBottom = -1;
+
     @SuppressWarnings("deprecation")
     @Override
     protected void onResume() {
@@ -160,6 +168,18 @@ public class ActivityScanerCode extends AppCompatActivity {
         this.mCropHeight = cropHeight;
         CameraManager.FRAME_HEIGHT = mCropHeight;
     }
+    public void setCropLeft(int Left) {
+        CameraManager.QR_CODE_LEFT = Left;
+    }
+    public void setCropTop(int cropHeight) {
+        CameraManager.QR_CODE_TOP = cropHeight;
+    }
+    public void setCropRight(int cropHeight) {
+        CameraManager.QR_CODE_RIGHT = cropHeight;
+    }
+    public void setCropBottom(int cropHeight) {
+        CameraManager.QR_CODE_BOTTOM = cropHeight;
+    }
 
     public static final int GET_IMAGE_FROM_PHONE = 5002;
 
@@ -200,6 +220,12 @@ public class ActivityScanerCode extends AppCompatActivity {
             int cropHeight = mCropLayout.getHeight() * height.get() / mContainer.getHeight();
             setCropWidth(cropWidth);
             setCropHeight(cropHeight);
+            if (screenLeft>-1){
+                setCropLeft(cropHeight);
+                setCropTop(cropHeight);
+                setCropRight(cropHeight);
+                setCropBottom(cropHeight);
+            }
         } catch (IOException | RuntimeException ioe) {
             return;
         }

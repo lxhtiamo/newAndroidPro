@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">My Library</string>
     <string name="versionchecklib_confirm">确认</string>
     <string name="versionchecklib_cancel">取消</string>
     <string name="versionchecklib_retry">重试</string>

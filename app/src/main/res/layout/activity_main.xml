@@ -26,11 +26,25 @@
             android:layout_height="wrap_content"
             android:text="申请权限" />
 
+
         <Button
             android:id="@+id/bt_bt1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="分享" />
+
+
+        <Button
+            android:id="@+id/bt_sm1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="扫码1" />
+
+        <Button
+            android:id="@+id/bt_sm2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="扫码2" />
 
         <Button
             android:id="@+id/bt_bt2"

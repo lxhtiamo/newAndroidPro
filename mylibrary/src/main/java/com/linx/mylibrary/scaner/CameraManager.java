@@ -39,6 +39,10 @@ public final class CameraManager {
     public static int FRAME_WIDTH = -1;
     public static int FRAME_HEIGHT = -1;
     public static int FRAME_MARGINTOP = -1;
+    public static int QR_CODE_LEFT = -1;
+    public static int QR_CODE_TOP = -1;
+    public static int QR_CODE_RIGHT = -1;
+    public static int QR_CODE_BOTTOM = -1;
     private static CameraManager cameraManager;
 
     static {
@@ -215,14 +219,18 @@ public final class CameraManager {
             }
 
             int leftOffset = (screenResolution.x - FRAME_WIDTH) / 2;
-
             int topOffset;
             if (FRAME_MARGINTOP != -1) {
                 topOffset = FRAME_MARGINTOP;
             } else {
                 topOffset = (screenResolution.y - FRAME_HEIGHT) / 2;
             }
-            framingRect = new Rect(leftOffset, topOffset, leftOffset + FRAME_WIDTH, topOffset + FRAME_HEIGHT);
+            if (QR_CODE_LEFT!=-1){
+                framingRect = new Rect(QR_CODE_LEFT, QR_CODE_TOP, QR_CODE_RIGHT, QR_CODE_BOTTOM);
+            }else {
+                framingRect = new Rect(leftOffset, topOffset, leftOffset + FRAME_WIDTH, topOffset + FRAME_HEIGHT);
+            }
+
             // }
             return framingRect;
         } catch (Exception e) {
