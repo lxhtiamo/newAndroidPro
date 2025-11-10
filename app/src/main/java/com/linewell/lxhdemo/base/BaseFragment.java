@@ -1,15 +1,21 @@
 package com.linewell.lxhdemo.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,6 +26,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.toast.Toaster;
 import com.lin.networkstateview.NetworkStateView;
 import com.linewell.lxhdemo.R;
+import com.linewell.lxhdemo.app.AppConfig;
 import com.linx.mylibrary.utils.klog.KLog;
 import com.linx.mylibrary.view.dialog.ProgressLoadingDialog;
 
@@ -45,7 +52,9 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
     private boolean isViewCreated = false; // 视图是否已创建
     private boolean isCurrentVisible = false; // 当前是否对用户可见
 
+    private static int sNextRequestCode = 10000; // 跳转回调自增请求码（避免重复）
 
+    private int mRequestCode;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -69,6 +78,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         if (parent != null) {
             parent.removeView(rootView);
         }
+        initResult();
         initDialog(); // 初始化加载对话框
         initBaseView(); // 初始化基础控件（网络状态View、容器等）
         addChildLayout(inflater); // 添加子类布局
@@ -76,6 +86,22 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         return rootView;
     }
 
+    ActivityResultLauncher<Intent> mIntentActivityResultLauncher;
+    /*新的打开页面回调*/
+    private void initResult() {
+        mIntentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Intent intent = result.getData();
+                if (intent != null && result.getResultCode() == Activity.RESULT_OK) {
+                    if (activityCallback != null) {
+                        activityCallback.onActivityResult(Activity.RESULT_OK, intent);
+                        activityCallback = null; // 清空引用，避免内存泄漏
+                    }
+                }
+            }
+        });
+    }
     /**
      * 初始化基础控件（网络状态View、布局容器）
      */
@@ -299,6 +325,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
 
 
     // ====================== 抽象方法（子类必须实现） ======================
+
     /**
      * 获取子类布局ID
      */
@@ -316,6 +343,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
 
 
     // ====================== 可配置开关（子类按需重写） ======================
+
     /**
      * 是否显示顶部导航栏（默认隐藏）
      */
@@ -353,61 +381,164 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
 
 
     // ====================== 可见性回调（子类按需重写） ======================
+
     /**
      * Fragment对用户可见时触发（如：恢复播放、刷新数据）
      */
-    protected void onVisible() {}
+    protected void onVisible() {
+    }
 
     /**
      * Fragment对用户不可见时触发（如：暂停播放、释放资源）
      */
-    protected void onInvisible() {}
+    protected void onInvisible() {
+    }
 
 
     // ====================== 工具方法（直接调用） ======================
+
     /**
      * 页面跳转（无参数）
      */
-    public void jumpTo(@NonNull Class<?> targetCls) {
-        jumpTo(targetCls, null);
+    public void readyGo(@NonNull Class<?> targetCls) {
+        readyGo(targetCls, null);
     }
 
     /**
      * 页面跳转（带参数）
      */
-    public void jumpTo(@NonNull Class<?> targetCls, @Nullable Bundle bundle) {
+    public void readyGo(@NonNull Class<?> targetCls, @Nullable Bundle bundle) {
         if (mActivity == null) return;
-        Intent intent = new Intent(mActivity, targetCls);
-        if (bundle != null) {
-            intent.putExtras(bundle);
+        Intent intent = buildIntent(targetCls, bundle);
+        if (checkJumpValid(intent)) {
+            startActivity(intent);
         }
         startActivity(intent);
     }
 
     /**
+     * 带参跳转并关闭当前页
+     * 优化：仅跳转成功后执行finish()，避免误关页面
+     */
+    protected void readyGoThenFinish(@NonNull Class<?> targetCls, @Nullable Bundle bundle) {
+        Intent intent = buildIntent(targetCls, bundle);
+        if (checkJumpValid(intent)) { // 优化：跳转验证通过才关闭
+            startActivity(intent);
+            finishActivity();
+        }
+    }
+    /**
      * 页面跳转（带返回结果）
      */
-    public void jumpForResult(@NonNull Class<?> targetCls, int requestCode) {
-        jumpForResult(targetCls, null, requestCode);
+    public void readyGoForResult(@NonNull Class<?> targetCls, int requestCode) {
+        readyGoForResult(targetCls, null, requestCode);
+    }
+    /**
+     * 构建Intent：统一参数传递逻辑，减少重复代码
+     */
+    @NonNull
+    private Intent buildIntent(@NonNull Class<?> targetCls, @Nullable Bundle bundle) {
+        Intent intent = new Intent(mActivity, targetCls);
+        if (bundle != null) {
+            intent.putExtra(AppConfig.bundle, bundle);
+        }
+        return intent;
+    }
+
+    //新的打开新页面回调的 相当于startActivityForResult
+    public void readyGoForCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
+        if (mIntentActivityResultLauncher != null) {
+            mIntentActivityResultLauncher.launch(intent);
+        }
+        activityCallback = callback;
+    }
+    /**
+     * 页面跳转（原版带参数+返回结果）
+     */
+    public void readyGoForResult(@NonNull Class<?> targetCls, @Nullable Bundle bundle, int requestCode) {
+        Intent intent = buildIntent(targetCls, bundle);
+        if (checkJumpValid(intent)) {
+            startActivityForResult(intent, requestCode);
+        }
     }
 
     /**
-     * 页面跳转（带参数+返回结果）
+     * 优化版带回调跳转：支持接口回调（替代传统requestCode判断）
+     * 优化：用静态自增请求码替代随机数，避免重复
      */
-    public void jumpForResult(@NonNull Class<?> targetCls, @Nullable Bundle bundle, int requestCode) {
-        if (mActivity == null) return;
-        Intent intent = new Intent(mActivity, targetCls);
-        if (bundle != null) {
-            intent.putExtras(bundle);
-        }
-        startActivityForResult(intent, requestCode);
+    public void readyGoWithCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
+        readyGoWithCallback(intent, null, callback);
     }
+    /**
+     * 优化版带回调跳转：支持接口回调（替代传统requestCode判断）
+     * 优化：用静态自增请求码替代随机数，避免重复
+     */
+    public void readyGoWithCallback(@NonNull Intent intent, @Nullable Bundle options, @Nullable ActivityCallback callback) {
+        if (activityCallback != null || !checkJumpValid(intent)) {
+            return; // 避免重复回调或无效跳转
+        }
+        activityCallback = callback;
+        // 优化：静态自增请求码，确保唯一（替代new Random()）
+        mRequestCode = sNextRequestCode++;
+        startActivityForResult(intent, mRequestCode, options);
+    }
+    // 跳转与回调
+    private String jumpTag;
+    private long jumpTime;
+    private static final long JUMP_INTERVAL = 500; // 防重复跳转间隔（毫秒）
+    /**
+     * 检查跳转有效性：防重复跳转，覆盖显式/隐式跳转场景
+     * 优化：隐式跳转用toUri生成唯一tag，避免null导致拦截失效
+     */
+    private boolean checkJumpValid(@Nullable Intent intent) {
+        if (intent == null) return false;
 
+        // 优化：隐式跳转用toUri生成唯一标识（避免action为null时拦截失效）
+        String tag = intent.getComponent() != null
+                ? intent.getComponent().getClassName()
+                : (intent.getAction() != null ? intent.getAction() : intent.toUri(0));
+        if (tag == null) return true;
+
+        // 500ms内同一页面不重复跳转
+        if (tag.equals(jumpTag) && jumpTime >= SystemClock.uptimeMillis() - JUMP_INTERVAL) {
+            return false;
+        }
+
+        // 记录跳转信息
+        jumpTag = tag;
+        jumpTime = SystemClock.uptimeMillis();
+        return true;
+    }
+    private ActivityCallback activityCallback;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (activityCallback != null && mRequestCode == requestCode) {
+            activityCallback.onActivityResult(resultCode, data);
+            activityCallback = null; // 清空引用，避免内存泄漏
+        }
+    }
+    /**
+     * 跳转回调：替代传统requestCode判断，简化子类逻辑
+     */
+    public interface ActivityCallback {
+        void onActivityResult(int resultCode, @Nullable Intent data);
+    }
     /**
      * 关闭当前Fragment所在Activity
      */
     public void finishActivity() {
         if (mActivity != null) {
+            mActivity.finish();
+        }
+    }
+
+    /**
+     * 关闭当前Fragment所在Activity并回传数据 适合打开需要返回结果的页面
+     */
+    public void finishActivityAndSetResult(Intent intent) {
+        if (mActivity != null) {
+            mActivity.setResult(Activity.RESULT_OK, intent);
             mActivity.finish();
         }
     }
@@ -436,6 +567,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
 
 
     // ====================== 网络状态View控制（直接调用） ======================
+
     /**
      * 显示加载中
      */
@@ -495,6 +627,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
 
 
     // ====================== 加载对话框控制（直接调用） ======================
+
     /**
      * 显示加载对话框（无文字）
      */
@@ -542,6 +675,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
 
 
     // ====================== 沉浸式状态栏扩展（子类按需使用） ======================
+
     /**
      * 获取沉浸式配置实例（子类自定义配置，如设置状态栏颜色）
      * 示例：getStatusBarConfig().statusBarColor(R.color.white).init();

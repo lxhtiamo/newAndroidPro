@@ -1,5 +1,6 @@
 package com.linewell.lxhdemo.base;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,10 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,7 +48,6 @@ import java.util.List;
 /**
  * Activity基类：封装通用能力（页面管理、沉浸式、网络状态、弹窗、权限、跳转、软键盘控制等）
  * 支持子类灵活重写核心配置，无冗余逻辑，兼容Android 4.4+（API 19+）主流版本
- *
  */
 public abstract class BaseActivity extends AppCompatActivity implements NetworkStateView.OnRefreshListener {
     // 静态常量：替代硬编码，提升可维护性
@@ -74,6 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     private List<String> mPermissionsToReCheck; // 需要重新检查的权限
     // 沉浸式状态栏
     private ImmersionBar mImmersionBar;
+    ActivityResultLauncher<Intent> mIntentActivityResultLauncher;
 
     public Context getContext() {
         return this;
@@ -84,8 +89,26 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(getScreenOrientation()); // 统一屏幕方向（子类可重写）
+        initResult();
         initActivity(savedInstanceState);
     }
+
+    /*新的打开页面回调*/
+    private void initResult() {
+        mIntentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Intent intent = result.getData();
+                if (intent != null && result.getResultCode() == Activity.RESULT_OK) {
+                    if (activityCallback != null) {
+                        activityCallback.onActivityResult(Activity.RESULT_OK, intent);
+                        activityCallback = null; // 清空引用，避免内存泄漏
+                    }
+                }
+            }
+        });
+    }
+
 
     /**
      * 核心初始化流程：按依赖顺序执行，无多余步骤
@@ -231,6 +254,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
             getBundleExtras(extras);
         }
     }
+
     /**
      * 处理 Activity 复用场景的新 Intent（如 singleTop 模式）
      * 1. 调用 setIntent 更新 Intent 引用，确保后续 getIntent() 拿到最新数据
@@ -347,15 +371,23 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         }
     }
 
+    //新的打开新页面回调的 相当于startActivityForResult
+    public void readyGoForCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
+        if (mIntentActivityResultLauncher != null) {
+            mIntentActivityResultLauncher.launch(intent);
+        }
+        activityCallback = callback;
+    }
+
     /**
      * 优化版带回调跳转：支持接口回调（替代传统requestCode判断）
      * 优化：用静态自增请求码替代随机数，避免重复
      */
-    public void startActivityWithCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
-        startActivityWithCallback(intent, null, callback);
+    public void readyGoWithCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
+        readyGoWithCallback(intent, null, callback);
     }
 
-    public void startActivityWithCallback(@NonNull Intent intent, @Nullable Bundle options, @Nullable ActivityCallback callback) {
+    public void readyGoWithCallback(@NonNull Intent intent, @Nullable Bundle options, @Nullable ActivityCallback callback) {
         if (activityCallback != null || !checkJumpValid(intent)) {
             return; // 避免重复回调或无效跳转
         }
@@ -744,6 +776,14 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
     public void finish() {
         hideSoftInput();
         super.finish();
+    }
+
+    /**
+     * 关闭页面：返回结果用
+     */
+    public void finishAndSetResult(Intent intent) {
+        setResult(Activity.RESULT_OK, intent);
+        this.finish();
     }
 
     /**
