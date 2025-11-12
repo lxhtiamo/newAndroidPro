@@ -28,7 +28,7 @@ public class RxPermissionUtils {
      * @param permissions        权限 示例 ArrayList<IPermission> listP = new ArrayList<>(Arrays.asList(PermissionLists.getAccessFineLocationPermission(),PermissionLists.getManageExternalStoragePermission()));
      * @param permissionCallback 回调
      */
-    public void requestXXPermissionForOrdinary(Activity activity, List<IPermission> permissions, PermissionCallback permissionCallback) {
+    public void requestXXPermission(Activity activity, List<IPermission> permissions, PermissionCallback permissionCallback) {
         XXPermissions.with(activity)
                 .permissions(permissions)
                 .request(new OnPermissionCallback() {
@@ -55,9 +55,9 @@ public class RxPermissionUtils {
      * @param permissions        权限 示例 IPermission[] permissions = new IPermission[]{PermissionLists.getAccessFineLocationPermission()},
      * @param permissionCallback 回调
      */
-    public void requestXXPermissionForOrdinary(Activity activity, IPermission[] permissions, PermissionCallback permissionCallback) {
+    public void requestXXPermission(Activity activity, IPermission[] permissions, PermissionCallback permissionCallback) {
         ArrayList<IPermission> arrayList = PermissionUtils.asArrayList(permissions);
-        requestXXPermissionForOrdinary(activity, arrayList, permissionCallback);
+        requestXXPermission(activity, arrayList, permissionCallback);
     }
 
     /**
@@ -67,9 +67,19 @@ public class RxPermissionUtils {
      * @param permission         权限 PermissionLists.getAccessFineLocationPermission()
      * @param permissionCallback 回调
      */
-    public void requestXXPermissionForOrdinary(Activity activity, IPermission permission, PermissionCallback permissionCallback) {
+    public void requestXXPermission(Activity activity, IPermission permission, PermissionCallback permissionCallback) {
         IPermission[] permissions = new IPermission[]{permission};
-        requestXXPermissionForOrdinary(activity, permissions, permissionCallback);
+        requestXXPermission(activity, permissions, permissionCallback);
+    }
+
+    /*同时上面弹窗说明的权限*/
+    public void requestXXPermissionShowTopDialog(Activity activity, List<IPermission> permissions,String dialogContent, PermissionCallback permissionCallback) {
+        requestXXPermissionShowDialog(activity,permissions,true,"权限使用说明",dialogContent,false,null,permissionCallback);
+    }
+
+    /*权限失败去提示弹窗去设置的的权限*/
+    public void requestXXPermissionToSetting(Activity activity, List<IPermission> permissions, PermissionCallback permissionCallback) {
+        requestXXPermissionShowDialog(activity,permissions,false,null,null,true,null,permissionCallback);
     }
 
     /**
@@ -102,22 +112,41 @@ public class RxPermissionUtils {
                         boolean allGranted = deniedList.isEmpty();
                         if (!allGranted) {
                             // 在这里处理权限请求失败的逻辑
-                            permissionCallback.PermissionFail(deniedList);
                             // 判断请求失败的权限是否被用户勾选了不再询问的选项
                             boolean doNotAskAgain = XXPermissions.isDoNotAskAgainPermissions(activity, deniedList);
                             if (showNoPermissionDialog) {
                                 String permissionTip;
                                 if (TextUtils.isEmpty(noPermissionDialogText)) {
-                                    permissionTip = activity.getString(R.string.permission_no_content, appName);
+                                    String permissionHint = getHint(activity, deniedList);
+                                    permissionTip = activity.getString(R.string.permission_no_content2, permissionHint, appName);
                                 } else {
                                     permissionTip = noPermissionDialogText;
                                 }
-                                PermissionRejectDialog.showCustomDialog(activity, permissionTip, null, new PermissionRejectDialog.OnConfirmClickListener() {
+                                PermissionRejectDialog.showCustomDialog(activity, permissionTip, new PermissionRejectDialog.OnCancelClickListener() {
+                                    @Override
+                                    public void onCancel() {
+                                        permissionCallback.PermissionFail(deniedList);
+                                    }
+                                }, new PermissionRejectDialog.OnConfirmClickListener() {
                                     @Override
                                     public void onConfirm() {
-                                        XXPermissions.startPermissionActivity(activity);
+                                        XXPermissions.startPermissionActivity(activity, deniedList, new OnPermissionCallback() {
+                                            /*从设置页面返回的*/
+                                            @Override
+                                            public void onResult(@NonNull List<IPermission> grantedList, @NonNull List<IPermission> deniedList) {
+                                                boolean allGranted = deniedList.isEmpty();
+                                                if (!allGranted) {
+                                                    permissionCallback.PermissionFail(deniedList);
+                                                } else {
+                                                    permissionCallback.PermissionSucceed(grantedList);
+                                                }
+
+                                            }
+                                        });
                                     }
                                 });
+                            } else {
+                                permissionCallback.PermissionFail(deniedList);
                             }
                             return;
                         }
@@ -127,10 +156,20 @@ public class RxPermissionUtils {
                 });
     }
 
+    protected String getHint(Context context, List<IPermission> permissions) {
+        List<IPermission> deniedPermissions = XXPermissions.getDeniedPermissions(context, permissions);
+        List<String> permissionNames = new ArrayList<>();
+        for (IPermission deniedPermission : deniedPermissions) {
+            String permissionName = deniedPermission.getPermissionName();
+            permissionNames.add(permissionName);
+        }
+        return getPermissionHint(context, permissionNames, true);
+    }
+
     /**
      * 根据权限获取提示
      */
-    protected String getPermissionHint(Context context, List<String> permissions) {
+    protected String getPermissionHint(Context context, List<String> permissions, boolean isOnly) {
         if (permissions == null || permissions.isEmpty()) {
             return context.getString(R.string.common_permission_fail_2);
         }
@@ -284,7 +323,12 @@ public class RxPermissionUtils {
                 }
             }
             builder.append(" ");
-            return context.getString(R.string.common_permission_fail_3, builder.toString());
+            if (isOnly) {
+                return builder.toString();
+            } else {
+                return context.getString(R.string.common_permission_fail_3, builder.toString());
+            }
+
         }
 
         return context.getString(R.string.common_permission_fail_2);

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -27,6 +28,7 @@ import com.hjq.toast.Toaster;
 import com.lin.networkstateview.NetworkStateView;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.app.AppConfig;
+import com.linx.mylibrary.utils.RxBarTool;
 import com.linx.mylibrary.utils.klog.KLog;
 import com.linx.mylibrary.view.dialog.ProgressLoadingDialog;
 
@@ -82,6 +84,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         initDialog(); // 初始化加载对话框
         initBaseView(); // 初始化基础控件（网络状态View、容器等）
         addChildLayout(inflater); // 添加子类布局
+        setHeadDistance();
         initBarVisibility(); // 控制顶部导航栏显示
         return rootView;
     }
@@ -142,6 +145,19 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         flContent.addView(childView, params);
     }
 
+    private void setHeadDistance() {
+        if (isNeedStatusBarHeight()) {
+            int statusBarHeight = RxBarTool.getStatusBarHeight(mActivity);
+            if (statusBarHeight > 0) {
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) flContent.getLayoutParams();
+                layoutParams.topMargin = statusBarHeight;
+                flContent.setLayoutParams(layoutParams);
+            }
+        }
+    }
+    protected boolean isNeedStatusBarHeight() {
+        return false;
+    }
     /**
      * 控制顶部导航栏显示（确保控件初始化后操作）
      */

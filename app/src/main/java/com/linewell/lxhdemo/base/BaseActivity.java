@@ -17,6 +17,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -28,12 +29,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.XXPermissions;
+import com.hjq.permissions.permission.base.IPermission;
 import com.hjq.toast.Toaster;
 import com.lin.networkstateview.NetworkStateView;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.app.AppConfig;
+import com.linx.mylibrary.utils.RxAppApplicationMgr;
+import com.linx.mylibrary.utils.RxBarTool;
 import com.linx.mylibrary.utils.klog.KLog;
 import com.linx.mylibrary.utils.manager.AppDavikActivityMgr;
+import com.linx.mylibrary.utils.permissionUtil.PermissionRejectDialog;
+import com.linx.mylibrary.utils.permissionUtil.PermissionTipDialogUtils;
 import com.linx.mylibrary.view.dialog.CustomAlertDialogBuilder;
 import com.linx.mylibrary.view.dialog.ProgressLoadingDialog;
 import com.lzy.okgo.OkGo;
@@ -180,9 +188,21 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         if (networkStateView != null) {
             networkStateView.setOnRefreshListener(this);
         }
-
+        setHeadDistance();
         // 嵌入子类布局
         initChildLayout(getLayoutId());
+    }
+
+    //设置状态栏的高度,比如有的页面状态栏设置为纯色的时候需要
+    private void setHeadDistance() {
+        if (isNeedStatusBarHeight()) {
+            int statusBarHeight = RxBarTool.getStatusBarHeight(this);
+            if (statusBarHeight > 0) {
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) flContent.getLayoutParams();
+                layoutParams.topMargin = statusBarHeight;
+                flContent.setLayoutParams(layoutParams);
+            }
+        }
     }
 
     /**
@@ -285,6 +305,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
      * 获取子类布局ID（核心抽象，无替代方案）
      */
     protected abstract int getLayoutId();
+
+    protected boolean isNeedStatusBarHeight() {
+        return false;
+    }
 
     /**
      * 接收Intent传递的Bundle参数
@@ -488,7 +512,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
      * @param permissions 需申请的权限（如Permission.CAMERA、Permission.STORAGE）
      * @param callback    权限结果回调
      */
-    protected void requestPermissions(@NonNull String[] permissions, @NonNull PermissionCallback callback) {
+    protected void requestPermissions(@NonNull List<IPermission> permissions, @NonNull PermissionCallback callback) {
         // 优化：判断是否有未完成的权限申请，避免覆盖回调
         if (this.permissionCallback != null) {
             KLog.w("Permission request is already in progress, please wait");
@@ -497,29 +521,49 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         }
         this.permissionCallback = callback;
 
-        // 调用Yanzhenjie Permission库核心API
-        AndPermission.with(this).runtime()
-                .permission(permissions)
-                .onGranted(granted -> {
-                    // 权限授予成功
-                    if (permissionCallback != null) {
+        XXPermissions.with(this)
+                .permissions(permissions)
+                .request(new OnPermissionCallback() {
+                    @Override
+                    public void onResult(@NonNull List<IPermission> grantedList, @NonNull List<IPermission> deniedList) {
+                        PermissionTipDialogUtils.getInstance().dismissDialog();
+                        boolean allGranted = deniedList.isEmpty();
+                        if (!allGranted) {
+                            // 在这里处理权限请求失败的逻辑
+
+                            // 判断请求失败的权限是否被用户勾选了不再询问的选项
+                            boolean doNotAskAgain = XXPermissions.isDoNotAskAgainPermissions((Activity) getContext(), deniedList);
+                            String appName = RxAppApplicationMgr.getAppName(getContext());
+                            String  permissionTip = getContext().getString(R.string.permission_no_content, appName);
+                            PermissionRejectDialog.showCustomDialog(getContext(), permissionTip, new PermissionRejectDialog.OnCancelClickListener() {
+                                @Override
+                                public void onCancel() {
+                                    permissionCallback.PermissionFail();
+                                }
+                            }, new PermissionRejectDialog.OnConfirmClickListener() {
+                                @Override
+                                public void onConfirm() {
+                                    XXPermissions.startPermissionActivity((Activity) getContext(), deniedList, new OnPermissionCallback() {
+                                        /*从设置页面返回的*/
+                                        @Override
+                                        public void onResult(@NonNull List<IPermission> grantedList, @NonNull List<IPermission> deniedList) {
+                                            boolean allGranted = deniedList.isEmpty();
+                                            if (!allGranted) {
+                                                permissionCallback.PermissionFail();
+                                            } else {
+                                                permissionCallback.PermissionSucceed();
+                                            }
+
+                                        }
+                                    });
+                                }
+                            });
+                            return;
+                        }
+                        // 在这里处理权限请求成功的逻辑
                         permissionCallback.PermissionSucceed();
                     }
-                    permissionCallback = null; // 清空引用
-                })
-                .onDenied(denied -> {
-                    // 权限拒绝：区分"永久拒绝"和"临时拒绝"
-                    if (AndPermission.hasAlwaysDeniedPermission(this, denied)) {
-                        showPermissionSettingDialog(denied); // 永久拒绝→引导去设置
-                    } else {
-                        // 临时拒绝→回调失败
-                        if (permissionCallback != null) {
-                            permissionCallback.PermissionFail();
-                        }
-                        permissionCallback = null; // 清空引用
-                    }
-                })
-                .start();
+                });
     }
 
     /**
