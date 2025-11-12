@@ -73,13 +73,23 @@ public class RxPermissionUtils {
     }
 
     /*同时上面弹窗说明的权限*/
-    public void requestXXPermissionShowTopDialog(Activity activity, List<IPermission> permissions,String dialogContent, PermissionCallback permissionCallback) {
-        requestXXPermissionShowDialog(activity,permissions,true,"权限使用说明",dialogContent,false,null,permissionCallback);
+    public void requestXXPermissionShowTopDialog(Activity activity, IPermission[] permissions, String dialogContent, PermissionCallback permissionCallback) {
+        ArrayList<IPermission> arrayList = PermissionUtils.asArrayList(permissions);
+        requestXXPermissionShowDialog(activity, arrayList, true, "权限使用说明", dialogContent, false, null, permissionCallback);
+    }
+
+    public void requestXXPermissionShowTopDialog(Activity activity, List<IPermission> permissions, String dialogContent, PermissionCallback permissionCallback) {
+        requestXXPermissionShowDialog(activity, permissions, true, "权限使用说明", dialogContent, false, null, permissionCallback);
     }
 
     /*权限失败去提示弹窗去设置的的权限*/
+    public void requestXXPermissionToSetting(Activity activity, IPermission[] permissions, PermissionCallback permissionCallback) {
+        ArrayList<IPermission> arrayList = PermissionUtils.asArrayList(permissions);
+        requestXXPermissionShowDialog(activity, arrayList, false, null, null, true, null, permissionCallback);
+    }
+
     public void requestXXPermissionToSetting(Activity activity, List<IPermission> permissions, PermissionCallback permissionCallback) {
-        requestXXPermissionShowDialog(activity,permissions,false,null,null,true,null,permissionCallback);
+        requestXXPermissionShowDialog(activity, permissions, false, null, null, true, null, permissionCallback);
     }
 
     /**
