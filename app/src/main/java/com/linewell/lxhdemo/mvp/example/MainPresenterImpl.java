@@ -28,6 +28,7 @@ public class MainPresenterImpl extends BaseMvpPresenter<MainContract.IMainView> 
                 protected void onFail(String err) {
                     getView().onFailure();
                 }
+
             });
         }
 

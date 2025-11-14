@@ -21,7 +21,7 @@
     <string name="message_permission_always_failed">我们需要以下权限，请在设置中为我们开启：\n\n%1$s</string>
     <string name="message_permission_rationale">请允许以下权限以便程序继续执行：\n\n%1$s</string>
     <string name="common_permission_alert">授权提醒</string>
-    <string name="common_permission_fail_2">获取权限失败，请手动授予权限</string>
+    <string name="common_permission_fail_2">获取权限失败</string>
     <string name="common_permission_fail_3">获取权限失败，请手动授予%s</string>
     <string name="common_permission_goto">前往授权</string>
     <string name="common_permission_calendar">日历</string>
@@ -47,6 +47,7 @@
     <string name="permission_storage_text">请授权存储权限，用于保存照片、文件到本地、读取手机中的图片、文档上传等服务</string>
     <string name="permission_notification_text">请授通知栏权限，便于您及时接收系统推送的消息和通知</string>
     <string name="permission_content">要正常体验[%1$s]的全部功能，您需要申请%2$s等权限。</string>
-    <string name="permission_no_content">您还没有授予权限，将无法体验【%s】的全部功能，是否去设置界面打开权限？?</string>
+    <string name="permission_no_content">您还没有授予权限，将无法体验【%s】的全部功能，是否去设置界面打开权限？</string>
+    <string name="permission_no_content2">您还没有授予%s权限，将无法体验【%s】的全部功能，是否去设置界面打开权限？</string>
 
 </resources>

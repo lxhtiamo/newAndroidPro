@@ -1,5 +1,6 @@
 package com.linewell.lxhdemo.base;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -55,6 +56,7 @@ public class BaseWebViewActivity extends BaseActivity {
      */
     public static final String URL_BAIDU_SEARCH = "http://www.baidu.com/s?wd=";
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void initData(Bundle savedInstanceState) {
         pbWebBase.setMax(100);//设置加载进度最大值
@@ -82,14 +84,17 @@ public class BaseWebViewActivity extends BaseActivity {
 //        webSettings.setAllowContentAccess(true);
 //        webSettings.setAllowFileAccessFromFileURLs(true);
 //        webSettings.setAppCacheEnabled(true);
-   /*     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // 解决 Android 5.0 上 WebView 默认不允许加载 Http 与 Https 混合内容
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }*/
+        }
 
 
         // setMediaPlaybackRequiresUserGesture(boolean require) //是否需要用户手势来播放Media，默认true
 
         webSettings.setJavaScriptEnabled(true); // 设置支持javascript脚本
+        // 允许网页弹对话框
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
 //        webSettings.setPluginState(WebSettings.PluginState.ON);
         webSettings.setSupportZoom(true);// 设置可以支持缩放
         webSettings.setBuiltInZoomControls(true);// 设置出现缩放工具 是否使用WebView内置的缩放组件，由浮动在窗口上的缩放控制和手势缩放控制组成，默认false

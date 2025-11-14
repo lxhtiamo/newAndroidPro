@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="LauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- 核心：启动页背景（用优化后的webp/9图，避免拉伸） -->
+        <item name="android:windowBackground">@drawable/start_bg</item>
+        <!-- 禁用ActionBar和标题栏 -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- 全屏（隐藏状态栏） -->
+        <item name="android:windowFullscreen">true</item>
+        <!-- 禁用窗口动画，加快启动速度 -->
+        <item name="android:windowAnimationStyle">@null</item>
+        <!-- 禁止旋转，减少配置切换耗时 -->
+        <item name="android:screenOrientation">portrait</item>
+        <!-- 适配刘海屏（Android 9+），允许内容延伸到刘海区域 -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <!-- 透明导航栏（Android 8+），实现视觉全屏 -->
+        <item name="android:windowTranslucentNavigation">true</item>
+        <!-- 移除窗口阴影，减少绘制耗时 -->
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsTranslucent">false</item>
+    </style>
+</resources>

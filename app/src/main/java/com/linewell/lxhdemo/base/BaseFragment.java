@@ -24,10 +24,14 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 
 import com.gyf.immersionbar.ImmersionBar;
-import com.hjq.toast.Toaster;
 import com.lin.networkstateview.NetworkStateView;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.app.AppConfig;
+import com.linewell.lxhdemo.base.action.BundleAction;
+import com.linewell.lxhdemo.base.action.ClickAction;
+import com.linewell.lxhdemo.base.action.HandlerAction;
+import com.linewell.lxhdemo.base.action.ResourcesAction;
+import com.linewell.lxhdemo.base.action.ToastAction;
 import com.linx.mylibrary.utils.RxBarTool;
 import com.linx.mylibrary.utils.klog.KLog;
 import com.linx.mylibrary.view.dialog.ProgressLoadingDialog;
@@ -40,7 +44,8 @@ import java.lang.reflect.Field;
  * 基础Fragment：整合通用能力，适配主流开发场景
  * 核心能力：沉浸式状态栏、懒加载、网络状态View、加载对话框、Fragment通信、EventBus
  */
-public abstract class BaseFragment extends Fragment implements NetworkStateView.OnRefreshListener {
+public abstract class BaseFragment extends Fragment implements
+        ToastAction, ResourcesAction, HandlerAction, ClickAction, BundleAction, NetworkStateView.OnRefreshListener {
     protected View rootView;
     protected FragmentActivity mActivity;
     private ImmersionBar mImmersionBar; // 状态栏沉浸实例
@@ -57,6 +62,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
     private static int sNextRequestCode = 10000; // 跳转回调自增请求码（避免重复）
 
     private int mRequestCode;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -68,6 +74,11 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
      */
     public FragmentActivity getFragmentActivity() {
         return mActivity;
+    }
+
+    @Override
+    public Bundle getBundle() {
+        return getArguments();
     }
 
     @Nullable
@@ -84,12 +95,13 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         initDialog(); // 初始化加载对话框
         initBaseView(); // 初始化基础控件（网络状态View、容器等）
         addChildLayout(inflater); // 添加子类布局
-        setHeadDistance();
+        setStatusBarHeight();
         initBarVisibility(); // 控制顶部导航栏显示
         return rootView;
     }
 
     ActivityResultLauncher<Intent> mIntentActivityResultLauncher;
+
     /*新的打开页面回调*/
     private void initResult() {
         mIntentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -105,6 +117,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
             }
         });
     }
+
     /**
      * 初始化基础控件（网络状态View、布局容器）
      */
@@ -145,7 +158,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         flContent.addView(childView, params);
     }
 
-    private void setHeadDistance() {
+    private void setStatusBarHeight() {
         if (isNeedStatusBarHeight()) {
             int statusBarHeight = RxBarTool.getStatusBarHeight(mActivity);
             if (statusBarHeight > 0) {
@@ -155,9 +168,11 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
             }
         }
     }
+
     protected boolean isNeedStatusBarHeight() {
         return false;
     }
+
     /**
      * 控制顶部导航栏显示（确保控件初始化后操作）
      */
@@ -443,12 +458,14 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
             finishActivity();
         }
     }
+
     /**
      * 页面跳转（带返回结果）
      */
     public void readyGoForResult(@NonNull Class<?> targetCls, int requestCode) {
         readyGoForResult(targetCls, null, requestCode);
     }
+
     /**
      * 构建Intent：统一参数传递逻辑，减少重复代码
      */
@@ -468,6 +485,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         }
         activityCallback = callback;
     }
+
     /**
      * 页面跳转（原版带参数+返回结果）
      */
@@ -485,6 +503,7 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
     public void readyGoWithCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
         readyGoWithCallback(intent, null, callback);
     }
+
     /**
      * 优化版带回调跳转：支持接口回调（替代传统requestCode判断）
      * 优化：用静态自增请求码替代随机数，避免重复
@@ -498,10 +517,12 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         mRequestCode = sNextRequestCode++;
         startActivityForResult(intent, mRequestCode, options);
     }
+
     // 跳转与回调
     private String jumpTag;
     private long jumpTime;
     private static final long JUMP_INTERVAL = 500; // 防重复跳转间隔（毫秒）
+
     /**
      * 检查跳转有效性：防重复跳转，覆盖显式/隐式跳转场景
      * 优化：隐式跳转用toUri生成唯一tag，避免null导致拦截失效
@@ -525,7 +546,9 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
         jumpTime = SystemClock.uptimeMillis();
         return true;
     }
+
     private ActivityCallback activityCallback;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -534,12 +557,14 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
             activityCallback = null; // 清空引用，避免内存泄漏
         }
     }
+
     /**
      * 跳转回调：替代传统requestCode判断，简化子类逻辑
      */
     public interface ActivityCallback {
         void onActivityResult(int resultCode, @Nullable Intent data);
     }
+
     /**
      * 关闭当前Fragment所在Activity
      */
@@ -564,21 +589,6 @@ public abstract class BaseFragment extends Fragment implements NetworkStateView.
      */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return false; // 默认不拦截，返回给Activity
-    }
-
-    /**
-     * 显示吐司（支持String、资源ID、Object）
-     */
-    public void showToast(@NonNull String text) {
-        Toaster.show(text);
-    }
-
-    public void showToast(int resId) {
-        Toaster.show(resId);
-    }
-
-    public void showToast(@NonNull Object obj) {
-        Toaster.show(obj.toString());
     }
 
 

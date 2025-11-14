@@ -5,11 +5,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,21 +30,23 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.XXPermissions;
 import com.hjq.permissions.permission.base.IPermission;
-import com.hjq.toast.Toaster;
 import com.lin.networkstateview.NetworkStateView;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.app.AppConfig;
+import com.linewell.lxhdemo.base.action.ActivityAction;
+import com.linewell.lxhdemo.base.action.BundleAction;
+import com.linewell.lxhdemo.base.action.ClickAction;
+import com.linewell.lxhdemo.base.action.HandlerAction;
+import com.linewell.lxhdemo.base.action.ToastAction;
 import com.linx.mylibrary.utils.RxAppApplicationMgr;
 import com.linx.mylibrary.utils.RxBarTool;
 import com.linx.mylibrary.utils.klog.KLog;
 import com.linx.mylibrary.utils.manager.AppDavikActivityMgr;
 import com.linx.mylibrary.utils.permissionUtil.PermissionRejectDialog;
 import com.linx.mylibrary.utils.permissionUtil.PermissionTipDialogUtils;
-import com.linx.mylibrary.view.dialog.CustomAlertDialogBuilder;
 import com.linx.mylibrary.view.dialog.ProgressLoadingDialog;
 import com.lzy.okgo.OkGo;
 import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -57,7 +57,8 @@ import java.util.List;
  * Activity基类：封装通用能力（页面管理、沉浸式、网络状态、弹窗、权限、跳转、软键盘控制等）
  * 支持子类灵活重写核心配置，无冗余逻辑，兼容Android 4.4+（API 19+）主流版本
  */
-public abstract class BaseActivity extends AppCompatActivity implements NetworkStateView.OnRefreshListener {
+public abstract class BaseActivity extends AppCompatActivity implements
+        ToastAction, HandlerAction, ActivityAction, BundleAction, ClickAction, NetworkStateView.OnRefreshListener {
     // 静态常量：替代硬编码，提升可维护性
     private static final long JUMP_INTERVAL = 500; // 防重复跳转间隔（毫秒）
     private static final int SOFT_INPUT_MODE = WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
@@ -92,6 +93,10 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         return this;
     }
 
+    @Override
+    public Bundle getBundle() {
+        return getIntent().getExtras();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -188,13 +193,13 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
         if (networkStateView != null) {
             networkStateView.setOnRefreshListener(this);
         }
-        setHeadDistance();
+        setStatusBarHeight();
         // 嵌入子类布局
         initChildLayout(getLayoutId());
     }
 
     //设置状态栏的高度,比如有的页面状态栏设置为纯色的时候需要
-    private void setHeadDistance() {
+    private void setStatusBarHeight() {
         if (isNeedStatusBarHeight()) {
             int statusBarHeight = RxBarTool.getStatusBarHeight(this);
             if (statusBarHeight > 0) {
@@ -534,11 +539,14 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
                             // 判断请求失败的权限是否被用户勾选了不再询问的选项
                             boolean doNotAskAgain = XXPermissions.isDoNotAskAgainPermissions((Activity) getContext(), deniedList);
                             String appName = RxAppApplicationMgr.getAppName(getContext());
-                            String  permissionTip = getContext().getString(R.string.permission_no_content, appName);
+                            String permissionTip = getContext().getString(R.string.permission_no_content, appName);
                             PermissionRejectDialog.showCustomDialog(getContext(), permissionTip, new PermissionRejectDialog.OnCancelClickListener() {
                                 @Override
                                 public void onCancel() {
-                                    permissionCallback.PermissionFail();
+                                    if (permissionCallback != null) {
+                                        permissionCallback.PermissionFail();
+                                        permissionCallback = null; // 关键：取消后置空
+                                    }
                                 }
                             }, new PermissionRejectDialog.OnConfirmClickListener() {
                                 @Override
@@ -547,12 +555,16 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
                                         /*从设置页面返回的*/
                                         @Override
                                         public void onResult(@NonNull List<IPermission> grantedList, @NonNull List<IPermission> deniedList) {
-                                            boolean allGranted = deniedList.isEmpty();
-                                            if (!allGranted) {
-                                                permissionCallback.PermissionFail();
-                                            } else {
-                                                permissionCallback.PermissionSucceed();
+                                            boolean allGranted2 = deniedList.isEmpty();
+                                            if (permissionCallback != null) {
+                                                if (!allGranted2) {
+                                                    permissionCallback.PermissionFail();
+                                                } else {
+                                                    permissionCallback.PermissionSucceed();
+                                                }
                                             }
+                                            permissionCallback = null; // 关键：设置页返回后置空
+
 
                                         }
                                     });
@@ -560,71 +572,13 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
                             });
                             return;
                         }
-                        // 在这里处理权限请求成功的逻辑
-                        permissionCallback.PermissionSucceed();
-                    }
-                });
-    }
-
-    /**
-     * 显示权限设置引导弹窗：修复空指针风险
-     */
-    private void showPermissionSettingDialog(@NonNull List<String> deniedPermissions) {
-        if (deniedPermissions.isEmpty()) return;
-
-        // 转换权限名称为用户可读文本
-        List<String> permissionNames = Permission.transformText(this, deniedPermissions);
-        String message = getString(R.string.message_permission_always_failed,
-                TextUtils.join("\n", permissionNames));
-
-        new CustomAlertDialogBuilder(this)
-                .setTitle(R.string.title_dialog)
-                .setMessage(message)
-                .setPositiveButton(R.string.setting, (dialog, which) -> {
-                    // 引导用户去系统设置开启权限
-                    if (jumpToAppSettings()) {
-                        // 跳转成功，记录需要重新检查的权限
-                        mPermissionsToReCheck = new ArrayList<>(deniedPermissions);
-                    } else {
-                        // 跳转失败时提示用户手动操作
-                        showToast("无法自动跳转至设置页，请手动前往应用设置开启权限");
+                        // 权限全部通过：执行后置空
                         if (permissionCallback != null) {
-                            permissionCallback.PermissionFail();
-                            permissionCallback = null; // 清空引用
+                            permissionCallback.PermissionSucceed();
+                            permissionCallback = null; // 关键：成功后置空
                         }
                     }
-                })
-                .setNegativeButton(R.string.versionchecklib_cancel, (dialog, which) -> {
-                    if (permissionCallback != null) {
-                        permissionCallback.PermissionFail();
-                        permissionCallback = null; // 清空引用
-                    }
-                })
-                .setCancelable(false)
-                .show();
-    }
-
-    /**
-     * 兼容所有设备的应用设置页跳转方法
-     *
-     * @return true：跳转成功；false：跳转失败
-     */
-    private boolean jumpToAppSettings() {
-        try {
-            Intent intent = new Intent();
-            intent.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            startActivityForResult(intent, REQUEST_CODE_SETTINGS); // 用startActivityForResult接收返回
-            return true;
-        } catch (Exception e) {
-            // 捕获所有异常（如设备不支持该Action）
-            KLog.e("跳转设置页失败：" + e.getMessage());
-            return false;
-        }
+                });
     }
 
 
@@ -846,20 +800,6 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkS
 
     // ====================== 通用工具方法：精简冗余，覆盖日常开发需求 ======================
 
-    /**
-     * 显示吐司：支持String/资源ID/任意对象（覆盖所有提示场景）
-     */
-    public void showToast(@NonNull String text) {
-        Toaster.show(text);
-    }
-
-    public void showToast(int resId) {
-        Toaster.show(resId);
-    }
-
-    public void showToast(@NonNull Object obj) {
-        Toaster.show(obj.toString());
-    }
 
     /**
      * 退出应用：关闭所有Activity（覆盖应用退出场景）

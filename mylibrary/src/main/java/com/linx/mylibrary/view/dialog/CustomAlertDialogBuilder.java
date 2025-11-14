@@ -1,6 +1,8 @@
 package com.linx.mylibrary.view.dialog;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
@@ -9,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AlertDialog;
 
+import com.linx.mylibrary.R;
+
 /**
  * 描述说明:自定义AlertDialogBuilder,解决弹窗虚拟导航显示问题
  * 作者: lxh
@@ -16,7 +20,7 @@ import androidx.appcompat.app.AlertDialog;
  */
 public class CustomAlertDialogBuilder extends AlertDialog.Builder {
     public CustomAlertDialogBuilder(@NonNull Context context) {
-        super(context);
+        super(context, R.style.BaseDialog);
     }
 
     public CustomAlertDialogBuilder(@NonNull Context context, @StyleRes int themeResId) {
@@ -26,10 +30,11 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder {
     @Override
     public AlertDialog show() {
         AlertDialog dialog = create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-        dialog.show();
         fullScreenImmersive(dialog.getWindow().getDecorView());
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        dialog.show();
         return dialog;
     }
 

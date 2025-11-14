@@ -97,18 +97,6 @@ public class MainActivity extends MvpActivity<MainContract.IMainPresenter> imple
             @Override
             public void onClick(View v) {
 
-                requestPermissions();
-                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, new PermissionCallback() {
-                    @Override
-                    public void PermissionSucceed() {
-                        showToast("成功");
-                    }
-
-                    @Override
-                    public void PermissionFail() {
-
-                    }
-                });
             }
         });
         Button button2 = findViewById(R.id.bt_bt2);
@@ -119,8 +107,17 @@ public class MainActivity extends MvpActivity<MainContract.IMainPresenter> imple
                 objects.add(PermissionLists.getReadPhoneStatePermission());
                 objects.add(PermissionLists.getManageExternalStoragePermission());
                 objects.add(PermissionLists.getCameraPermission());
-                PermissionTipDialogUtils.getInstance().showPermissionTipDialog(getContext(),"温馨提示","权限的使用说明",objects);
-                requestPermissions();
+                requestPermissions(objects, new PermissionCallback() {
+                    @Override
+                    public void PermissionSucceed() {
+                        showToast("成功");
+                    }
+
+                    @Override
+                    public void PermissionFail() {
+                        showToast("失败");
+                    }
+                });
 
             }
         });
@@ -141,56 +138,6 @@ public class MainActivity extends MvpActivity<MainContract.IMainPresenter> imple
 
     }
 
-    private void requestPermissions() {
-
-
-        XXPermissions.with(this)
-                .permission(PermissionLists.getReadPhoneStatePermission())
-                .permission(PermissionLists.getManageExternalStoragePermission())
-                .permission(PermissionLists.getCameraPermission()).request(new OnPermissionCallback() {
-
-                    @Override
-                    public void onResult(@NonNull List<IPermission> grantedList, @NonNull List<IPermission> deniedList) {
-                        boolean allGranted = deniedList.isEmpty();
-                        if (!allGranted) {
-                            // 判断请求失败的权限是否被用户勾选了不再询问的选项
-                            boolean doNotAskAgain = XXPermissions.isDoNotAskAgainPermissions(MainActivity.this, deniedList);
-                            // 在这里处理权限请求失败的逻辑
-                           // XXPermissions.startPermissionActivity(getContext());
-                            return;
-                        }
-                    }
-                });
-    }
-
-    private void showPermissionTipDialog() {
-        // 1. 创建 Dialog 并设置样式
-        Dialog dialog = new Dialog(this, R.style.PermissionTipDialogStyle);
-        // 2. 加载布局
-        View tipView = LayoutInflater.from(this).inflate(R.layout.permission_tip_layout, null);
-        dialog.setContentView(tipView);
-
-        // 3. 设置 Dialog 显示位置（顶部）
-        Window window = dialog.getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams params = window.getAttributes();
-            params.gravity = Gravity.TOP; // 顶部显示
-            params.width = WindowManager.LayoutParams.MATCH_PARENT; // 宽度全屏
-            params.height = WindowManager.LayoutParams.WRAP_CONTENT; // 高度自适应
-            // 关键：添加允许窗口延伸到状态栏的标志
-            params.flags |= WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
-            window.setAttributes(params);
-        }
-
-        // 4. 点击"知道了"按钮，关闭 Dialog 并请求权限
-        tipView.setOnClickListener(v -> {
-            dialog.dismiss();
-            // 检查权限是否已授予，未授予则申请
-        });
-
-        // 显示 Dialog
-        dialog.show();
-    }
 
     @Override
     protected void initData(Bundle savedInstanceState) {

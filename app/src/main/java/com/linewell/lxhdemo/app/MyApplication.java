@@ -46,44 +46,14 @@ public class MyApplication extends Application {
         KLog.init(AppConfig.LOG_DEBUG, "log");
         // 初始化吐司工具类
         Toaster.init(this);
-        initUM();
-        initWeChat();
-        initThirdConfig();
-        initOkGo();
+       // initWeChat();
+       // initOkGo();
 
     }
 
     //微信初始化
     private void initWeChat() {
         WeChatHelper.getInstance().init(this, AppConfig.WECHAT_App_ID);
-    }
-
-    //初始化第三方分享
-    private void initThirdConfig() {
-// 微信设置
-        PlatformConfig.setWeixin("wxdc1e388c3822c80b","appSecret");
-        PlatformConfig.setWXFileProvider(myApplication.getPackageName() + ".fileprovider");
-// QQ设置
-        PlatformConfig.setQQZone("101830139","5d63ae8858f1caab67715ccd6c18d7a5");
-        PlatformConfig.setQQFileProvider(myApplication.getPackageName() + ".fileprovider");
-// 新浪微博设置
-        PlatformConfig.setSinaWeibo("3921700954","04b48b094faeb16683c32669824ebdad","http://sns.whalecloud.com");
-        PlatformConfig.setSinaFileProvider(myApplication.getPackageName() + ".fileprovider");
-//钉钉设置
-        PlatformConfig.setDing("dingoalmlnohc0wggfedpk");
-        PlatformConfig.setDingFileProvider(myApplication.getPackageName() + ".fileprovider");
-//抖音设置
-        PlatformConfig.setBytedance("awd1cemo6d0l69zp","awd1cemo6d0l69zp","a2dce41fff214270dd4a7f60ac885491",myApplication.getPackageName() + ".fileprovider");
-// 企业微信设置
-        PlatformConfig.setWXWork("wwac6ffb259ff6f66a","EU1LRsWC5uWn6KUuYOiWUpkoH45eOA0yH-ngL8579zs","1000002","wwauthac6ffb259ff6f66a000002");
-        PlatformConfig.setWXWorkFileProvider(myApplication.getPackageName() + ".fileprovider");
-//荣耀设置
-        PlatformConfig.setHonor("appid", "app_secret");
-    }
-
-    //友盟初始化
-    private void initUM() {
-        UMConfigure.init(this, AppConfig.umeng_App_Key, "umeng", UMConfigure.DEVICE_TYPE_PHONE, "");
     }
 
     private void initOkGo() {

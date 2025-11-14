@@ -1,76 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_white_reject"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/dp_20">
-
-    <!-- 标题 -->
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="授权提醒"
-        android:textColor="#141414"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-
-    <!-- 内容 -->
-    <TextView
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="16dp"
-        android:id="@+id/tv_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:text="您还没有权限,将无法体验全部功能,是否去设置界面打开权限?"
-        android:textColor="#666666"
-        android:textSize="16sp" />
-
-
-    <View
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#EEEEEE" />
-    <!-- 按钮区域 -->
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/dp_12"
+    app:cardElevation="0px">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_20">
 
+        <!-- 标题 -->
         <TextView
-            android:id="@+id/btn_cancel"
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@android:color/transparent"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="取消"
+            android:text="授权提醒"
+            android:textColor="#141414"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <!-- 内容 -->
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="16dp"
+            android:text="您还没有权限,将无法体验全部功能,是否去设置界面打开权限?"
             android:textColor="#666666"
             android:textSize="16sp" />
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="#EEEEEE" />
 
-        <TextView
-            android:gravity="center"
-            android:background="@android:color/transparent"
-            android:id="@+id/btn_confirm"
-            android:elevation="0dp"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="去授权"
-            android:textColor="#1C98FE"
-            android:textSize="16sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="#EEEEEE" />
+        <!-- 按钮区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="#666666"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#EEEEEE" />
+
+            <TextView
+                android:id="@+id/btn_confirm"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                android:gravity="center"
+                android:text="去授权"
+                android:textColor="#1C98FE"
+                android:textSize="16sp" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</androidx.cardview.widget.CardView>

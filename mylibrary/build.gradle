@@ -103,5 +103,5 @@ dependencies {
     // 如果需要扩展功能 (如 HDR、夜间模式等)
     //implementation("androidx.camera:camera-extensions:${camerax_version}")
 
-    api "androidx.core:core-splashscreen:1.0.0"
+    api "androidx.core:core-splashscreen:1.2.0-alpha01"
 }
