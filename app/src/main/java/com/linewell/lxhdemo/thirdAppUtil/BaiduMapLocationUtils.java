@@ -25,6 +25,7 @@ import java.util.List;
  * locationUtils.setLocationListener(this);
  * 可选：设置定位间隔为2秒
  * locationUtils.setScanSpan(2000);
+ * locationUtils.startLocation();
  * 销毁资源
  * locationUtils.destroy();
  */
