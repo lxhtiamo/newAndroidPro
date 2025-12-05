@@ -21,7 +21,6 @@ import com.hjq.permissions.permission.PermissionLists;
 import com.hjq.permissions.permission.base.IPermission;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.mvp.MvpActivity;
-import com.linewell.lxhdemo.thirdAppUtil.UMShareManager;
 import com.linx.mylibrary.scaner.ActivityScanerCode;
 import com.linx.mylibrary.scaner.ActivityScanerCode_Two;
 import com.linx.mylibrary.utils.RxGlideTool;
@@ -32,7 +31,6 @@ import java.util.List;
 
 public class MainActivity extends MvpActivity<MainContract.IMainPresenter> implements MainContract.IMainView {
 
-    private UMShareManager mShareManager;
 
     @Override
     protected void getBundleExtras(Bundle extras) {

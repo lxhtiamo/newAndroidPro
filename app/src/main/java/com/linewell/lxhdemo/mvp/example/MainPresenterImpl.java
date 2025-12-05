@@ -18,7 +18,7 @@ public class MainPresenterImpl extends BaseMvpPresenter<MainContract.IMainView> 
     public void requestTestContent(String s) {
         //先进行非空判断
         if (isViewAttached()) {
-            HttpManage.getInstance().postJsonRequets(this, "", "", new JsonCallback<LzyResponse>() {
+            HttpManage.getInstance().postJson(this, "", "", new JsonCallback<LzyResponse>() {
                 @Override
                 public void onSuccess(Response<LzyResponse> response) {
                     getView().onSuccess();

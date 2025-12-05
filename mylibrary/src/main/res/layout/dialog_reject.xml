@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/dp_12"
+    app:cardCornerRadius="@dimen/sw_12dp"
     app:cardElevation="0px">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dp_20">
+        android:paddingTop="@dimen/sw_20dp">
 
         <!-- 标题 -->
         <TextView
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:gravity="center"
-            android:paddingLeft="@dimen/dp_16"
+            android:paddingLeft="@dimen/sw_16dp"
             android:paddingRight="16dp"
             android:text="您还没有权限,将无法体验全部功能,是否去设置界面打开权限?"
             android:textColor="#666666"

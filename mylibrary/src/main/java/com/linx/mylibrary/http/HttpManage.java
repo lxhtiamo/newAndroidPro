@@ -42,7 +42,7 @@ public class HttpManage {
      * @param callback
      * @param <T>
      */
-    public <T> void GetRequestForHttpParams(Object tag, String url, HttpParams mapParameter, JsonCallback<T> callback) {
+    public <T> void GetHttp(Object tag, String url, HttpParams mapParameter, JsonCallback<T> callback) {
         OkGo.<T>get(url)
                 .tag(tag)
                 .params(mapParameter)
@@ -57,7 +57,7 @@ public class HttpManage {
      * @param callback
      * @param <T>
      */
-    public <T> void GetRequest(Object tag, String url, Map<String, String> mapParameter, JsonCallback<T> callback) {
+    public <T> void GetHttp(Object tag, String url, Map<String, String> mapParameter, JsonCallback<T> callback) {
         OkGo.<T>get(url)
                 .tag(tag)
                 .params(mapParameter)
@@ -71,7 +71,7 @@ public class HttpManage {
      * @param callback      数据回调
      * @param <T>           泛型<LzyResponse<ServerModel>> <LzyResponse<具体的实体类>>或<LzyResponse<List<具体的实体类>>>LzyResponse是与服务器约定的基类
      */
-    public <T> void postJsonRequets(Object tag, String url, String Jsonparameter, JsonCallback<T> callback) {
+    public <T> void postJson(Object tag, String url, String Jsonparameter, JsonCallback<T> callback) {
         KLog.d(">>>>--OkGo发送url=" + url + ";参数=" + Jsonparameter);
         OkGo.<T>post(url)
                 .tag(tag)
@@ -80,7 +80,7 @@ public class HttpManage {
                 .execute(callback);
     }
 
-    public <T> void postJsonRequets(Object tag, String url, Map<String, String> map, JsonCallback<T> callback) {
+    public <T> void postJson(Object tag, String url, Map<String, String> map, JsonCallback<T> callback) {
         String Jsonparameter = "";
         if (map != null) {
             Jsonparameter = RxJsonTool.toJson(map);

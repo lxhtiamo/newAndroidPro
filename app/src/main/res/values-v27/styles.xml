@@ -3,7 +3,7 @@
 
     <style name="LauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- 核心：启动页背景（用优化后的webp/9图，避免拉伸） -->
-        <item name="android:windowBackground">@drawable/start_bg</item>
+        <!--<item name="android:windowBackground">@drawable/start_bg</item>-->
         <!-- 禁用ActionBar和标题栏 -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

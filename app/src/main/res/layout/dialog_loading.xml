@@ -15,9 +15,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
+        android:paddingTop="@dimen/sw_8dp"
+        android:paddingLeft="@dimen/sw_8dp"
+        android:paddingRight="@dimen/sw_8dp"
         android:paddingBottom="@dimen/dp_10"
         android:orientation="vertical">
 
@@ -39,7 +39,7 @@
             android:id="@+id/tv_loading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginTop="@dimen/sw_2dp"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_14"
             android:visibility="visible"

@@ -15,6 +15,7 @@
  */
 package com.linx.mylibrary.http.model;
 
+
 import java.io.Serializable;
 
 /**
@@ -41,7 +42,7 @@ public class LzyResponse<T> implements Serializable {
     public String toString() {
         return "LzyResponse{\n" +//
                 "\tcode=" + code + "\n" +//
-                "\tmsg='" + msg + "\'\n" +//
+                "\tmsg='" + msg + "'\n" +//
                 "\tret=" + ret + "\n" +//
                 "\tcount=" + count + "\n" +//
                 '}';

@@ -6,22 +6,18 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.linx.mylibrary.utils.RxSharePreferenceTool;
 
-// 登录成功时
-//LoginStatusManager.getInstance(context).setLoggedIn(true);
-
-// 退出登录时
-//LoginStatusManager.getInstance(context).setLoggedIn(false);
 
 public class LoginStatusManager {
     private static volatile LoginStatusManager instance;
     private boolean isLoggedIn = false;
-    private MutableLiveData<Boolean> loginStatusLiveData = new MutableLiveData<>();
-    private Context context;
+    private final MutableLiveData<Boolean> loginStatusLiveData = new MutableLiveData<>();
+    private final Context context;
 
     // SharedPreferences 键名
     private static final String KEY_LOGIN_STATUS = "login_status";
-    private static final String KEY_USER_TOKEN = "user_token"; // 可选：存储用户token
-    private static final String KEY_USER_INFO = "user_info"; // 可选：存储用户信息
+    private static final String KEY_USER_TOKEN = "user_token";
+    private static final String KEY_USER_INFO = "user_info";
+    private static final String KEY_LOGIN_TIME = "login_time";
 
     private LoginStatusManager(Context context) {
         this.context = context.getApplicationContext(); // 使用Application Context避免内存泄漏
@@ -61,8 +57,11 @@ public class LoginStatusManager {
         // 保存到SharedPreferences
         RxSharePreferenceTool.put(context, KEY_LOGIN_STATUS, loggedIn);
 
-        // 如果退出登录，清除相关用户数据
-        if (!loggedIn) {
+        if (loggedIn) {
+            // 记录登录时间
+            RxSharePreferenceTool.put(context, KEY_LOGIN_TIME, System.currentTimeMillis());
+        } else {
+            // 如果退出登录，清除相关用户数据
             clearUserData();
         }
     }
@@ -82,31 +81,38 @@ public class LoginStatusManager {
     }
 
     /**
-     * 保存用户token（可选）
+     * 保存用户token
      */
     public void saveUserToken(String token) {
         RxSharePreferenceTool.put(context, KEY_USER_TOKEN, token);
     }
 
     /**
-     * 获取用户token（可选）
+     * 获取用户token
      */
     public String getUserToken() {
         return (String) RxSharePreferenceTool.get(context, KEY_USER_TOKEN, "");
     }
 
     /**
-     * 保存用户信息（可选）
+     * 保存用户信息
      */
     public void saveUserInfo(String userInfo) {
         RxSharePreferenceTool.put(context, KEY_USER_INFO, userInfo);
     }
 
     /**
-     * 获取用户信息（可选）
+     * 获取用户信息
      */
     public String getUserInfo() {
         return (String) RxSharePreferenceTool.get(context, KEY_USER_INFO, "");
+    }
+
+    /**
+     * 获取登录时间
+     */
+    public long getLoginTime() {
+        return (Long) RxSharePreferenceTool.get(context, KEY_LOGIN_TIME, 0L);
     }
 
     /**
@@ -115,7 +121,7 @@ public class LoginStatusManager {
     public void clearUserData() {
         RxSharePreferenceTool.remove(context, KEY_USER_TOKEN);
         RxSharePreferenceTool.remove(context, KEY_USER_INFO);
-        // 可以根据需要清除其他用户相关数据
+        RxSharePreferenceTool.remove(context, KEY_LOGIN_TIME);
     }
 
     /**

@@ -14,5 +14,5 @@
         android:id="@+id/pb_web_base"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_3" />
+        android:layout_height="@dimen/sw_3dp" />
 </FrameLayout>

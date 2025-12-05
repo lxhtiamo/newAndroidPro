@@ -6,6 +6,6 @@
 
 
     <!--背景色-->
-
+    <color name="yellow">#FFFF00</color>
 
 </resources>
