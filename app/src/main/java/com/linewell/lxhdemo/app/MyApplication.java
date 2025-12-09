@@ -2,6 +2,7 @@ package com.linewell.lxhdemo.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.text.TextUtils;
 
 import androidx.multidex.MultiDex;
 
@@ -15,8 +16,7 @@ import com.lzy.okgo.cookie.CookieJarImpl;
 import com.lzy.okgo.cookie.store.DBCookieStore;
 import com.lzy.okgo.https.HttpsUtils;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
-import com.umeng.commonsdk.UMConfigure;
-import com.umeng.socialize.PlatformConfig;
+import com.lzy.okgo.model.HttpHeaders;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -31,8 +31,6 @@ import okhttp3.OkHttpClient;
 
 /**
  * @author xh
- * @Description (用一句话描述这个类的作用)
- * @date 2018/1/17 09:13
  */
 public class MyApplication extends Application {
     private static MyApplication myApplication;
@@ -47,7 +45,7 @@ public class MyApplication extends Application {
         // 初始化吐司工具类
         Toaster.init(this);
        // initWeChat();
-       // initOkGo();
+        initOkGo();
 
     }
 
@@ -108,11 +106,22 @@ public class MyApplication extends Application {
         //.addCommonHeaders(headers)                      //全局公共头
         //.addCommonParams(params);                       //全局公共参数
     }
+    /**
+     * 添加全局请求头
+     *
+     */
+    public void setAccessToken(String Access_token) {
+        if (!TextUtils.isEmpty(Access_token)) {
+            this.Access_Token = Access_token;
+            HttpHeaders headers = new HttpHeaders();
+            headers.put("Access_token", "Access_token");
+            OkGo.getInstance().addCommonHeaders(headers);
+        }
+    }
 
     /**
      * 外部调用的实例
      *
-     * @return
      */
     public static synchronized MyApplication getInstance() {
         if (myApplication == null) {

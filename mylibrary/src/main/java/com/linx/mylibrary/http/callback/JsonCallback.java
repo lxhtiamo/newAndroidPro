@@ -135,6 +135,7 @@ public abstract class JsonCallback<T> extends AbsCallback<T> {
             LzyResponse errorBean = ((MyException) exception).getErrorBean();
             if (errorBean != null) {
                 String msg = errorBean.msg;
+                int errCode = errorBean.code;
                 if (!TextUtils.isEmpty(msg)) {
                     err = msg;
                 }
