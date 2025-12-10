@@ -1,14 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
+    // 编译源码版本
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         // 无痛修改包名： https://www.jianshu.com/p/17327e191d2e
         applicationId "com.linewell.lxhdemo"
-        minSdkVersion rootProject.ext.libMinSdkVersion
+        // 最低安装版本
+        minSdkVersion rootProject.ext.minSdkVersion
+        // 目标适配版本
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         manifestPlaceholders = [
@@ -77,4 +80,55 @@ dependencies {
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
     //异常上报Bugly https://bugly.qq.com/docs/user-guide/instruction-manual-android/?v=1.0.0#_3
     implementation 'com.tencent.bugly:crashreport:latest.release'
+    // AOP 插件库：https://mvnrepository.com/artifact/org.aspectj/aspectjrt
+    implementation 'org.aspectj:aspectjrt:1.9.6'
+}
+
+import org.aspectj.bridge.IMessage
+import org.aspectj.bridge.MessageHandler
+import org.aspectj.tools.ajc.Main
+
+final def log = project.logger
+final def variants = project.android.applicationVariants
+
+
+variants.all { variant ->
+    // 注意这里控制debug下生效，可以自行控制是否生效
+    if (!variant.buildType.isDebuggable()) {
+        log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
+        return
+    }
+
+    JavaCompile javaCompile = variant.javaCompileProvider.get()
+    javaCompile.doLast {
+        String[] args = ["-showWeaveInfo",
+                         "-1.8",
+                         "-inpath", javaCompile.destinationDir.toString(),
+                         "-aspectpath", javaCompile.classpath.asPath,
+                         "-d", javaCompile.destinationDir.toString(),
+                         "-classpath", javaCompile.classpath.asPath,
+                         "-bootclasspath", project.android.bootClasspath.join(File.pathSeparator)]
+        log.debug "ajc args: " + Arrays.toString(args)
+
+        MessageHandler handler = new MessageHandler(true)
+        new Main().run(args, handler)
+        for (IMessage message : handler.getMessages(null, true)) {
+            switch (message.getKind()) {
+                case IMessage.ABORT:
+                case IMessage.ERROR:
+                case IMessage.FAIL:
+                    log.error message.message, message.thrown
+                    break
+                case IMessage.WARNING:
+                    log.warn message.message, message.thrown
+                    break
+                case IMessage.INFO:
+                    log.info message.message, message.thrown
+                    break
+                case IMessage.DEBUG:
+                    log.debug message.message, message.thrown
+                    break
+            }
+        }
+    }
 }

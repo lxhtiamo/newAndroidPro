@@ -1,6 +1,9 @@
 package com.linewell.lxhdemo.ui.start;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,8 +13,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.linewell.lxhdemo.R;
+import com.linewell.lxhdemo.base.aop.SingleClick;
 
-public class StartActivity extends AppCompatActivity {
+import java.util.Date;
+
+public class StartActivity extends AppCompatActivity implements View.OnClickListener {
+    TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,5 +31,14 @@ public class StartActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        Button viewById = findViewById(R.id.bt);
+        tv = findViewById(R.id.tv);
+        viewById.setOnClickListener(this);
+    }
+
+    @SingleClick
+    @Override
+    public void onClick(View v) {
+        tv.setText(new Date().getTime() + "");
     }
 }

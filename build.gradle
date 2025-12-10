@@ -12,6 +12,7 @@ buildscript {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'//3.0配置eventbus注解
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath 'org.aspectj:aspectjtools:1.9.6'
     }
 }
 
@@ -45,14 +46,21 @@ tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
 ext {
+    //版本号
     versionCode = 1
+    //版本名
     versionName = "1.0.0"
-
+    // 编译源码版本
     compileSdkVersion = 34
+    // 构建工具版本
     buildToolsVersion = '34.0.0'
-    libMinSdkVersion = 22
+    // 最低安装版本
     minSdkVersion = 22
+    libMinSdkVersion = 22
+    // 目标适配版本
     targetSdkVersion = 34
+    // 支持库版本
     supportVersion = '28.0.0'
+    // AndroidX 版本
     androidxVersion = '1.6.1'
 }
