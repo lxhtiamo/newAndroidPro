@@ -13,4 +13,6 @@ public class AppConfig {
     public static final String Access_Token = "AccessToken";
     public static final String umeng_App_Key = "68fb404d8560e34872d41e65";
     public static final String WECHAT_App_ID = "WECHAT_App_ID";
+    //https://bugly.qq.com/docs/introduction/bugly-introduction/ 申请buglyId
+    public static final String BuglyI = "BuglyI";
 }

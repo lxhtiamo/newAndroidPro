@@ -17,6 +17,7 @@ import com.lzy.okgo.cookie.store.DBCookieStore;
 import com.lzy.okgo.https.HttpsUtils;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.lzy.okgo.model.HttpHeaders;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -45,8 +46,14 @@ public class MyApplication extends Application {
         // 初始化吐司工具类
         Toaster.init(this);
        // initWeChat();
+        initBugly();
         initOkGo();
 
+    }
+
+    private void initBugly() {
+        // Bugly 异常捕捉 false是否调试模式
+        CrashReport.initCrashReport(this, AppConfig.BuglyI, false);
     }
 
     //微信初始化

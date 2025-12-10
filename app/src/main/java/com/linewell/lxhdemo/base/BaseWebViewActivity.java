@@ -89,7 +89,10 @@ public class BaseWebViewActivity extends BaseActivity {
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
-
+        // 允许文件访问
+        webSettings.setAllowFileAccess(true);
+        // 允许网页定位
+        webSettings.setGeolocationEnabled(true);
         // setMediaPlaybackRequiresUserGesture(boolean require) //是否需要用户手势来播放Media，默认true
 
         webSettings.setJavaScriptEnabled(true); // 设置支持javascript脚本
@@ -110,7 +113,9 @@ public class BaseWebViewActivity extends BaseActivity {
         webSettings.setDomStorageEnabled(true);//是否开启本地DOM存储  鉴于它的安全特性（任何人都能读取到它，尽管有相应的限制，将敏感数据存储在这里依然不是明智之举），Android 默认是关闭该功能的。
         webBase.setSaveEnabled(true);
         webBase.setKeepScreenOn(true);
-
+        // 不显示滚动条
+        webBase.setVerticalScrollBarEnabled(false);
+        webBase.setHorizontalScrollBarEnabled(false);
 
         // 设置setWebChromeClient对象
         webBase.setWebChromeClient(new WebChromeClient() {
