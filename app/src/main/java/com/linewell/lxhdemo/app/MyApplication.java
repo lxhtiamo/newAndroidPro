@@ -9,6 +9,7 @@ import androidx.multidex.MultiDex;
 import com.hjq.toast.Toaster;
 import com.linewell.lxhdemo.thirdAppUtil.WeChatHelper;
 import com.linx.mylibrary.utils.klog.KLog;
+import com.linx.mylibrary.utils.manager.AppActivityManager;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -45,12 +46,14 @@ public class MyApplication extends Application {
         KLog.init(AppConfig.LOG_DEBUG, "log");
         // 初始化吐司工具类
         Toaster.init(this);
+        // 初始化Activity 栈管理
+        AppActivityManager.getInstance().init(this);
        // initWeChat();
         initBugly();
         initOkGo();
 
     }
-
+    //bug崩溃收集初始化
     private void initBugly() {
         // Bugly 异常捕捉 false是否调试模式
         CrashReport.initCrashReport(this, AppConfig.BuglyI, false);
@@ -60,7 +63,7 @@ public class MyApplication extends Application {
     private void initWeChat() {
         WeChatHelper.getInstance().init(this, AppConfig.WECHAT_App_ID);
     }
-
+    //OkGo请求初始化
     private void initOkGo() {
         //----------------不需要就不传------------
         //HttpHeaders headers = new HttpHeaders(); // 全局公共头

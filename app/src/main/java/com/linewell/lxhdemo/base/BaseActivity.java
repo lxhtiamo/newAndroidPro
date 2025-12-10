@@ -41,7 +41,7 @@ import com.linewell.lxhdemo.base.action.ToastAction;
 import com.linx.mylibrary.utils.RxAppApplicationMgr;
 import com.linx.mylibrary.utils.RxBarTool;
 import com.linx.mylibrary.utils.klog.KLog;
-import com.linx.mylibrary.utils.manager.AppDavikActivityMgr;
+import com.linx.mylibrary.utils.manager.AppActivityManager;
 import com.linx.mylibrary.utils.permissionUtil.PermissionRejectDialog;
 import com.linx.mylibrary.utils.permissionUtil.PermissionTipDialogUtils;
 import com.linx.mylibrary.view.dialog.ProgressLoadingDialog;
@@ -76,7 +76,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener; // 独立布局监听
     // 弹窗与管理
     private ProgressLoadingDialog progressDialog;
-    private AppDavikActivityMgr activityMgr;
     // 跳转与回调
     private String jumpTag;
     private long jumpTime;
@@ -128,7 +127,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
      */
     protected void initActivity(Bundle savedInstanceState) {
         initFullScreen(); //是否全屏//开机页使用
-        initActivityManager();   // 1. 页面栈管理（先初始化，确保addActivity有效）
         initEventBus();          // 2. EventBus注册（无依赖）
         initLayout();            // 3. 加载布局（后续视图操作的基础）
         initImmersionBar();      // 4. 沉浸式状态栏（依赖布局加载完成）
@@ -151,16 +149,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
 
     // ====================== 初始化相关：修复依赖顺序与Bug ======================
-
-    /**
-     * 初始化页面栈管理：确保Activity能正确加入/移除栈
-     */
-    private void initActivityManager() {
-        activityMgr = AppDavikActivityMgr.getScreenManager();
-        if (activityMgr != null) {
-            activityMgr.addActivity(this);
-        }
-    }
 
     /**
      * 初始化EventBus：子类通过isNeedEventBus()控制是否注册，自动注销
@@ -754,10 +742,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
             EventBus.getDefault().unregister(this);
             KLog.d("EventBus unregistered success");
         }
-        // 5. 移除Activity栈（避免内存泄漏）
-        if (activityMgr != null) {
-            activityMgr.removeActivity(this);
-        }
         // 6. 销毁弹窗（释放Window资源）
         dismissProgressDialog();
         progressDialog = null;
@@ -805,9 +789,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
      * 退出应用：关闭所有Activity（覆盖应用退出场景）
      */
     protected void exitApp() {
-        if (activityMgr != null) {
-            activityMgr.removeAllActivity();
-        }
+        postDelayed(() -> {
+            // 进行内存优化，销毁掉所有的界面
+            AppActivityManager.getInstance().finishAllActivities();
+            // 销毁进程（注意：调用此 API 可能导致当前 Activity onDestroy 方法无法正常回调）
+            // System.exit(0);
+        }, 300);
     }
 
     /**
