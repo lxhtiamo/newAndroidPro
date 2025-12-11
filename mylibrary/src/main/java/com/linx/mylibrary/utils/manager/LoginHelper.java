@@ -174,7 +174,7 @@ public class LoginHelper {
     }
 
     /**
-     * 清理所有登录相关数据
+     * 清理清空所有登录相关数据
      */
     public void clearAllLoginData() {
         loginManager.clearAllLoginData();

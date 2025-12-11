@@ -8,7 +8,6 @@ import org.aspectj.lang.reflect.CodeSignature;
 
 
 /**
- *    author : Android 轮子哥
  *    desc   : 防重复点击切面
  */
 @Aspect
