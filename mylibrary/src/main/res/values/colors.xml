@@ -4,10 +4,28 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-
     <color name="transparent">#00000000</color>
     <!-- 熊猫色（黑白背景通吃） -->
     <color name="panda">#FF757575</color>
+    <!-- 灰色 -->
+    <color name="gray">#FF808080</color>
+    <!-- 红色 -->
+    <color name="red">#FFFF0000</color>
+    <!-- 金色 -->
+    <color name="gold">#FFFFD700</color>
+    <!-- 黄色 -->
+    <color name="yellow">#FFFFFF00</color>
+    <!-- 绿色 -->
+    <color name="green">#FF008000</color>
+    <!-- 蓝色 -->
+    <color name="blue">#FF0000FF</color>
+    <!-- 紫色 -->
+    <color name="purple">#FF800080</color>
+    <!-- 粉色 -->
+    <color name="pink">#FFFFC0CB</color>
+    <!-- 橙色 -->
+    <color name="orange">#FFFFA500</color>
+
 
     <!-- 白色 -->
     <color name="white">#FFFFFFFF</color>
@@ -52,40 +70,6 @@
     <color name="black15">#26000000</color>
     <color name="black10">#1A000000</color>
     <color name="black5">#0D000000</color>
-
-    <!-- 灰色 -->
-    <color name="gray">#FF808080</color>
-    <!-- 红色 -->
-    <color name="red">#FFFF0000</color>
-    <!-- 金色 -->
-    <color name="gold">#FFFFD700</color>
-    <!-- 黄色 -->
-    <color name="yellow">#FFFFFF00</color>
-    <!-- 绿色 -->
-    <color name="green">#FF008000</color>
-    <!-- 蓝色 -->
-    <color name="blue">#FF0000FF</color>
-    <!-- 紫色 -->
-    <color name="purple">#FF800080</color>
-    <!-- 粉色 -->
-    <color name="pink">#FFFFC0CB</color>
-    <!-- 橙色 -->
-    <color name="orange">#FFFFA500</color>
-
-
-    <color name="background_home">#F4F6F5</color>
-    <color name="_999999">#999999</color>
-    <color name="eeeeee">#EEEEEE</color>
-    <color name="cccccc">#CCCCCC</color>
-    <color name="bt_login">#c61a04</color>
-    <color name="text_login_">#b0b8b2</color>
-    <color name="hot_pink">#FD4C5B</color><!-- Acfun主题色 -->
-    <color name="brown1">#766156</color>
-    <color name="versionchecklib_theme_color">#000000</color>
-    <color name="alertdialog_line">#c6c6c6</color>
-    <color name="actionsheet_blue">#037BFF</color>
-    <color name="actionsheet_red">#FD4A2E</color>
-    <color name="_8c">#8c8c8c</color>
     <!--分割线色值-->
     <color name="divider_line">#d7d7d7</color>
 </resources>

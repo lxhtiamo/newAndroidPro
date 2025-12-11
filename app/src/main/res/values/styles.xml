@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- 窗口背景颜色 -->
         <!--  <item name="android:windowBackground">@color/windowBackground</item>-->
         <!-- 应用的主要色调，actionBar默认使用该颜色，Toolbar导航栏的底色 -->
@@ -20,6 +20,7 @@
         <item name="actionModeBackground">@color/colorPrimary</item>
         <!-- 解决 Android 5.1 及以上版本 Button 英文字符串自动变大写的问题 -->
         <item name="android:textAllCaps">false</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
     </style>
     <!-- 解决启动页白屏的问题 -->
     <style name="LauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">

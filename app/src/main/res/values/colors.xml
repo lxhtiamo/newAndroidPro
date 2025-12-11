@@ -1,11 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <!-- ===================== 系统主题色（安卓核心主题色 + 扩展色阶） ===================== -->
+    <!-- 核心主题色：对应安卓Manifest和styles中的主题配置，保留系统默认命名 -->
+    <color name="colorPrimary">#2196F3</color> <!-- 基准色：蓝色500（你指定的核心色） -->
+    <color name="colorPrimaryDark">#1976D2</color> <!-- 状态栏颜色（你指定的色值） -->
+    <color name="colorAccent">#FF4081</color> <!-- 控件强调色（如按钮、单选框，你指定的色值） -->
 
+    <!-- 主色扩展色阶：用于不同状态（如按钮按下、hover、渐变），基于colorPrimary延伸 -->
+    <color name="primary_50">#E3F2FD</color> <!-- 极浅主色：背景、浅色调区域 -->
+    <color name="primary_100">#BBDEFB</color> <!-- 浅主色：次要背景、卡片高亮 -->
+    <color name="primary_200">#90CAF9</color> <!-- 浅主色：选中状态、进度条浅段 -->
+    <color name="primary_300">#64B5F6</color> <!-- 中浅主色：按钮次要状态 -->
+    <color name="primary_400">#42A5F5</color> <!-- 中主色：按钮hover状态 -->
+    <color name="primary_500">#2196F3</color> <!-- 基准主色：与colorPrimary一致 -->
+    <color name="primary_600">#1E88E5</color> <!-- 中深主色：按钮按下状态 -->
+    <color name="primary_700">#1976D2</color> <!-- 深主色：与colorPrimaryDark一致 -->
+    <color name="primary_800">#1565C0</color> <!-- 更深主色：导航栏选中、重要强调 -->
+    <color name="primary_900">#0D47A1</color> <!-- 极深主色：文本在浅主色背景上的对比色 -->
 
-    <!--背景色-->
-    <color name="yellow">#FFFF00</color>
+    <!-- 强调色扩展色阶：基于colorAccent延伸，用于交互元素的不同状态 -->
+    <color name="accent_100">#FFC1E9</color> <!-- 浅强调色：背景、提示标签 -->
+    <color name="accent_500">#FF4081</color> <!-- 基准强调色：与colorAccent一致 -->
+    <color name="accent_700">#F50057</color> <!-- 深强调色：选中、按下状态 -->
 
+    <!-- ===================== 功能色（业务逻辑提示：成功/警告/错误/信息） ===================== -->
+    <!-- 成功：操作成功、完成、勾选状态 -->
+    <color name="success_primary">#4CAF50</color> <!-- 核心成功色 -->
+    <color name="success_light">#C8E6C9</color> <!-- 浅成功色：背景、提示框 -->
+    <color name="success_dark">#388E3C</color> <!-- 深成功色：文本、图标 -->
+    <!-- 警告：提示、提醒、未完成、过期状态 -->
+    <color name="warning_primary">#FFC107</color> <!-- 核心警告色 -->
+    <color name="warning_light">#FFF9C4</color> <!-- 浅警告色：背景、提示框 -->
+    <color name="warning_dark">#FFA000</color> <!-- 深警告色：文本、图标 -->
+    <!-- 错误：操作失败、错误提示、删除、禁止状态 -->
+    <color name="error_primary">#F44336</color> <!-- 核心错误色 -->
+    <color name="error_light">#FFCDD2</color> <!-- 浅错误色：背景、提示框 -->
+    <color name="error_dark">#D32F2F</color> <!-- 深错误色：文本、图标 -->
+    <!-- 信息：普通提示、说明、帮助文本 -->
+    <color name="info_primary">#2196F3</color> <!-- 核心信息色：复用主色，保持一致性 -->
+    <color name="info_light">#BBDEFB</color> <!-- 浅信息色：背景、提示框 -->
+    <color name="info_dark">#1976D2</color> <!-- 深信息色：文本、图标 -->
+
+    <!-- ===================== 文本色（按层级和场景划分，保证可读性） ===================== -->
+    <!-- 基础文本层级：页面内的常规文本 -->
+    <color name="text_primary">#212121</color> <!-- 主要文本：标题、内容、列表文字 -->
+    <color name="text_secondary">#757575</color> <!-- 次要文本：副标题、说明、时间戳 -->
+    <color name="text_tertiary">#9E9E9E</color> <!-- 三级文本：占位符、提示、辅助说明 -->
+    <color name="text_disabled">#BDBDBD</color> <!-- 禁用文本：灰色占位、不可点击文字 -->
+    <!-- 彩色背景上的文本：保证与背景的对比度 -->
+    <color name="text_on_primary">#FFFFFF</color> <!-- 主色背景上的文本（白色） -->
+    <color name="text_on_accent">#FFFFFF</color> <!-- 强调色背景上的文本（白色） -->
+    <color name="text_on_success">#FFFFFF</color> <!-- 成功色背景上的文本（白色） -->
+    <color name="text_on_warning">#000000</color> <!-- 警告色背景上的文本（黑色） -->
+    <color name="text_on_error">#FFFFFF</color> <!-- 错误色背景上的文本（白色） -->
+    <!-- 特殊文本：链接、高亮 -->
+    <color name="text_link">#2196F3</color> <!-- 链接文本：复用主色 -->
+    <color name="text_highlight">#FFF3E0</color> <!-- 高亮文本背景：用于搜索结果、选中文字 -->
+
+    <!-- ===================== 背景色（按场景划分，区分层级） ===================== -->
+    <!-- 页面级背景 -->
+    <color name="bg_page">#FAFAFA</color> <!-- 页面整体背景：浅灰色，减少视觉疲劳 -->
+    <color name="bg_page_scroll">#FFFFFF</color> <!-- 可滚动区域背景：白色，如列表、表单 -->
+    <!-- 组件级背景 -->
+    <color name="bg_card">#FFFFFF</color> <!-- 卡片、列表项背景：白色，突出内容 -->
+    <color name="bg_card_elevated">#F5F5F5</color> <!-- 提升层级的卡片背景：浅灰色 -->
+    <color name="bg_float">#FFFFFF</color> <!-- 悬浮层、弹窗、下拉菜单背景 -->
+    <color name="bg_button">#2196F3</color> <!-- 主要按钮背景：复用主色 -->
+    <color name="bg_button_secondary">#F5F5F5</color> <!-- 次要按钮背景：浅灰色 -->
+    <color name="bg_input">#FFFFFF</color> <!-- 输入框背景：白色 -->
+    <!-- 遮罩与透明背景 -->
+    <color name="bg_overlay">#80000000</color> <!-- 遮罩层：半透明黑色，用于弹窗底层 -->
+    <color name="bg_transparent">#00000000</color> <!-- 完全透明背景 -->
+
+    <!-- ===================== 分割线/边框色（区分元素边界） ===================== -->
+    <color name="divider_primary">#E0E0E0</color> <!-- 普通分割线：列表、卡片分隔 -->
+    <color name="divider_secondary">#EEEEEE</color> <!-- 细分割线：内部元素分隔 -->
+    <!-- 边框色：输入框、按钮、卡片边框 -->
+    <color name="border_default">#EEEEEE</color> <!-- 默认边框：未聚焦、普通状态 -->
+    <color name="border_focused">#2196F3</color> <!-- 聚焦边框：输入框、按钮选中 -->
+    <color name="border_disabled">#E0E0E0</color> <!-- 禁用边框：不可操作元素 -->
+    <color name="border_error">#F44336</color> <!-- 错误边框：输入框验证失败 -->
+
+    <!-- ===================== 基础色（黑白灰标准色阶，满足通用需求） ===================== -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_50">#F9F9F9</color>
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_800">#424242</color>
+    <color name="gray_900">#212121</color>
 </resources>

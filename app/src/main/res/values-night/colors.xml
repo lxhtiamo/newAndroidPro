@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ===================== 系统主题色（适配深色背景，提高亮度） ===================== -->
+    <!-- 核心主题色：保留系统默认命名，调整亮度以适配深色背景 -->
+    <color name="colorPrimary">#64B5F6</color> <!-- 基准色：调亮的蓝色，适配深色背景 -->
+    <color name="colorPrimaryDark">#42A5F5</color> <!-- 状态栏颜色：对应调亮的深主色 -->
+    <color name="colorAccent">#FF80AB</color> <!-- 控件强调色：调亮的粉色，保证对比度 -->
+
+    <!-- 主色扩展色阶：基于调亮后的主色延伸 -->
+    <color name="primary_50">#1A2B3F</color>
+    <color name="primary_100">#2A3C54</color>
+    <color name="primary_200">#3A4D69</color>
+    <color name="primary_300">#4A5E7E</color>
+    <color name="primary_400">#5A6F93</color>
+    <color name="primary_500">#64B5F6</color> <!-- 与colorPrimary一致 -->
+    <color name="primary_600">#73C0F8</color>
+    <color name="primary_700">#82CAFA</color> <!-- 与colorPrimaryDark对应 -->
+    <color name="primary_800">#91D4FC</color>
+    <color name="primary_900">#A0DFFE</color>
+
+    <!-- 强调色扩展色阶：基于调亮后的强调色延伸 -->
+    <color name="accent_100">#4A2639</color>
+    <color name="accent_500">#FF80AB</color> <!-- 与colorAccent一致 -->
+    <color name="accent_700">#FF94BC</color>
+
+    <!-- ===================== 功能色（调整亮度，保持识别性） ===================== -->
+    <color name="success_primary">#66BB6A</color>
+    <color name="success_light">#388E3C</color>
+    <color name="success_dark">#2E7D32</color>
+    <color name="warning_primary">#FFD54F</color>
+    <color name="warning_light">#FFA000</color>
+    <color name="warning_dark">#F57C00</color>
+    <color name="error_primary">#EF5350</color>
+    <color name="error_light">#D32F2F</color>
+    <color name="error_dark">#C62828</color>
+    <color name="info_primary">#64B5F6</color>
+    <color name="info_light">#42A5F5</color>
+    <color name="info_dark">#1976D2</color>
+
+    <!-- ===================== 文本色（提高与深色背景的对比度） ===================== -->
+    <color name="text_primary">#FFFFFF</color> <!-- 主要文本：白色，替代日间的黑色 -->
+    <color name="text_secondary">#B0BEC5</color> <!-- 次要文本：浅灰色 -->
+    <color name="text_tertiary">#90A4AE</color> <!-- 三级文本：深灰色 -->
+    <color name="text_disabled">#616161</color> <!-- 禁用文本：暗灰色 -->
+    <!-- 彩色背景上的文本：调整对比度（主色背景变为黑色文本） -->
+    <color name="text_on_primary">#000000</color> <!-- 主色背景上的文本：黑色 -->
+    <color name="text_on_accent">#000000</color> <!-- 强调色背景上的文本：黑色 -->
+    <color name="text_on_success">#000000</color> <!-- 成功色背景上的文本：黑色 -->
+    <color name="text_on_warning">#000000</color> <!-- 警告色背景上的文本：黑色 -->
+    <color name="text_on_error">#FFFFFF</color> <!-- 错误色背景上的文本：白色 -->
+    <color name="text_link">#64B5F6</color> <!-- 链接文本：复用调亮后的主色 -->
+    <color name="text_highlight">#424242</color> <!-- 高亮文本背景：深灰色 -->
+
+    <!-- ===================== 背景色（深色系，区分层级） ===================== -->
+    <color name="bg_page">#121212</color> <!-- 页面整体背景：深黑色 -->
+    <color name="bg_page_scroll">#121212</color> <!-- 可滚动区域背景：与页面一致 -->
+    <color name="bg_card">#1E1E1E</color> <!-- 卡片背景：中黑色，与页面区分 -->
+    <color name="bg_card_elevated">#2D2D2D</color> <!-- 提升层级的卡片背景：浅黑色 -->
+    <color name="bg_float">#2D2D2D</color> <!-- 悬浮层、弹窗背景：浅黑色 -->
+    <color name="bg_button">#64B5F6</color> <!-- 主要按钮背景：复用调亮后的主色 -->
+    <color name="bg_button_secondary">#2D2D2D</color> <!-- 次要按钮背景：浅黑色 -->
+    <color name="bg_input">#1E1E1E</color> <!-- 输入框背景：中黑色 -->
+    <color name="bg_overlay">#80FFFFFF</color> <!-- 遮罩层：半透明白色，替代日间的黑色 -->
+    <color name="bg_transparent">#00000000</color> <!-- 完全透明背景（不变） -->
+
+    <!-- ===================== 分割线/边框色（深色系，降低亮度） ===================== -->
+    <color name="divider_primary">#333333</color> <!-- 普通分割线：深灰色 -->
+    <color name="divider_secondary">#424242</color> <!-- 细分割线：中灰色 -->
+    <color name="border_default">#424242</color> <!-- 默认边框：中灰色 -->
+    <color name="border_focused">#64B5F6</color> <!-- 聚焦边框：复用调亮后的主色 -->
+    <color name="border_disabled">#333333</color> <!-- 禁用边框：深灰色 -->
+    <color name="border_error">#EF5350</color> <!-- 错误边框：复用调亮后的错误色 -->
+
+    <!-- ===================== 基础色（黑白灰适配深色模式，反转色阶） ===================== -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_50">#121212</color>
+    <color name="gray_100">#1E1E1E</color>
+    <color name="gray_200">#2D2D2D</color>
+    <color name="gray_300">#333333</color>
+    <color name="gray_400">#424242</color>
+    <color name="gray_500">#616161</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#9E9E9E</color>
+    <color name="gray_800">#B0BEC5</color>
+    <color name="gray_900">#FFFFFF</color>
+</resources>
