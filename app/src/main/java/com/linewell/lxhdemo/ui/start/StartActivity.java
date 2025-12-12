@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
@@ -33,12 +34,23 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
         });
         Button viewById = findViewById(R.id.bt);
         tv = findViewById(R.id.tv);
-        viewById.setOnClickListener(this);
+       // viewById.setOnClickListener(this);
+       //// Button bt_h = findViewById(R.id.bt_h);
+       // bt_h.setOnClickListener(this);
+        Button bt_b = findViewById(R.id.bt_b);
+        bt_b.setOnClickListener(this);
     }
 
-    @SingleClick
     @Override
     public void onClick(View v) {
-        tv.setText(new Date().getTime() + "");
+        //tv.setText(new Date().getTime() + "");
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            // 关闭暗黑模式
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            // 开启暗黑模式
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        recreate();
     }
 }

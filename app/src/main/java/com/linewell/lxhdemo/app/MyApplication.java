@@ -8,6 +8,7 @@ import androidx.multidex.MultiDex;
 
 import com.hjq.toast.Toaster;
 import com.linewell.lxhdemo.thirdAppUtil.WeChatHelper;
+import com.linewell.lxhdemo.utils.ThemeUtils;
 import com.linx.mylibrary.utils.klog.KLog;
 import com.linx.mylibrary.utils.manager.AppActivityManager;
 import com.lzy.okgo.OkGo;
@@ -19,6 +20,7 @@ import com.lzy.okgo.https.HttpsUtils;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.lzy.okgo.model.HttpHeaders;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.mmkv.MMKV;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -48,6 +50,11 @@ public class MyApplication extends Application {
         Toaster.init(this);
         // 初始化Activity 栈管理
         AppActivityManager.getInstance().init(this);
+        // MMKV 轻量化存储数据 初始化
+        MMKV.initialize(this);
+        // 应用主题模式
+        // ThemeUtils.setDefaultThemeMode(ThemeUtils.MODE_LIGHT);
+        ThemeUtils.applyThemeMode(this);
        // initWeChat();
         initBugly();
         initOkGo();
