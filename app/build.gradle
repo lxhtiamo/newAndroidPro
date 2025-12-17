@@ -73,9 +73,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     // Dex分包，解决 65k 问题
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation project(':multiplestatusview')
     implementation project(':mylibrary')
-    implementation project(':networkstateview')
     implementation 'org.greenrobot:eventbus:3.3.1'
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
     //异常上报Bugly https://bugly.qq.com/docs/user-guide/instruction-manual-android/?v=1.0.0#_3

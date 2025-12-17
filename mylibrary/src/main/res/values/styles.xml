@@ -54,8 +54,8 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <!--basedialog 样式-->
-    <style name="BaseDialog" parent="android:Theme.Light">
+    <!--CustomAlertDialogBuilder 样式-->
+    <style name="CustomAlertDialog" parent="android:Theme.Light">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -71,7 +71,7 @@
         <!-- 半透明 -->
         <item name="android:windowIsTranslucent">true</item>
         <!-- 背景透明 -->
-        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <!-- 遮盖层 -->
         <item name="android:backgroundDimEnabled">true</item>
         <!-- 无标题 -->
@@ -107,6 +107,16 @@
         <!-- 点击外部不消失 -->
         <item name="android:windowCloseOnTouchOutside">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="MultipleStatusView"/>
+    <style name="MultipleStatusView.Content">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:textColor">#333333</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

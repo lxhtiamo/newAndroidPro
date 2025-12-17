@@ -24,7 +24,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 
 import com.gyf.immersionbar.ImmersionBar;
-import com.lin.networkstateview.NetworkStateView;
+import com.linx.mylibrary.view.loadingStateView.NetworkStateView;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.app.AppConfig;
 import com.linewell.lxhdemo.base.action.BundleAction;

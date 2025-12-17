@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.lin.networkstateview.NetworkStateView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.linx.mylibrary.view.loadingStateView.NetworkStateView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nsv_state_view"
     android:layout_width="match_parent"
@@ -8,4 +8,4 @@
     android:orientation="vertical"
     android:visibility="visible">
 
-</com.lin.networkstateview.NetworkStateView>
+</com.linx.mylibrary.view.loadingStateView.NetworkStateView>

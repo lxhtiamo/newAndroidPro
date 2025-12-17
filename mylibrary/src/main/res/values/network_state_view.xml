@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="empty_image" type="id" />
+    <item name="empty_text" type="id" />
+    <item name="error_image" type="id" />
+    <item name="error_text" type="id" />
+    <item name="no_network_image" type="id" />
+    <item name="no_network_text" type="id" />
+    <item name="refresh_view" type="id" />
+    <item name="loading_text" type="id" />
+    <!-- 提取公共属性（全局唯一，只定义一次） -->
+    <attr name="loadingView" format="reference" />
+    <attr name="errorView" format="reference" />
+    <attr name="emptyView" format="reference" />
+    <attr name="noNetworkView" format="reference" />
+
+    <!-- 网络加载状态View MultipleStatusView -->
+    <declare-styleable name="MultipleStatusView">
+        <attr name="loadingView" />
+        <attr name="errorView" />
+        <attr name="emptyView" />
+        <attr name="noNetworkView" />
+        <attr name="contentView" format="reference" />
+    </declare-styleable>
+
+    <!-- 网络加载状态View  NetworkStateView-->
+    <declare-styleable name="NetworkStateView">
+        <!-- 加载中的布局id -->
+        <attr name="loadingView" />
+        <attr name="nsvLoadingText" format="string" />
+        <!-- 加载错误的布局id -->
+        <attr name="errorView" />
+        <!-- 加载错误的布局图片 -->
+        <attr name="nsvErrorImage" format="reference" />
+        <!-- 加载错误的布局文字 -->
+        <attr name="nsvErrorText" format="string" />
+
+        <!-- 没有数据的布局id -->
+        <attr name="emptyView" />
+        <!-- 没有数据的布局图片 -->
+        <attr name="nsvEmptyImage" format="reference" />
+        <!-- 没有数据的布局文字 -->
+        <attr name="nsvEmptyText" format="string" />
+
+        <!-- 没有网络的布局id -->
+        <attr name="noNetworkView" />
+        <!-- 没有数据的布局图片 -->
+        <attr name="nsvNoNetworkImage" format="reference" />
+        <!-- 没有数据的布局文字 -->
+        <attr name="nsvNoNetworkText" format="string" />
+
+        <!-- 刷新的ImageView图片id -->
+        <attr name="nsvRefreshImage" format="reference" />
+
+        <!-- 文字大小 -->
+        <attr name="nsvTextSize" format="dimension" />
+        <!-- 文字颜色 -->
+        <attr name="nsvTextColor" format="color" />
+    </declare-styleable>
+    <!-- NetworkStateView样式 -->
+    <style name="NetworkStateView"/>
+    <style name="NetworkStateView.Style">
+        <item name="loadingView">@layout/view_loading</item>
+        <item name="nsvLoadingText">加载中...</item>
+        <item name="errorView">@layout/view_network_error</item>
+        <item name="nsvErrorImage">@mipmap/ic_net_error</item>
+        <item name="nsvErrorText">网络异常，请稍后重试</item>
+        <item name="emptyView">@layout/view_empty</item>
+        <item name="nsvEmptyImage">@mipmap/ic_empty</item>
+        <item name="nsvEmptyText">暂无数据</item>
+        <item name="noNetworkView">@layout/view_no_network</item>
+        <item name="nsvNoNetworkImage">@mipmap/ic_no_network</item>
+        <item name="nsvNoNetworkText">无网络，请检查网络</item>
+        <item name="nsvRefreshImage">@mipmap/ic_refresh</item>
+        <item name="nsvTextSize">14sp</item>
+        <item name="nsvTextColor">#8a000000</item>
+    </style>
+
+</resources>

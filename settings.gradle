@@ -1,1 +1,1 @@
-include ':app', ':multiplestatusview', ':mylibrary', ':networkstateview'
+include ':app',':mylibrary'

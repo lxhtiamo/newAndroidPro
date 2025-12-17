@@ -30,7 +30,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.XXPermissions;
 import com.hjq.permissions.permission.base.IPermission;
-import com.lin.networkstateview.NetworkStateView;
+import com.linx.mylibrary.view.loadingStateView.NetworkStateView;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.app.AppConfig;
 import com.linewell.lxhdemo.base.action.ActivityAction;
@@ -50,7 +50,6 @@ import com.yanzhenjie.permission.AndPermission;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -14,9 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.linewell.lxhdemo.R;
-import com.linewell.lxhdemo.base.aop.SingleClick;
-
-import java.util.Date;
+import com.linx.mylibrary.view.loadingStateView.MultipleStatusView;
 
 public class StartActivity extends AppCompatActivity implements View.OnClickListener {
     TextView tv;
@@ -39,6 +37,9 @@ public class StartActivity extends AppCompatActivity implements View.OnClickList
        // bt_h.setOnClickListener(this);
         Button bt_b = findViewById(R.id.bt_b);
         bt_b.setOnClickListener(this);
+
+        MultipleStatusView nn = findViewById(R.id.nn);
+        nn.showContent();
     }
 
     @Override

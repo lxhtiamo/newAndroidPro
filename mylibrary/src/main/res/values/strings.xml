@@ -50,4 +50,16 @@
     <string name="permission_no_content">您还没有授予权限，将无法体验【%s】的全部功能，是否去设置界面打开权限？</string>
     <string name="permission_no_content2">您还没有授予%s权限，将无法体验【%s】的全部功能，是否去设置界面打开权限？</string>
 
+
+
+
+    <!-- 加载状态相关 -->
+    <string name="view_empty">暂无数据</string>
+    <string name="view_network_error">网络异常</string>
+    <string name="view_no_network">没有网络</string>
+
+    <string name="empty_view_hint">暂无数据</string>
+    <string name="error_view_hint">加载失败</string>
+    <string name="no_network_view_hint">网络异常</string>
+    <string name="loading">加载中...</string>
 </resources>
