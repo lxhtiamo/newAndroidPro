@@ -1,6 +1,7 @@
 package com.linx.mylibrary.utils;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 
 import com.linx.mylibrary.utils.manager.AppLogMessageMgr;
 
@@ -10,704 +11,453 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 主要功能：该工具用于App时间管理通用类
- *
- * @date: 2017年05月04日 14:13
- * @Copyright: 个人版权所有
- * @Company:
- * @version: 1.0.0
+ * 日期时间工具类
+ * 线程安全，高性能日期时间处理工具
+ * @version: 2.0.0
  */
 @SuppressLint("SimpleDateFormat")
 public class RxSysDateTool {
 
+    // 线程安全的日期格式化器缓存
+    private static final ConcurrentHashMap<String, ThreadLocal<SimpleDateFormat>> FORMATTER_CACHE =
+            new ConcurrentHashMap<>();
 
-    private static SimpleDateFormat yyyyMMddFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static SimpleDateFormat hhmmssFormat = new SimpleDateFormat("HH:mm:ss");
-    private static SimpleDateFormat yyyyMMddHHmmssFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    // 常用格式常量
+    public static final String PATTERN_ALL = "yyyy-MM-dd HH:mm:ss:SSS";
+    public static final String PATTERN_ALL_CN = "yyyy年MM月dd日 HH时mm分ss秒SSS毫秒";
+    public static final String PATTERN_FULL = "yyyy-MM-dd HH:mm:ss";
+    public static final String PATTERN_FULL_CN = "yyyy年MM月dd日 HH时mm分ss秒";
+    public static final String PATTERN_MINUTE = "yyyy-MM-dd HH:mm";
+    public static final String PATTERN_MINUTE_CN = "yyyy年MM月dd日 HH时mm分";
+    public static final String PATTERN_DATE = "yyyy-MM-dd";
+    public static final String PATTERN_DATE_CN = "yyyy年MM月dd日";
+    public static final String PATTERN_TIME = "HH:mm:ss";
+    public static final String PATTERN_COMPACT = "yyyyMMddHHmmss";
+    public static final String PATTERN_COMPACT_FULL = "yyyyMMddHHmmssSSS";
+    public static final String PATTERN_YEAR = "yyyy";
+    public static final String PATTERN_MONTH = "MM";
+    public static final String PATTERN_DAY = "dd";
+    public static final String PATTERN_HOUR_MINUTE = "HH:mm";
 
-
-    private final static ThreadLocal<SimpleDateFormat> dateFormater = new ThreadLocal<SimpleDateFormat>() {
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd");
-        }
-    };
-
-
-    private final static ThreadLocal<SimpleDateFormat> dateFormaterFull = new ThreadLocal<SimpleDateFormat>() {
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        }
-    };
-
+    // 默认时区
+    private static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getDefault();
 
     /**
-     * 获得当前系统时间并转换成字符串(格式：yyyy-MM-dd HH:mm:ss:SSS)
-     *
-     * @return String 当前系统时间
+     * 获取线程安全的SimpleDateFormat实例
+     */
+    private static SimpleDateFormat getFormatter(String pattern) {
+        ThreadLocal<SimpleDateFormat> threadLocal = FORMATTER_CACHE.get(pattern);
+        if (threadLocal == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                threadLocal = ThreadLocal.withInitial(() -> {
+                    SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
+                    sdf.setTimeZone(DEFAULT_TIME_ZONE);
+                    return sdf;
+                });
+            }
+            FORMATTER_CACHE.putIfAbsent(pattern, threadLocal);
+        }
+        return threadLocal.get();
+    }
+
+    /**
+     * 获取当前系统时间（指定格式）
+     */
+    public static String getCurrentTime(String pattern) {
+        try {
+            return getFormatter(pattern).format(new Date());
+        } catch (Exception e) {
+            AppLogMessageMgr.e("RxSysDateTool", "getCurrentTime error: " + e.getMessage());
+            return "";
+        }
+    }
+
+    /**
+     * 获取当前系统时间（完整格式）
      */
     public static String getSysDateByAll() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        return getCurrentTime(PATTERN_ALL);
     }
 
-
     /**
-     * 系统时间转换成指定格式(格式：yyyy年MM月dd日 HH时mm分ss秒SSS毫秒)
-     *
-     * @return String 当前系统时间
+     * 获取当前系统时间（完整格式，中文）
      */
     public static String getSysDateByAllFormat() {
-        return new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒SSS毫秒").format(new Date());
+        return getCurrentTime(PATTERN_ALL_CN);
     }
 
-
     /**
-     * 获得当前系统时间并转换成字符串(格式：yyyy-MM-dd HH:mm:ss)
-     *
-     * @return String 当前系统时间
+     * 获取当前系统时间（年月日时分秒）
      */
     public static String getSysDateByFull() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        return getCurrentTime(PATTERN_FULL);
     }
 
-
     /**
-     * 系统时间转换成指定格式(格式：yyyy年MM月dd日 HH时mm分ss秒)
-     *
-     * @return String 当前系统时间
+     * 获取当前系统时间（年月日时分秒，中文）
      */
     public static String getSysDateByFullFormat() {
-        return new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new Date());
-    }
-
-
-    /**
-     * 获得当前系统时间并转换成字符串(格式：yyyy-MM-dd HH:mm)
-     *
-     * @return String 当前系统时间
-     */
-    public static String getSysDateByMinute() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
-    }
-
-
-    /**
-     * 系统时间转换成指定格式(格式：yyyy年MM月dd日 HH时mm分)
-     *
-     * @return String 当前系统时间
-     */
-    public static String getSysDateByMinuteFormat() {
-        return new SimpleDateFormat("yyyy年MM月dd日  HH时mm分").format(new Date());
+        return getCurrentTime(PATTERN_FULL_CN);
     }
 
     /**
-     * 获得当前系统时间并转换成字符串(格式：yyyy-MM-dd HH)
-     *
-     * @return String 当前系统时间
-     */
-    public static String getSysDateByHour() {
-        return new SimpleDateFormat("yyyy-MM-dd HH").format(new Date());
-    }
-
-
-    /**
-     * 系统时间转换成指定格式(格式：yyy年MM月dd日 HH时)
-     *
-     * @return String  当前系统时间
-     */
-    public static String getSysDateByHourFormat() {
-        return new SimpleDateFormat("yyyy年MM月dd日  HH时").format(new Date());
-    }
-
-
-    /**
-     * 获得当前系统时间并转换成字符串(格式：yyyy-MM-dd)
-     *
-     * @return String 当前系统时间
+     * 获取当前系统日期（年月日）
      */
     public static String getSysDate() {
-        return new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        return getCurrentTime(PATTERN_DATE);
     }
 
-
     /**
-     * 系统时间转换成指定格式(格式：yyy年MM月dd日)
-     *
-     * @return String  当前系统时间
+     * 获取当前系统日期（年月日，中文）
      */
     public static String getSysDateFormat() {
-        return new SimpleDateFormat("yyyy年MM月dd日").format(new Date());
+        return getCurrentTime(PATTERN_DATE_CN);
     }
 
-
     /**
-     * 通过时间字符串转换成指定格式
-     *
-     * @param date       时间值
-     * @param dataFormat 格式为(yyyy-MM-dd 或 yyyy-MM-dd HH:mm:ss)
-     * @return String 返回格式化时间值
+     * 格式化日期时间
      */
-    public static Date getFormatDateByString(String date, String dataFormat) {
+    public static String format(Date date, String pattern) {
+        if (date == null) return "";
         try {
-            return new SimpleDateFormat(dataFormat).parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getFormatDateByString", e.getMessage().toString());
-            return null;
-        }
-    }
-
-
-    /**
-     * 通过时间字符串转换成指定格式
-     *
-     * @param date            时间值
-     * @param dataFormat      格式为(yyyy-MM-dd 或 yyyy-MM-dd HH:mm:ss)
-     * @param chianDataFormat 格式可为(yyyy-MM-dd 或 yyyy-MM-dd HH:mm:ss) 或 (yyyy年MM月dd日 或 yyyy年MM月dd日 HH时mm分ss秒)
-     * @return String 返回格式化时间值
-     */
-    public static String getFormatDateByString(String date, String dataFormat, String chianDataFormat) {
-        try {
-            return new SimpleDateFormat(chianDataFormat).format(new SimpleDateFormat(dataFormat).parse(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getFormatDateByString", e.getMessage().toString());
-            return null;
-        }
-    }
-
-
-    /**
-     * 通过时间字符串转换成指定格式(格式：yyyy年MM月dd日)
-     *
-     * @param date 时间值
-     * @return String 返回格式化时间值
-     */
-    public static String getFormatDateByString(String date) {
-        try {
-            return new SimpleDateFormat("yyyy年MM月dd日").format(new SimpleDateFormat("yyyy-MM-dd").parse(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getFormatDateByString", e.getMessage().toString());
-            return null;
-        }
-    }
-
-
-    /**
-     * 通过时间字符串转换成指定格式(格式：yyyy年MM月dd日 HH时mm分ss秒)
-     *
-     * @param date 时间值
-     * @return String 返回格式化时间值
-     */
-    public static String getFormatDateFullByString(String date) {
-        try {
-            return new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getFormatDateFullByString", e.getMessage().toString());
-            return null;
-        }
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmss)
-     *
-     * @return String 返回时间
-     */
-    public static String getNowTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        return sdf.format(Calendar.getInstance().getTime());
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmss)
-     *
-     * @return String 返回时间
-     */
-    public static String getStringTime() {
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-        return df.format(new Date());
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmssSSS)
-     *
-     * @return String 返回时间
-     */
-    public static String getStringTimeFull() {
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        return df.format(new Date());
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmssSSS) + 四位随机码  = 共19位随机码
-     *
-     * @return String 返回时间
-     */
-    public static String getStringTimeFullRandom2() {
-        return getStringTimeFull() + new Random().nextInt(100);
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmssSSS) + 四位随机码  = 共21位随机码
-     *
-     * @return String 返回时间
-     */
-    public static String getStringTimeFullRandom4() {
-        return getStringTimeFull() + new Random().nextInt(10000);
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmss) + 四位随机码  = 共12位随机码
-     *
-     * @return String 返回时间
-     */
-    public static String getStringTimeRandom2() {
-        return getStringTime() + new Random().nextInt(100);
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmss) + 四位随机码  = 共14位随机码
-     *
-     * @return String 返回时间
-     */
-    public static String getStringTimeRandom4() {
-        return getStringTime() + new Random().nextInt(10000);
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmss) + 六位随机码   = 共16位随机码
-     *
-     * @return String 返回时间
-     */
-    public static String getStringTimeRandom6() {
-        return getStringTime() + new Random().nextInt(1000000);
-    }
-
-    /**
-     * 获取系统时间(格式：yyyyMMddHHmmss) + 八位随机码    = 共18位随机码
-     *
-     * @return String 返回时间
-     */
-    public static String getStringTimeRandom8() {
-        return getStringTime() + new Random().nextInt(100000000);
-    }
-
-    /**
-     * 获取参数时间的年
-     *
-     * @param date 时间值
-     * @return String 返回年
-     */
-    public static String getSysYear(Date date) {
-        return new SimpleDateFormat("yyyy").format(date).toString();
-    }
-
-    /**
-     * 获取参数时间的年
-     *
-     * @param date 时间值
-     * @return String 返回年
-     */
-    public static String getSysYear(String date) {
-        return new SimpleDateFormat("yyyy").format(date).toString();
-    }
-
-    /**
-     * 获取参数时间的月
-     *
-     * @param date 时间值
-     * @return String 返回月
-     */
-    public static String getSysMonth(Date date) {
-        return new SimpleDateFormat("MM").format(date).toString();
-    }
-
-    /**
-     * 获取参数时间的月
-     *
-     * @param date 时间值
-     * @return String 返回月
-     */
-    public static String getSysMonth(String date) {
-        return new SimpleDateFormat("MM").format(date).toString();
-    }
-
-    /**
-     * 获取参数时间的天
-     *
-     * @param date 时间值
-     * @return String 返回天
-     */
-    public static String getSysDay(Date date) {
-        return new SimpleDateFormat("dd").format(date).toString();
-    }
-
-    /**
-     * 获取参数时间的天
-     *
-     * @param date 时间值
-     * @return String 返回天
-     */
-    public static String getSysDay(String date) {
-        return new SimpleDateFormat("dd").format(date).toString();
-    }
-
-    /**
-     * 获取参数小时 HH时mm分ss秒SSS毫秒
-     *
-     * @param date 时间值
-     * @return String 返回小时
-     */
-    public static String getSysHour(Date date) {
-        return new SimpleDateFormat("HH:mm").format(date).toString();
-    }
-
-    /**
-     * 获取参数小时
-     *
-     * @param date 时间值
-     * @return String 返回小时
-     */
-    public static String getSysHour(String date) {
-        return new SimpleDateFormat("HH:mm").format(date).toString();
-    }
-
-    /**
-     * 获取当前时间(格式：yyyy-MM-dd)
-     *
-     * @return String 返回时间
-     */
-    public static String getCalendarToday() {
-        int year = 0;
-        int moth = 0;
-        int day = 0;
-        Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        moth = c.get(Calendar.MONTH) + 1;
-        day = c.get(Calendar.DAY_OF_MONTH);
-        return year + "-" + moth + "-" + day;
-    }
-
-    /**
-     * 获取当前时间的下个月份(格式：yyyy-MM-dd)
-     *
-     * @return String 当前时间下个月份
-     */
-    public static String getCalendarTodayNextMonth() {
-        int year = 0;
-        int moth = 0;
-        int day = 0;
-        Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        moth = c.get(Calendar.MONTH) + 1;
-        day = c.get(Calendar.DAY_OF_MONTH) + 2;
-        return year + "-" + moth + "-" + day;
-    }
-
-    /**
-     * 判断日期是否属于今天日期(精确到天)
-     *
-     * @param sDate 日期值
-     * @return boolean 返回true表示是，false表示不是
-     */
-    public static boolean getSysIsToday(String sDate) {
-        boolean falg = false;
-        try {
-            Date date = null;
-            date = dateFormaterFull.get().parse(sDate);
-            Date today = new Date();
-            if (date != null) {
-                String nowDate = dateFormater.get().format(today);
-                String timeDate = dateFormater.get().format(date);
-                if (nowDate.equals(timeDate)) {
-                    falg = true;
-                }
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getSysIsToday", e.getMessage().toString());
-        }
-        return falg;
-    }
-
-    /**
-     * 检查日期是否有效
-     *
-     * @param year  年
-     * @param month 月
-     * @param day   日
-     * @return boolean
-     */
-    public static boolean getDateIsTrue(String year, String month, String day) {
-        try {
-            String data = year + month + day;
-            SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyyMMdd");
-            simpledateformat.setLenient(false);
-            simpledateformat.parse(data);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getDateIsTrue", e.getMessage().toString());
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 判断两个字符串日期的前后
-     *
-     * @param strdate1 字符串时间1
-     * @param strdate2 字符串时间2
-     * @return boolean
-     * 日期与时间
-     */
-    public static boolean getDateIsBefore(String strdate1, String strdate2) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            AppLogMessageMgr.i("RxSysDateMgr-->>getDateIsBefore-->>strdate1: ", strdate1);
-            AppLogMessageMgr.i("RxSysDateMgr-->>getDateIsBefore-->>strdate2: ", strdate2);
-            return df.parse(strdate1).before(df.parse(strdate2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getDateIsBefore", e.getMessage().toString());
-            return false;
-        }
-    }
-
-    /**
-     * 判断两个字符串日期的前后
-     *
-     * @param strdate1 字符串时间1
-     * @param strdate2 字符串时间2
-     * @return boolean
-     */
-    public static boolean getDateIsEqual(String strdate1, String strdate2) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return df.parse(strdate1).equals(df.parse(strdate2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getDateIsBefore", e.getMessage().toString());
-            return false;
-        }
-    }
-
-    /**
-     * 判断两个字符串日期的前后
-     *
-     * @param Longdate1 字符串时间1
-     * @param Longdate2 字符串时间2
-     * @return boolean
-     */
-    public static boolean getDateIsBefore(Long Longdate1, Long Longdate2) {
-        try {
-            AppLogMessageMgr.i("RxSysDateMgr-->>getDateIsBefore-->>strdate1: ", Longdate1 + "");
-            AppLogMessageMgr.i("RxSysDateMgr-->>getDateIsBefore-->>strdate2: ", Longdate2 + "");
-            Longdate1 = (null == Longdate1) ? 0 : Longdate1;
-            Longdate2 = (null == Longdate2) ? 0 : Longdate2;
-            return Longdate1 > Longdate2 ? true : false;
+            return getFormatter(pattern).format(date);
         } catch (Exception e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getDateIsBefore", e.getMessage().toString());
-            return false;
+            AppLogMessageMgr.e("RxSysDateTool", "format error: " + e.getMessage());
+            return "";
         }
     }
 
     /**
-     * 判断两个时间日期的前后
-     *
-     * @param date1 日期1
-     * @param date2 日期2
-     * @return boolean
+     * 格式化日期时间字符串
      */
-    public static boolean getDateIsBefore(Date date1, Date date2) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return getDateIsBefore(df.format(date1), df.format(date2));
+    public static String format(String dateStr, String srcPattern, String destPattern) {
+        if (dateStr == null || dateStr.isEmpty()) return "";
+        try {
+            Date date = parse(dateStr, srcPattern);
+            return format(date, destPattern);
+        } catch (Exception e) {
+            AppLogMessageMgr.e("RxSysDateTool", "format string error: " + e.getMessage());
+            return "";
+        }
     }
 
-//	public static int getDateIsBefore(String DATE1, String DATE2) {
-//
-//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-//		try {
-//			Date dt1 = df.parse(DATE1);
-//			Date dt2 = df.parse(DATE2);
-////			if (dt1.getTime() > dt2.getTime()) {
-////				return 1;
-////			} else if (dt1.getTime() < dt2.getTime()) {
-////				return -1;
-////			} else {
-////				return 0;
-////			}
-////
-//
-//			if(getDateIsBefore(dt1 , dt2)){
-//				return -1;
-//			}else{
-//				return 1;
-//			}
-//		} catch (Exception exception) {
-//			exception.printStackTrace();
-//		}
-//		return 0;
-//	}
-
-
     /**
-     * 判断两个字符串日期的前后
-     *
-     * @param strdate1 字符串时间1
-     * @param strdate2 字符串时间2
-     * @return boolean
-     * 日期比较
-     * <p>
-     * create by huangcheng
+     * 解析日期时间字符串
      */
-    public static boolean getDateIsBeforeYYMMDD(String strdate1, String strdate2) {
+    public static Date parse(String dateStr, String pattern) {
+        if (dateStr == null || dateStr.isEmpty()) return null;
         try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            AppLogMessageMgr.i("RxSysDateMgr-->>getDateIsBefore-->>strdate1: ", strdate1);
-            AppLogMessageMgr.i("RxSysDateMgr-->>getDateIsBefore-->>strdate2: ", strdate2);
-            return df.parse(strdate1).before(df.parse(strdate2));
+            return getFormatter(pattern).parse(dateStr);
         } catch (ParseException e) {
-            e.printStackTrace();
-            AppLogMessageMgr.e("RxSysDateMgr-->>getDateIsBefore", e.getMessage().toString());
-            return false;
-        }
-    }
-
-    /**
-     * 日期格式字符串转换成时间戳
-     * <p>
-     * create by fuxiaosong
-     *
-     * @return
-     */
-    public static long date2TimeStamp(String date, SimpleDateFormat dateFormat) {
-        try {
-            return dateFormat.parse(date).getTime() / 1000;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    /**
-     * 计算两个日期之间相差的分钟
-     * <p>
-     * create by fuxiaosong
-     */
-    public static long minuteBetweenTwoDate(String dateBegin, String dateEnd) {
-        long millisBegin = date2TimeStamp(dateBegin, yyyyMMddHHmmssFormat);
-        long millisEnd = date2TimeStamp(dateEnd, yyyyMMddHHmmssFormat);
-        return (millisEnd - millisBegin) / 60;
-    }
-
-    /**
-     * @param @param  dateDefault
-     * @param @return 设定文件
-     * @return String    返回类型
-     * @throws
-     * @Title: getStringByDateDefault
-     * @Description: 将"Tue Apr 18 15:41:37 CST 2017"转成"2017-04-18 15:41:37"
-     */
-    public static String getStringByDateDefault(String dateDefault) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
-            Date d = sdf.parse(dateDefault);
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(d);
-        } catch (ParseException e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-
-        return null;
-//	       SimpleDateFormat sdf1 = new SimpleDateFormat ("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
-//                try {
-//                    Date date = sdf1.parse(dateDefault);
-//                    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                   return sdf.format(date);
-//                } catch (ParseException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-    }
-
-    /**
-     * @param time 2017年5月5日15时41分
-     * @return String
-     * @Description:2017年5月5日15时41分将年月日时分秒数字单独分割出来：2017 5 5 15 41
-     */
-    public static String getAloneTime(String time) {
-        String regex = "(\\d{4})年(\\d{1,2})月(\\d{1,2})日(\\d{1,2})时(\\d{1,2})";
-        Matcher m = Pattern.compile(regex).matcher(time);
-        if (m.find()) {
-            return m.group(1) + "," + m.group(2) + "," + m.group(3) + "," + m.group(4) + "," + m.group(5);
-        }
-        return null;
-    }
-
-    /**
-     * 获取星期几
-     *
-     * @param date
-     * @return 0-6代表星期日->六
-     */
-    public static int getWeek(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal.get(Calendar.DAY_OF_WEEK) - 1;
-    }
-
-    /**
-     * 获取星期几
-     *
-     * @param dateTime
-     * @return
-     */
-    public static int getWeek(String dateTime) {
-        return getWeek(string2Date(dateTime, yyyyMMddHHmmssFormat));
-    }
-
-    /**
-     * 获取星期几
-     *
-     * @param dateTime
-     * @param simpleDateFormat
-     * @return
-     */
-    public static int getWeek(String dateTime, SimpleDateFormat simpleDateFormat) {
-        return getWeek(string2Date(dateTime, simpleDateFormat));
-    }
-
-    /**
-     * 将年月日时分秒转成Date类型
-     *
-     * @param time
-     * @return
-     */
-    public static Date string2Date(String time) {
-        return string2Date(time, yyyyMMddHHmmssFormat);
-    }
-
-    /**
-     * 将年月日时分秒转成Date类型
-     *
-     * @param time
-     * @param simpleDateFormat
-     * @return
-     */
-    public static Date string2Date(String time, SimpleDateFormat simpleDateFormat) {
-        try {
-            return simpleDateFormat.parse(time);
-        } catch (ParseException var3) {
-            var3.printStackTrace();
+            AppLogMessageMgr.e("RxSysDateTool", "parse error: " + e.getMessage() + ", dateStr: " + dateStr);
             return null;
         }
+    }
+
+    /**
+     * 获取时间戳
+     */
+    public static long getTimestamp(String dateStr, String pattern) {
+        Date date = parse(dateStr, pattern);
+        return date != null ? date.getTime() : 0;
+    }
+
+    /**
+     * 获取当前时间戳
+     */
+    public static long getCurrentTimestamp() {
+        return System.currentTimeMillis();
+    }
+
+    /**
+     * 获取当前时间戳（秒）
+     */
+    public static long getCurrentTimestampSeconds() {
+        return System.currentTimeMillis() / 1000;
+    }
+
+    /**
+     * 生成带随机数的时间戳字符串
+     */
+    public static String getTimestampWithRandom(int randomDigits) {
+        StringBuilder sb = new StringBuilder(getCurrentTime(PATTERN_COMPACT));
+        if (randomDigits > 0) {
+            Random random = new Random();
+            int max = (int) Math.pow(10, randomDigits);
+            String format = "%0" + randomDigits + "d";
+            sb.append(String.format(Locale.getDefault(), format, random.nextInt(max)));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 获取日期的年份
+     */
+    public static String getYear(Date date) {
+        return format(date, PATTERN_YEAR);
+    }
+
+    /**
+     * 获取日期的月份
+     */
+    public static String getMonth(Date date) {
+        return format(date, PATTERN_MONTH);
+    }
+
+    /**
+     * 获取日期的天数
+     */
+    public static String getDay(Date date) {
+        return format(date, PATTERN_DAY);
+    }
+
+    /**
+     * 判断是否为今天
+     */
+    public static boolean isToday(String dateStr, String pattern) {
+        if (dateStr == null || dateStr.isEmpty()) return false;
+        try {
+            Date date = parse(dateStr, pattern);
+            if (date == null) return false;
+
+            Calendar target = Calendar.getInstance();
+            target.setTime(date);
+
+            Calendar today = Calendar.getInstance();
+
+            return target.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                    target.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR);
+        } catch (Exception e) {
+            AppLogMessageMgr.e("RxSysDateTool", "isToday error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否为今天（默认格式）
+     */
+    public static boolean isToday(String dateStr) {
+        return isToday(dateStr, PATTERN_DATE);
+    }
+
+    /**
+     * 比较两个日期时间
+     * @return -1: date1 < date2, 0: date1 = date2, 1: date1 > date2
+     */
+    public static int compare(String dateStr1, String dateStr2, String pattern) {
+        Date date1 = parse(dateStr1, pattern);
+        Date date2 = parse(dateStr2, pattern);
+
+        if (date1 == null && date2 == null) return 0;
+        if (date1 == null) return -1;
+        if (date2 == null) return 1;
+
+        return date1.compareTo(date2);
+    }
+
+    /**
+     * 判断date1是否在date2之前
+     */
+    public static boolean isBefore(String dateStr1, String dateStr2, String pattern) {
+        return compare(dateStr1, dateStr2, pattern) < 0;
+    }
+
+    /**
+     * 判断date1是否在date2之后
+     */
+    public static boolean isAfter(String dateStr1, String dateStr2, String pattern) {
+        return compare(dateStr1, dateStr2, pattern) > 0;
+    }
+
+    /**
+     * 计算两个日期相差的天数
+     */
+    public static int daysBetween(String dateStr1, String dateStr2, String pattern) {
+        Date date1 = parse(dateStr1, pattern);
+        Date date2 = parse(dateStr2, pattern);
+
+        if (date1 == null || date2 == null) return 0;
+
+        long diff = Math.abs(date2.getTime() - date1.getTime());
+        return (int) (diff / (1000 * 60 * 60 * 24));
+    }
+
+    /**
+     * 计算两个日期相差的分钟数
+     */
+    public static long minutesBetween(String dateStr1, String dateStr2, String pattern) {
+        Date date1 = parse(dateStr1, pattern);
+        Date date2 = parse(dateStr2, pattern);
+
+        if (date1 == null || date2 == null) return 0;
+
+        long diff = Math.abs(date2.getTime() - date1.getTime());
+        return diff / (1000 * 60);
+    }
+
+    /**
+     * 日期加减
+     */
+    public static String addDays(String dateStr, String pattern, int days) {
+        Date date = parse(dateStr, pattern);
+        if (date == null) return "";
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_YEAR, days);
+
+        return format(calendar.getTime(), pattern);
+    }
+
+    /**
+     * 获取星期几
+     * @return 1-7 分别代表周一至周日
+     */
+    public static int getDayOfWeek(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        // Calendar中周日是1，周一是2，转换为周一是1
+        return day == Calendar.SUNDAY ? 7 : day - 1;
+    }
+
+    /**
+     * 获取星期几（中文）
+     */
+    public static String getDayOfWeekCN(Date date) {
+        String[] weeks = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        return weeks[day - 1];
+    }
+
+    /**
+     * 获取当月第一天
+     */
+    public static String getFirstDayOfMonth(String pattern) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return format(calendar.getTime(), pattern);
+    }
+
+    /**
+     * 获取当月最后一天
+     */
+    public static String getLastDayOfMonth(String pattern) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return format(calendar.getTime(), pattern);
+    }
+
+    /**
+     * 验证日期字符串是否有效
+     */
+    public static boolean isValidDate(String dateStr, String pattern) {
+        if (dateStr == null || dateStr.isEmpty()) return false;
+
+        SimpleDateFormat sdf = getFormatter(pattern);
+        sdf.setLenient(false);
+
+        try {
+            sdf.parse(dateStr);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 获取当前时间的友好显示（刚刚、几分钟前、几小时前等）
+     */
+    public static String getFriendlyTime(String dateStr, String pattern) {
+        Date date = parse(dateStr, pattern);
+        if (date == null) return "";
+
+        long diff = System.currentTimeMillis() - date.getTime();
+
+        if (diff < 60000) { // 1分钟内
+            return "刚刚";
+        } else if (diff < 3600000) { // 1小时内
+            long minutes = diff / 60000;
+            return minutes + "分钟前";
+        } else if (diff < 86400000) { // 24小时内
+            long hours = diff / 3600000;
+            return hours + "小时前";
+        } else if (diff < 604800000) { // 7天内
+            long days = diff / 86400000;
+            return days + "天前";
+        } else {
+            return format(date, "MM-dd HH:mm");
+        }
+    }
+
+    /**
+     * 将时间戳转换为日期字符串
+     */
+    public static String timestampToString(long timestamp, String pattern) {
+        if (timestamp <= 0) return "";
+        return format(new Date(timestamp), pattern);
+    }
+
+    /**
+     * 将"EEE MMM dd HH:mm:ss zzz yyyy"格式转换为指定格式
+     */
+    public static String convertDefaultFormat(String defaultFormatStr, String targetPattern) {
+        if (defaultFormatStr == null || defaultFormatStr.isEmpty()) return "";
+
+        try {
+            SimpleDateFormat sourceFormat = new SimpleDateFormat(
+                    "EEE MMM dd HH:mm:ss zzz yyyy", Locale.US
+            );
+            Date date = sourceFormat.parse(defaultFormatStr);
+            return format(date, targetPattern);
+        } catch (Exception e) {
+            AppLogMessageMgr.e("RxSysDateTool", "convertDefaultFormat error: " + e.getMessage());
+            return "";
+        }
+    }
+
+    /**
+     * 清理缓存（在内存紧张时调用）
+     */
+    public static void clearCache() {
+        FORMATTER_CACHE.clear();
+    }
+
+    // ========== 兼容原有方法 ==========
+
+    @Deprecated
+    public static String getNowTime() {
+        return getCurrentTime(PATTERN_COMPACT);
+    }
+
+    @Deprecated
+    public static String getStringTime() {
+        return getCurrentTime(PATTERN_COMPACT);
+    }
+
+    @Deprecated
+    public static String getStringTimeFull() {
+        return getCurrentTime(PATTERN_COMPACT_FULL);
+    }
+
+    @Deprecated
+    public static String getStringTimeRandom4() {
+        return getTimestampWithRandom(4);
+    }
+
+    @Deprecated
+    public static String getStringTimeRandom6() {
+        return getTimestampWithRandom(6);
+    }
+
+    @Deprecated
+    public static String getStringTimeRandom8() {
+        return getTimestampWithRandom(8);
     }
 }

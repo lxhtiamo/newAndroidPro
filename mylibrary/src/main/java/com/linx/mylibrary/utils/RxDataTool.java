@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Collection;
@@ -84,34 +85,86 @@ public class RxDataTool {
      * @param obj 对象
      * @return {@code true}: 为空<br>{@code false}: 不为空
      */
-    public static boolean isEmpty(Object obj) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static boolean isEmpty(Object obj, boolean checkBlank) {
+        // 1. 优先判断null（最高频场景）
         if (obj == null) {
             return true;
         }
-        if (obj instanceof String && obj.toString().length() == 0) {
+
+        // 2. 判断字符串（高频场景）
+        if (obj instanceof String) {
+            String str = (String) obj;
+            // 可选：判断空白字符串（Android API 33+支持String.isBlank()，这里兼容低版本）
+            return checkBlank ? str.trim().isEmpty() : str.isEmpty();
+        }
+
+        // 3. 判断Collection（List/Set等，高频场景）
+        if (obj instanceof Collection) {
+            return ((Collection) obj).isEmpty();
+        }
+
+        // 4. 判断Map（高频场景）
+        if (obj instanceof Map) {
+            return ((Map) obj).isEmpty();
+        }
+
+        // 5. 判断数组（包括基本类型数组和对象数组）
+        if (obj.getClass().isArray()) {
+            return Array.getLength(obj) == 0;
+        }
+
+        // 6. 判断安卓特有的Sparse系列（安卓常用场景）
+        // SparseArray（API 1+）
+        if (obj instanceof SparseArray) {
+            return ((SparseArray) obj).size() == 0;
+        }
+        // SparseBooleanArray（API 1+）
+        if (obj instanceof SparseBooleanArray) {
+            return ((SparseBooleanArray) obj).size() == 0;
+        }
+        // SparseIntArray（API 1+）
+        if (obj instanceof SparseIntArray) {
+            return ((SparseIntArray) obj).size() == 0;
+        }
+        // SparseLongArray（API 16+，避免直接引用导致低版本崩溃，使用反射处理）
+        if (isSparseLongArrayEmpty(obj)) {
             return true;
         }
-        if (obj.getClass().isArray() && Array.getLength(obj) == 0) {
-            return true;
+
+        // 其他类型均不为空
+        return false;
+    }
+
+    /**
+     * 重载方法：默认不判断空白字符串
+     */
+    public static boolean isEmpty(Object obj) {
+        return isEmpty(obj, false);
+    }
+
+    /**
+     * 反射判断SparseLongArray是否为空（解决低版本类加载问题）
+     */
+    private static boolean isSparseLongArrayEmpty(Object obj) {
+        // 1. 先判断系统版本（SparseLongArray API 16+，即JELLY_BEAN）
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            return false;
         }
-        if (obj instanceof Collection && ((Collection) obj).isEmpty()) {
-            return true;
+
+        // 2. 反射检查类型并获取size
+        try {
+            Class<?> sparseLongArrayClass = Class.forName("android.util.SparseLongArray");
+            if (sparseLongArrayClass.isInstance(obj)) {
+                Method sizeMethod = sparseLongArrayClass.getMethod("size");
+                int size = (int) sizeMethod.invoke(obj);
+                return size == 0;
+            }
+        } catch (Exception e) {
+            // 类不存在/方法不存在/反射调用失败，均视为非空
+            e.printStackTrace();
         }
-        if (obj instanceof Map && ((Map) obj).isEmpty()) {
-            return true;
-        }
-        if (obj instanceof SparseArray && ((SparseArray) obj).size() == 0) {
-            return true;
-        }
-        if (obj instanceof SparseBooleanArray && ((SparseBooleanArray) obj).size() == 0) {
-            return true;
-        }
-        if (obj instanceof SparseIntArray && ((SparseIntArray) obj).size() == 0) {
-            return true;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            return obj instanceof SparseLongArray && ((SparseLongArray) obj).size() == 0;
-        }
+
         return false;
     }
 

@@ -168,8 +168,7 @@ public class RxFileUtils {
      * @return
      */
     public static boolean isMountedSDCard() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment
-                .getExternalStorageState())) {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             return true;
         } else {
             KLog.w(TAG, "SDCARD is not MOUNTED !");

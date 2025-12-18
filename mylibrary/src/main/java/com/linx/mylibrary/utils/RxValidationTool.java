@@ -388,7 +388,7 @@ public class RxValidationTool {
 		String strMonth = Ai.substring(10, 12);
 		//日
 		String strDay = Ai.substring(12, 14);
-		if (RxSysDateTool.getDateIsTrue(strYear, strMonth, strDay) == false) {
+		if (!RxSysDateTool.isValidDate((strYear + "-" + strMonth + "-" + strDay), "yyyy-MM-dd")) {
 			errmsg = "身份证生日无效";
 			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
 			return false;
