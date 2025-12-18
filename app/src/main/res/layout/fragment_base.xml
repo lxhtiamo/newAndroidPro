@@ -2,16 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <FrameLayout
+    <com.hjq.bar.TitleBar
         android:id="@+id/fl_bar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
-        <include layout="@layout/bar" />
-    </FrameLayout>
-
+        android:visibility="gone"
+        app:leftIcon="@drawable/arrows_left_ic" />
     <include layout="@layout/view_network_state" />
     <FrameLayout
         android:id="@+id/fl_content"

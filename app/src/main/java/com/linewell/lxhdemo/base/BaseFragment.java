@@ -24,6 +24,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.hjq.bar.TitleBar;
+import com.linewell.lxhdemo.base.action.TitleBarAction;
 import com.linx.mylibrary.view.loadingStateView.NetworkStateView;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.app.AppConfig;
@@ -45,13 +47,13 @@ import java.lang.reflect.Field;
  * 核心能力：沉浸式状态栏、懒加载、网络状态View、加载对话框、Fragment通信、EventBus
  */
 public abstract class BaseFragment extends Fragment implements
-        ToastAction, ResourcesAction, HandlerAction, ClickAction, BundleAction, NetworkStateView.OnRefreshListener {
+        ToastAction, ResourcesAction, HandlerAction, ClickAction, TitleBarAction,BundleAction, NetworkStateView.OnRefreshListener {
     protected View rootView;
     protected FragmentActivity mActivity;
     private ImmersionBar mImmersionBar; // 状态栏沉浸实例
     private NetworkStateView networkStateView;
     private FrameLayout flContent; // 子类布局容器（规范命名）
-    private FrameLayout flBar; // 顶部导航栏容器
+    private TitleBar flBar; // 顶部导航栏容器
     private ProgressLoadingDialog progressDialog;
 
     // 懒加载核心状态
@@ -132,7 +134,17 @@ public abstract class BaseFragment extends Fragment implements
             networkStateView.setVisibility(View.GONE);
         }
     }
-
+    @Override
+    @Nullable
+    public TitleBar getTitleBar() {
+        if (flBar == null) {
+            flBar = obtainTitleBar(getContentView());
+        }
+        return flBar;
+    }
+    public ViewGroup getContentView() {
+        return (ViewGroup) rootView;
+    }
     /**
      * 初始化加载对话框（避免重复创建）
      */

@@ -17,6 +17,7 @@
     <!-- 定位 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <!-- 改变WiFi状态 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- 保持屏幕唤醒 -->
@@ -42,9 +43,12 @@
     <!-- Android 13+ 媒体权限（替代旧存储权限） -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
+    <!--后台定位-->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <queries>
         <package android:name="com.tencent.mm" />
         <package android:name="com.tencent.mobileqq" />
@@ -108,6 +112,10 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+        <!--高德地图value= 高德Key-->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="请输入您的用户Key" />
         <!-- 百度定位 value=百度申请的key -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -140,6 +148,7 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--友盟QQ登录分享授权流程页面-->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:exported="true"
@@ -154,6 +163,7 @@
                 <data android:scheme="tencent100424468" />
             </intent-filter>
         </activity>
+        <!-- 友盟QQ 登录、QQ 分享-->
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -169,6 +179,9 @@
                 android:name="androidx.core.content.FileProvider.PATH"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- 高德地图定位服务 -->
+        <service android:name="com.amap.api.location.APSService" />
     </application>
 
 </manifest>

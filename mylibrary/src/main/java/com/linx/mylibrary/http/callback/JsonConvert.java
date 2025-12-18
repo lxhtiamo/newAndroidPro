@@ -147,7 +147,6 @@ public class JsonConvert<T> implements Converter<T> {
         Type rawType = type.getRawType();                     // 泛型的实际类型
         Type typeArgument = type.getActualTypeArguments()[0]; // 泛型的参数
         if (rawType != LzyResponse.class) {
-            // TODO: 2018/1/23
             // 泛型格式如下： new JsonCallback<外层BaseBean<内层JavaBean>>(this)
             T t = Convert.fromJson(jsonReader, type);
             response.close();

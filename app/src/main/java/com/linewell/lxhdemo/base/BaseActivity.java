@@ -27,9 +27,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.hjq.bar.TitleBar;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.XXPermissions;
 import com.hjq.permissions.permission.base.IPermission;
+import com.linewell.lxhdemo.base.action.TitleBarAction;
 import com.linx.mylibrary.view.loadingStateView.NetworkStateView;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.app.AppConfig;
@@ -57,7 +59,7 @@ import java.util.List;
  * 支持子类灵活重写核心配置，无冗余逻辑，兼容Android 4.4+（API 19+）主流版本
  */
 public abstract class BaseActivity extends AppCompatActivity implements
-        ToastAction, HandlerAction, ActivityAction, BundleAction, ClickAction, NetworkStateView.OnRefreshListener {
+        ToastAction, HandlerAction, ActivityAction, BundleAction, ClickAction, TitleBarAction, NetworkStateView.OnRefreshListener {
     // 静态常量：替代硬编码，提升可维护性
     private static final long JUMP_INTERVAL = 500; // 防重复跳转间隔（毫秒）
     private static final int SOFT_INPUT_MODE = WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
@@ -71,7 +73,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     // 视图控件
     private NetworkStateView networkStateView;
     private FrameLayout flContent;
-    private FrameLayout flBar;
+    private TitleBar flBar;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener; // 独立布局监听
     // 弹窗与管理
     private ProgressLoadingDialog progressDialog;
@@ -90,7 +92,20 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public Context getContext() {
         return this;
     }
-
+    @Override
+    @Nullable
+    public TitleBar getTitleBar() {
+        if (flBar == null) {
+            flBar = obtainTitleBar(getContentView());
+        }
+        return flBar;
+    }
+    public ViewGroup getContentView() {
+        // 1. 获取Activity的最顶层根视图DecorView
+        View decorView = getWindow().getDecorView();
+        // 2. 从DecorView中查找content区域（android.R.id.content）
+        return decorView.findViewById(android.R.id.content);
+    }
     @Override
     public Bundle getBundle() {
         return getIntent().getExtras();
