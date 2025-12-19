@@ -22,8 +22,6 @@ import com.linewell.lxhdemo.R;
 
 /**
  * @author xh
- * @Description (用一句话描述这个类的作用)
- * @date 2018/4/25 13:00
  */
 public class BaseWebViewActivity extends BaseActivity {
 
