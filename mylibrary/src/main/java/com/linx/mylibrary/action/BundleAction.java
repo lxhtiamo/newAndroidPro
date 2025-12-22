@@ -1,4 +1,4 @@
-package com.linewell.lxhdemo.base.action;
+package com.linx.mylibrary.action;
 
 import android.os.Bundle;
 import android.os.Parcelable;

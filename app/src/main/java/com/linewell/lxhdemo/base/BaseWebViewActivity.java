@@ -97,8 +97,8 @@ public class BaseWebViewActivity extends BaseActivity {
         // 允许网页弹对话框
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
 //        webSettings.setPluginState(WebSettings.PluginState.ON);
-        webSettings.setSupportZoom(true);// 设置可以支持缩放
-        webSettings.setBuiltInZoomControls(true);// 设置出现缩放工具 是否使用WebView内置的缩放组件，由浮动在窗口上的缩放控制和手势缩放控制组成，默认false
+        webSettings.setSupportZoom(false);// 设置可以支持缩放
+        webSettings.setBuiltInZoomControls(false);// 设置出现缩放工具 是否使用WebView内置的缩放组件，由浮动在窗口上的缩放控制和手势缩放控制组成，默认false
 
         webSettings.setDisplayZoomControls(false);//隐藏缩放工具
         webSettings.setUseWideViewPort(true);// 扩大比例的缩放

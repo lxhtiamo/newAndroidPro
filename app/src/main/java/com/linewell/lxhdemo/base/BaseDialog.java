@@ -39,12 +39,12 @@ import androidx.lifecycle.LifecycleRegistry;
 
 
 import com.linewell.lxhdemo.R;
-import com.linewell.lxhdemo.base.action.ActivityAction;
-import com.linewell.lxhdemo.base.action.AnimAction;
-import com.linewell.lxhdemo.base.action.ClickAction;
-import com.linewell.lxhdemo.base.action.HandlerAction;
-import com.linewell.lxhdemo.base.action.KeyboardAction;
-import com.linewell.lxhdemo.base.action.ResourcesAction;
+import com.linx.mylibrary.action.ActivityAction;
+import com.linx.mylibrary.action.AnimAction;
+import com.linx.mylibrary.action.ClickAction;
+import com.linx.mylibrary.action.HandlerAction;
+import com.linx.mylibrary.action.KeyboardAction;
+import com.linx.mylibrary.action.ResourcesAction;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
