@@ -12,7 +12,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 /**
- *    author : Android 轮子哥
+ *    author : Android 
  */
 public interface ResourcesAction {
 

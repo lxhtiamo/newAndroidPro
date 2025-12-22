@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- *    author : Android 轮子哥
+ *    author : Android 
  */
 public interface BundleAction {
 

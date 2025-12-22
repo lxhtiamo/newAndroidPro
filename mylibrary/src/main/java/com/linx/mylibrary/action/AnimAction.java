@@ -1,10 +1,10 @@
 package com.linx.mylibrary.action;
 
 
-import com.linewell.lxhdemo.R;
+import com.linx.mylibrary.R;
 
 /**
- *    author : Android 轮子哥
+ *    author : Android 
  *    github : https://github.com/getActivity/AndroidProject
  *    time   : 2019/09/21
  *    desc   : 动画样式
