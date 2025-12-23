@@ -70,4 +70,6 @@
     <!--分割线色值-->
     <color name="divider_line">#d7d7d7</color>
     <color name="color_333">#333333</color>
+    <color name="text_primary_333">@color/color_333</color>
+    <color name="text_hint">#9E9E9E</color>
 </resources>
