@@ -1,6 +1,5 @@
 <resources>
-
-    <!-- Base application theme. -->
+    <!-- 应用主题样式 -->
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- 窗口背景颜色 -->
         <!--  <item name="android:windowBackground">@color/windowBackground</item>-->
@@ -10,7 +9,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!-- 应用的强调色，CheckBox，RadioButton，SwitchCompat等一般控件的选中效果默认采用该颜色 -->
         <item name="colorAccent">@color/colorAccent</item>
-
+        <!-- Material3 中用 colorSecondary 替代 colorAccent，避免映射冲突 -->
+        <item name="colorSecondary">@color/colorAccent</item>
         <!-- ActionMode覆盖Actionbar，不顶下来 -->
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -20,7 +20,22 @@
         <item name="actionModeBackground">@color/colorPrimary</item>
         <!-- 解决 Android 5.1 及以上版本 Button 英文字符串自动变大写的问题 -->
         <item name="android:textAllCaps">false</item>
+        <!-- 关闭 TextView 自带的文字间距 -->
+        <item name="android:includeFontPadding">false</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
+        <!-- 默认文本颜色，Button、TextView 的文字颜色 -->
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:buttonStyle">@style/AppCompat_Button_Default_Padding</item>
+        <!--Material3 Button 基础样式-->
+        <item name="materialButtonStyle">@style/MD_Button_Default_Padding</item>
+        <!-- 解决 ActionBar 占位导致 Dialog 无法全屏显示的问题 -->
+        <item name="android:windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- EdgeToEdge：透明系统栏，背景延伸到状态栏/导航栏 -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- Activity 动画效果 -->
+        <item name="android:windowAnimationStyle">@style/LeftToRightAnimStyle</item>
     </style>
     <!-- 解决启动页白屏的问题 -->
     <style name="LauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -62,5 +77,18 @@
         <item name="cornerSize">@dimen/sw_12dp</item>
     </style>
 
+    <!-- 按钮默认button默认的padding -->
+    <style name="MD_Button_Default_Padding" parent="Widget.Material3.Button">
+        <item name="android:insetTop">@dimen/sw_0dp</item>
+        <item name="android:insetBottom">@dimen/sw_0dp</item>
+    </style>
 
+    <style name="AppCompat_Button_Default_Padding" parent="Widget.AppCompat.Button">
+        <item name="android:insetTop">@dimen/sw_0dp</item>
+        <item name="android:insetBottom">@dimen/sw_0dp</item>
+        <!-- 显式指定文本色（覆盖 colorAccent 的错误映射） -->
+        <item name="android:textColor">@color/text_primary</item>
+        <!-- 可选：指定按钮背景色，避免继承 Material3 颜色 -->
+        <item name="android:backgroundTint">@color/colorPrimary</item>
+    </style>
 </resources>

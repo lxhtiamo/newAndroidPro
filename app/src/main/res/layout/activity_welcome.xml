@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mvp.example.MainActivity">
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,5 +14,124 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="启动页面"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:layout_height="@dimen/dp_40"
+            android:id="@+id/bt"
+            android:layout_width="wrap_content"
+            android:text="启动页面"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/bt_h"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:text="变黑"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/bt_b"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:text="变白"
+            tools:ignore="MissingConstraints" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="变白"
+            android:textColor="@color/text_primary"
+            tools:ignore="MissingConstraints" />
+
+        <com.linx.mylibrary.view.editText.ClearEditText
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="这是一个带清除的按钮的EditText" />
+
+        <com.linx.mylibrary.view.editText.PasswordEditText
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:text="78797078" />
+
+        <com.linx.mylibrary.view.editText.RegexEditText
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_40"
+            android:hint="这里只能输入手机号（只能以 1 开头）"
+            app:regexType="mobile" />
+
+        <com.linx.mylibrary.view.SimpleRatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:grade="2.5"
+            app:gradeStep="half" />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="dddd" />
+
+        <com.linx.mylibrary.view.SimpleRatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:grade="3"
+            app:gradeStep="one" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:text="dddd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff=""
+            android:textOn="" />
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/MD_Button_Default_Padding"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:text="哒哒哒哒哒哒" />
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/MD_Button_Default_Padding"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:text="哒哒哒哒哒哒" />
+        <com.google.android.material.button.MaterialButton
+            style="@style/MD_Button_Default_Padding"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:text="哒哒哒哒哒哒" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,6 +1,10 @@
 package com.linewell.lxhdemo.ui.start;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,47 +15,31 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.linewell.lxhdemo.R;
 import com.linx.mylibrary.view.loadingStateView.MultipleStatusView;
 
-public class StartActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView tv;
+public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SplashScreen.installSplashScreen(this);
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_start);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        Button viewById = findViewById(R.id.bt);
-        tv = findViewById(R.id.tv);
-       // viewById.setOnClickListener(this);
-       //// Button bt_h = findViewById(R.id.bt_h);
-       // bt_h.setOnClickListener(this);
-        Button bt_b = findViewById(R.id.bt_b);
-        bt_b.setOnClickListener(this);
+        // 保持启动屏显示，直到跳转准备完成
+        splashScreen.setKeepOnScreenCondition(() -> true);
 
-        MultipleStatusView nn = findViewById(R.id.nn);
-        nn.showContent();
-    }
-
-    @Override
-    public void onClick(View v) {
-        //tv.setText(new Date().getTime() + "");
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            // 关闭暗黑模式
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            // 开启暗黑模式
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-        recreate();
+        // 延迟300ms（和启动屏动画时长匹配，避免跳转过早）
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            // 跳转前：关闭启动屏保持，让启动屏自然消失
+            splashScreen.setKeepOnScreenCondition(() -> false);
+            // 跳转到欢迎页/主页面
+            startActivity(new Intent(this, WelcomeActivity.class));
+            // 关键：结束启动页，避免返回键回到启动页
+            finish();
+            // 可选：添加跳转动画（避免页面切换生硬）
+            overridePendingTransition(0, 0); // 无动画
+        }, 300);
     }
 }

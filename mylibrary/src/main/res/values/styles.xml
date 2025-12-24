@@ -8,7 +8,6 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@null</item>
     </style>
-
     <!-- 自定义仿IOS的AlertDialog的样式 -->
     <style name="AlertDialogStyle" parent="android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -145,5 +144,13 @@
     <style name="RightAnimStyle" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/window_right_in</item>
         <item name="android:windowExitAnimation">@anim/window_right_out</item>
+    </style>
+
+    <!-- 从左往右的动画效果 -->
+    <style name="LeftToRightAnimStyle" parent="android:Animation">
+        <item name="android:activityCloseEnterAnimation">@anim/left_in_activity</item>
+        <item name="android:activityCloseExitAnimation">@anim/left_out_activity</item>
+        <item name="android:activityOpenEnterAnimation">@anim/right_in_activity</item>
+        <item name="android:activityOpenExitAnimation">@anim/right_out_activity</item>
     </style>
 </resources>
