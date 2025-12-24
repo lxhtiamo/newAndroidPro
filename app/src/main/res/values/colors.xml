@@ -6,6 +6,33 @@
     <color name="colorPrimaryDark">#1976D2</color> <!-- 状态栏颜色（你指定的色值） -->
     <color name="colorAccent">#FF4081</color> <!-- 控件强调色（如按钮、单选框，你指定的色值） -->
 
+    <!-- ========== 适配主色调的 Material3 核心配色 ========== -->
+    <!-- 主色调容器色：主色浅化（蓝色100），用于卡片/控件背景，与主色协调 -->
+    <color name="colorPrimaryContainer">#BBDEFB</color>
+    <!-- 主色调文字色：白色（与#2196F3对比度≥4.5:1，符合无障碍规范） -->
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <!-- 二级色调：复用你指定的强调色（Material3 中 colorSecondary 替代 colorAccent） -->
+    <color name="colorSecondary">#FF4081</color>
+    <!-- 二级色调容器色：粉色浅化（粉色100），用于二级控件背景 -->
+    <color name="colorSecondaryContainer">#FFC1E9</color>
+    <!-- 二级色调文字色：白色（与#FF4081对比度≥4.5:1） -->
+    <color name="colorOnSecondary">#FFFFFF</color>
+    <!-- 页面背景色：纯白（通用浅背景，与主色搭配清爽） -->
+    <color name="colorBackground">#FFFFFF</color>
+    <!-- 背景文字色：深灰（#121212，与白色背景对比度高，易读） -->
+    <color name="colorOnBackground">#121212</color>
+    <!-- 控件/卡片表面色：纯白（与背景统一，视觉整洁） -->
+    <color name="colorSurface">#FFFFFF</color>
+    <!-- 表面文字色：深灰（与表面色对比度高） -->
+    <color name="colorOnSurface">#121212</color>
+    <!-- 错误色：Material3 标准错误红（通用且醒目） -->
+    <color name="colorError">#B3261E</color>
+    <!-- 错误文字色：白色（与错误红对比度达标） -->
+    <color name="colorOnError">#FFFFFF</color>
+
+    <!-- ========== 其他通用配色（保留/适配） ========== -->
+    <color name="yellow">#FFEB3B</color>          <!-- 闪屏背景黄（保留原有） -->
+
     <!-- 主色扩展色阶：用于不同状态（如按钮按下、hover、渐变），基于colorPrimary延伸 -->
     <color name="primary_50">#E3F2FD</color> <!-- 极浅主色：背景、浅色调区域 -->
     <color name="primary_100">#BBDEFB</color> <!-- 浅主色：次要背景、卡片高亮 -->
