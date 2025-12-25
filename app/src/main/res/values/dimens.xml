@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <resources>
     <dimen name="titi">@dimen/sw_3dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_margin">@dimen/sw_16dp</dimen>
 </resources>

@@ -3,7 +3,7 @@ package com.linx.mylibrary.utils;
 import android.annotation.SuppressLint;
 import android.os.Build;
 
-import com.linx.mylibrary.utils.manager.AppLogMessageMgr;
+import com.linx.mylibrary.utils.manager.AppLogManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -71,7 +71,7 @@ public class RxSysDateTool {
         try {
             return getFormatter(pattern).format(new Date());
         } catch (Exception e) {
-            AppLogMessageMgr.e("RxSysDateTool", "getCurrentTime error: " + e.getMessage());
+            AppLogManager.e("RxSysDateTool", "getCurrentTime error: " + e.getMessage());
             return "";
         }
     }
@@ -126,7 +126,7 @@ public class RxSysDateTool {
         try {
             return getFormatter(pattern).format(date);
         } catch (Exception e) {
-            AppLogMessageMgr.e("RxSysDateTool", "format error: " + e.getMessage());
+            AppLogManager.e("RxSysDateTool", "format error: " + e.getMessage());
             return "";
         }
     }
@@ -140,7 +140,7 @@ public class RxSysDateTool {
             Date date = parse(dateStr, srcPattern);
             return format(date, destPattern);
         } catch (Exception e) {
-            AppLogMessageMgr.e("RxSysDateTool", "format string error: " + e.getMessage());
+            AppLogManager.e("RxSysDateTool", "format string error: " + e.getMessage());
             return "";
         }
     }
@@ -153,7 +153,7 @@ public class RxSysDateTool {
         try {
             return getFormatter(pattern).parse(dateStr);
         } catch (ParseException e) {
-            AppLogMessageMgr.e("RxSysDateTool", "parse error: " + e.getMessage() + ", dateStr: " + dateStr);
+            AppLogManager.e("RxSysDateTool", "parse error: " + e.getMessage() + ", dateStr: " + dateStr);
             return null;
         }
     }
@@ -232,7 +232,7 @@ public class RxSysDateTool {
             return target.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                     target.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR);
         } catch (Exception e) {
-            AppLogMessageMgr.e("RxSysDateTool", "isToday error: " + e.getMessage());
+            AppLogManager.e("RxSysDateTool", "isToday error: " + e.getMessage());
             return false;
         }
     }
@@ -417,7 +417,7 @@ public class RxSysDateTool {
             Date date = sourceFormat.parse(defaultFormatStr);
             return format(date, targetPattern);
         } catch (Exception e) {
-            AppLogMessageMgr.e("RxSysDateTool", "convertDefaultFormat error: " + e.getMessage());
+            AppLogManager.e("RxSysDateTool", "convertDefaultFormat error: " + e.getMessage());
             return "";
         }
     }

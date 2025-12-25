@@ -45,7 +45,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         myApplication = this;
-        KLog.init(AppConfig.LOG_DEBUG, "log");
+        KLog.init(AppConfig.LOG_DEBUG, "KLog");
         // 初始化吐司工具类
         Toaster.init(this);
         // 初始化Activity 栈管理

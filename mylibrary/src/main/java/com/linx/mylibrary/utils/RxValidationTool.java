@@ -3,7 +3,7 @@ package com.linx.mylibrary.utils;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
-import com.linx.mylibrary.utils.manager.AppLogMessageMgr;
+import com.linx.mylibrary.utils.manager.AppLogManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -365,7 +365,7 @@ public class RxValidationTool {
 		//================ 身份证号码的长度 15位或18位 ================
 		if (IDCardNo.length() != 15 && IDCardNo.length() != 18) {
 			errmsg = "身份证号码长度应该为15位或18位!";
-			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
+			AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg);
 			return false;
 		}
 		
@@ -377,7 +377,7 @@ public class RxValidationTool {
 		}
 		if (isNumber(Ai) == false) {
 			errmsg = "身份证15位号码都应为数字 ; 18位号码除最后一位外，都应为数字";
-			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
+			AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg);
 			return false;
 		}
 		
@@ -390,7 +390,7 @@ public class RxValidationTool {
 		String strDay = Ai.substring(12, 14);
 		if (!RxSysDateTool.isValidDate((strYear + "-" + strMonth + "-" + strDay), "yyyy-MM-dd")) {
 			errmsg = "身份证生日无效";
-			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
+			AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg);
 			return false;
 		}
 		GregorianCalendar gc = new GregorianCalendar();
@@ -398,28 +398,28 @@ public class RxValidationTool {
 		try {
 			if ((gc.get(Calendar.YEAR) - Integer.parseInt(strYear)) > 150 || (gc.getTime().getTime() - s.parse(strYear + "-" + strMonth + "-" + strDay).getTime()) < 0) {
 				errmsg = "身份证生日不在有效范围";
-				AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
+				AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg);
 				return false;
 			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			errmsg = "身份证生日不在有效范围";
-			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg  + e.getMessage());
+			AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg  + e.getMessage());
 			return false;
 		} catch (java.text.ParseException e1) {
 			e1.printStackTrace();
 			errmsg = "身份证生日不在有效范围";
-			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg + e1.getMessage());
+			AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg + e1.getMessage());
 			return false;
 		}
 		if (Integer.parseInt(strMonth) > 12 || Integer.parseInt(strMonth) == 0) {
 			errmsg = "身份证月份无效";
-			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
+			AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg);
 			return false;
 		}
 		if (Integer.parseInt(strDay) > 31 || Integer.parseInt(strDay) == 0) {
 			errmsg = "身份证日期无效";
-			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
+			AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg);
 			return false;
 		}
 
@@ -427,7 +427,7 @@ public class RxValidationTool {
 		Hashtable hashtable = RxInfoTool.getAreaCodeAll();
 		if (hashtable.get(Ai.substring(0, 2)) == null) {
 			errmsg = "身份证地区编码错误";
-			AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
+			AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg);
 			return false;
 		}
 
@@ -442,7 +442,7 @@ public class RxValidationTool {
 		if (IDCardNo.length() == 18) {
 			if (Ai.equals(IDCardNo) == false) {
 				errmsg = "身份证无效，不是合法的身份证号码";
-				AppLogMessageMgr.e("RxValidationMgr-->>isIDCard", errmsg);
+				AppLogManager.e("RxValidationMgr-->>isIDCard", errmsg);
 				return false;
 			}
 		} else {

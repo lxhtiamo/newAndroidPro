@@ -866,4 +866,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public interface ActivityCallback {
         void onActivityResult(int resultCode, @Nullable Intent data);
     }
+
+    // 重建页面 关闭进入/退出动画，消除闪屏 //适合这种配置刷新无感切换当前页面使用
+    @Override
+    public void recreate() {
+        overridePendingTransition(0, 0);
+        super.recreate();
+        overridePendingTransition(0, 0);
+    }
 }

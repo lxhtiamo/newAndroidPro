@@ -27,9 +27,11 @@ import java.util.Iterator;
  *    5. Timber日志容错，降级到系统Log；
  *    6. 回调接口默认方法，提升易用性；
  *    7. 唯一标识改用System.identityHashCode，避免hashCode被重写；
+ *    8. 核心修复：mTopActivity/mResumedActivity改为弱引用，消除静态单例内存泄漏；
  */
 public final class AppActivityManager implements Application.ActivityLifecycleCallbacks {
 
+    // 保留原有变量名，仅修复内存泄漏
     private static volatile AppActivityManager sInstance;
 
     /** 全局锁：保证集合操作线程安全 */
@@ -41,10 +43,10 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
 
     /** 当前应用上下文对象 */
     private Application mApplication;
-    /** 栈顶的 Activity 对象 */
-    private Activity mTopActivity;
-    /** 前台并且可见的 Activity 对象 */
-    private Activity mResumedActivity;
+    /** 栈顶的 Activity 对象（核心修改：改为弱引用，变量名不变） */
+    private WeakReference<Activity> mTopActivity;
+    /** 前台并且可见的 Activity 对象（核心修改：改为弱引用，变量名不变） */
+    private WeakReference<Activity> mResumedActivity;
     /** 是否已初始化：防止重复注册生命周期回调 */
     private boolean mIsInited = false;
 
@@ -65,7 +67,7 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
      * 初始化（仅需在Application中调用一次）
      */
     public void init(Application application) {
-        // 防止重复初始化 + 空指针保护
+        // 防止重复初始化 + 空指针保护 + 强制持有Application Context（无泄漏风险）
         if (mIsInited || application == null) {
             return;
         }
@@ -82,40 +84,39 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
     }
 
     /**
-     * 获取栈顶的 Activity
+     * 获取栈顶的 Activity（适配弱引用，变量名不变）
      */
     @Nullable
     public Activity getTopActivity() {
         synchronized (mLock) {
-            return mTopActivity;
+            return getValidActivity(mTopActivity != null ? mTopActivity.get() : null);
         }
     }
+
+    /**
+     * 获取当前Activity（适配弱引用，变量名不变）
+     */
     @Nullable
     public Activity getCurrentActivity() {
         synchronized (mLock) {
             // 1. 优先取前台可见、可交互的Activity（视觉上的当前）
-            Activity current = mResumedActivity;
+            Activity current = getValidActivity(mResumedActivity != null ? mResumedActivity.get() : null);
             // 2. 若resumedActivity为空，取栈顶Activity（栈结构上的当前）
             if (current == null) {
-                current = mTopActivity;
+                current = getValidActivity(mTopActivity != null ? mTopActivity.get() : null);
             }
             // 3. 最终状态校验：确保Activity未销毁、未正在结束
-            if (current != null
-                    && !current.isFinishing()
-                    && (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 || !current.isDestroyed())) {
-                return current;
-            }
-            // 4. 若校验不通过，返回null（避免操作无效Activity）
-            return null;
+            return current;
         }
     }
+
     /**
-     * 获取前台并且可见的 Activity
+     * 获取前台并且可见的 Activity（适配弱引用，变量名不变）
      */
     @Nullable
     public Activity getResumedActivity() {
         synchronized (mLock) {
-            return mResumedActivity;
+            return getValidActivity(mResumedActivity != null ? mResumedActivity.get() : null);
         }
     }
 
@@ -240,13 +241,30 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
     }
 
     /**
+     * 校验Activity有效性（核心工具方法）
+     * @return 有效返回Activity，无效返回null
+     */
+    @Nullable
+    private Activity getValidActivity(@Nullable Activity activity) {
+        if (activity == null) {
+            return null;
+        }
+        // 覆盖所有无效状态：正在结束、已销毁（API 17+）
+        if (activity.isFinishing() ||
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed())) {
+            return null;
+        }
+        return activity;
+    }
+
+    /**
      * 日志输出（容错：Timber未初始化时降级到系统Log）
      */
     private void logI(String msg) {
         if (BuildConfig.DEBUG) {
             try {
                 // 优先用Timber，未初始化则降级到系统Log
-              ///  timber.log.Timber.i(msg);
+                ///  timber.log.Timber.i(msg);
             } catch (Exception e) {
                 Log.i("ActivityManager", msg);
             }
@@ -277,7 +295,8 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
             }
             // 存入弱引用，避免内存泄漏
             mActivitySet.put(getObjectTag(activity), new WeakReference<>(activity));
-            mTopActivity = activity;
+            // 核心修改：赋值为弱引用，变量名不变
+            mTopActivity = new WeakReference<>(activity);
         }
     }
 
@@ -292,16 +311,20 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
         //logI("%s - onResume", activityName);
 
         synchronized (mLock) {
-            if (mTopActivity == activity && mResumedActivity == null) {
+            Activity topActivity = getValidActivity(mTopActivity != null ? mTopActivity.get() : null);
+            Activity resumedActivity = getValidActivity(mResumedActivity != null ? mResumedActivity.get() : null);
+
+            if (topActivity == activity && resumedActivity == null) {
                 // 应用切前台回调
                 Iterator<ApplicationLifecycleCallback> iterator = mLifecycleCallbacks.iterator();
                 while (iterator.hasNext()) {
                     iterator.next().onApplicationForeground(activity);
                 }
-              //  logI("%s - onApplicationForeground", activityName);
+                //  logI("%s - onApplicationForeground", activityName);
             }
-            mTopActivity = activity;
-            mResumedActivity = activity;
+            // 核心修改：赋值为弱引用，变量名不变
+            mTopActivity = new WeakReference<>(activity);
+            mResumedActivity = new WeakReference<>(activity);
         }
     }
 
@@ -316,8 +339,24 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
         //logI("%s - onStop", activityName);
 
         synchronized (mLock) {
-            if (mResumedActivity == activity) {
-                mResumedActivity = null;
+            Activity resumedActivity = getValidActivity(mResumedActivity != null ? mResumedActivity.get() : null);
+            if (resumedActivity == activity) {
+                // 清空已停止的前台Activity引用
+                mResumedActivity.clear();
+            }
+            // 若停止的是栈顶Activity，尝试从集合中找新的栈顶
+            Activity topActivity = getValidActivity(mTopActivity != null ? mTopActivity.get() : null);
+            if (topActivity == activity) {
+                mTopActivity.clear();
+                // 从集合中取最后一个有效Activity作为新栈顶
+                String[] keys = mActivitySet.keySet().toArray(new String[]{});
+                for (int i = keys.length - 1; i >= 0; i--) {
+                    Activity newTop = getActivityFromSet(keys[i]);
+                    if (newTop != null) {
+                        mTopActivity = new WeakReference<>(newTop);
+                        break;
+                    }
+                }
             }
             if (mResumedActivity == null) {
                 // 应用切后台回调
@@ -325,7 +364,7 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
                 while (iterator.hasNext()) {
                     iterator.next().onApplicationBackground(activity);
                 }
-               // logI("%s - onApplicationBackground", activityName);
+                // logI("%s - onApplicationBackground", activityName);
             }
         }
     }
@@ -338,15 +377,22 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
         String activityName = activity.getClass().getSimpleName();
-       // logI("%s - onDestroy", activityName);
+        // logI("%s - onDestroy", activityName);
 
         synchronized (mLock) {
             // 移除已销毁的Activity
             mActivitySet.remove(getObjectTag(activity));
 
-            // 更新栈顶Activity
-            if (mTopActivity == activity) {
-                mTopActivity = null;
+            // 更新栈顶Activity：清空指向已销毁Activity的引用
+            Activity topActivity = getValidActivity(mTopActivity != null ? mTopActivity.get() : null);
+            if (topActivity == activity) {
+                mTopActivity.clear();
+            }
+
+            // 更新前台Activity：清空指向已销毁Activity的引用
+            Activity resumedActivity = getValidActivity(mResumedActivity != null ? mResumedActivity.get() : null);
+            if (resumedActivity == activity) {
+                mResumedActivity.clear();
             }
 
             // 应用最后一个Activity销毁回调
@@ -355,7 +401,7 @@ public final class AppActivityManager implements Application.ActivityLifecycleCa
                 while (iterator.hasNext()) {
                     iterator.next().onApplicationDestroy(activity);
                 }
-               // logI("%s - onApplicationDestroy", activityName);
+                // logI("%s - onApplicationDestroy", activityName);
             }
         }
     }

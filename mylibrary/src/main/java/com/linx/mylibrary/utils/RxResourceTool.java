@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable;
 
 import androidx.core.content.ContextCompat;
 
-import com.linx.mylibrary.utils.manager.AppLogMessageMgr;
+import com.linx.mylibrary.utils.manager.AppLogManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class RxResourceTool {
 			return s.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
-			AppLogMessageMgr.e("RxResourceMgr-->>getStringByAssets", "根据本地Assets目录下资源名称，获取String数据信息失败！" + e.getMessage());
+			AppLogManager.e("RxResourceMgr-->>getStringByAssets", "根据本地Assets目录下资源名称，获取String数据信息失败！" + e.getMessage());
 			return null;
 		}
 	}
@@ -93,7 +93,7 @@ public class RxResourceTool {
 			return fileContent;
 		} catch (IOException e) {
 			e.printStackTrace();
-			AppLogMessageMgr.e("RxResourceMgr-->>getListByAssets", "根据本地Assets目录下资源名称，获取List集合信息失败！" + e.getMessage());
+			AppLogManager.e("RxResourceMgr-->>getListByAssets", "根据本地Assets目录下资源名称，获取List集合信息失败！" + e.getMessage());
 			return null;
 		}
 	}
@@ -120,7 +120,7 @@ public class RxResourceTool {
 			return s.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
-			AppLogMessageMgr.e("RxResourceMgr-->>getStringByRaw", "根据本地Raw目录下资源标识，获取String数据信息失败！" + e.getMessage());
+			AppLogManager.e("RxResourceMgr-->>getStringByRaw", "根据本地Raw目录下资源标识，获取String数据信息失败！" + e.getMessage());
 			return null;
 		}
 	}
@@ -150,7 +150,7 @@ public class RxResourceTool {
 			return fileContent;
 		} catch (IOException e) {
 			e.printStackTrace();
-			AppLogMessageMgr.e("RxResourceMgr-->>getListByRaw", "根据本地Raw目录下资源标识，获取List集合信息失败！" + e.getMessage());
+			AppLogManager.e("RxResourceMgr-->>getListByRaw", "根据本地Raw目录下资源标识，获取List集合信息失败！" + e.getMessage());
 			return null;
 		}
 	}
