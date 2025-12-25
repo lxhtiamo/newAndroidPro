@@ -4,7 +4,7 @@ package com.linewell.lxhdemo.thirdAppUtil.model;
  * 统一的定位信息实体类
  * 包含百度和高德定位的共同字段 + 差异冗余字段
  */
-public class UnifiedLocationInfo {
+public class LocationInfo {
     // ====================== 【共同字段】百度&高德都具备 ======================
     private double latitude; // 纬度
     private double longitude; // 经度
@@ -47,7 +47,7 @@ public class UnifiedLocationInfo {
     private String errorInfo; // 错误信息：百度=定位失败描述，高德=getErrorInfo()
 
     // 无参构造
-    public UnifiedLocationInfo() {
+    public LocationInfo() {
         // 初始化数值类型默认值
         this.altitude = 0.0d;
         this.speed = 0.0f;

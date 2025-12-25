@@ -15,7 +15,7 @@ import com.hjq.permissions.XXPermissions;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.permission.PermissionLists;
 import com.hjq.permissions.permission.base.IPermission;
-import com.linewell.lxhdemo.thirdAppUtil.model.UnifiedLocationInfo;
+import com.linewell.lxhdemo.thirdAppUtil.model.LocationInfo;
 import com.linewell.lxhdemo.thirdAppUtil.util.LocationConvertUtils;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class GaodeMapLocationUtils {
          * 定位成功回调
          * @param location 高德定位结果对象
          */
-        void onLocationSuccess(UnifiedLocationInfo location);
+        void onLocationSuccess(LocationInfo location);
 
         /**
          * 定位失败回调
@@ -354,7 +354,7 @@ public class GaodeMapLocationUtils {
                 return;
             }
             // 转换为统一对象
-            UnifiedLocationInfo unifiedInfo = LocationConvertUtils.convertAMapLocationToUnified(amapLocation);
+            LocationInfo unifiedInfo = LocationConvertUtils.convertAMapLocationToUnified(amapLocation);
 
 
             // 高德定位成功的标志：错误码为0

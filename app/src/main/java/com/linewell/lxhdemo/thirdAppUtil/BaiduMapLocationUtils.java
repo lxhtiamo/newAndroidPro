@@ -14,7 +14,7 @@ import com.hjq.permissions.XXPermissions;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.permission.PermissionLists;
 import com.hjq.permissions.permission.base.IPermission;
-import com.linewell.lxhdemo.thirdAppUtil.model.UnifiedLocationInfo;
+import com.linewell.lxhdemo.thirdAppUtil.model.LocationInfo;
 import com.linewell.lxhdemo.thirdAppUtil.util.LocationConvertUtils;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class BaiduMapLocationUtils {
 
     // 定位结果回调接口
     public interface LocationListener {
-        void onLocationSuccess(UnifiedLocationInfo location);
+        void onLocationSuccess(LocationInfo location);
 
         void onLocationFailure(String errorMsg);
 
@@ -245,7 +245,7 @@ public class BaiduMapLocationUtils {
                 return;
             }
             // 处理定位结果：转换为统一对象
-            UnifiedLocationInfo unifiedInfo = LocationConvertUtils.convertBDLocationToUnified(location);
+            LocationInfo unifiedInfo = LocationConvertUtils.convertBDLocationToUnified(location);
             // 处理定位结果
             switch (location.getLocType()) {
                 case BDLocation.TypeGpsLocation:

@@ -4,7 +4,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
 import com.baidu.location.PoiRegion;
 import com.amap.api.location.AMapLocation;
-import com.linewell.lxhdemo.thirdAppUtil.model.UnifiedLocationInfo;
+import com.linewell.lxhdemo.thirdAppUtil.model.LocationInfo;
 
 /**
  * 定位对象转换工具类：将百度/高德定位对象转换成统一的UnifiedLocationInfo
@@ -16,8 +16,8 @@ public class LocationConvertUtils {
      * @param bdLocation 百度定位结果对象
      * @return 统一定位信息对象
      */
-    public static UnifiedLocationInfo convertBDLocationToUnified(BDLocation bdLocation) {
-        UnifiedLocationInfo unifiedInfo = new UnifiedLocationInfo();
+    public static LocationInfo convertBDLocationToUnified(BDLocation bdLocation) {
+        LocationInfo unifiedInfo = new LocationInfo();
         if (bdLocation == null) {
             return unifiedInfo;
         }
@@ -80,8 +80,8 @@ public class LocationConvertUtils {
      * @param aMapLocation 高德定位结果对象
      * @return 统一定位信息对象
      */
-    public static UnifiedLocationInfo convertAMapLocationToUnified(AMapLocation aMapLocation) {
-        UnifiedLocationInfo unifiedInfo = new UnifiedLocationInfo();
+    public static LocationInfo convertAMapLocationToUnified(AMapLocation aMapLocation) {
+        LocationInfo unifiedInfo = new LocationInfo();
         if (aMapLocation == null) {
             return unifiedInfo;
         }
