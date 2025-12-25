@@ -1,4 +1,4 @@
-package com.linx.mylibrary.utils.manager;
+package com.linx.mylibrary.utils.enums;
 
 import java.util.Locale;
 

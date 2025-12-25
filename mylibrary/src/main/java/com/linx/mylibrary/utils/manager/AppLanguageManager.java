@@ -9,6 +9,8 @@ import android.os.LocaleList;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.linx.mylibrary.utils.enums.LanguageType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
