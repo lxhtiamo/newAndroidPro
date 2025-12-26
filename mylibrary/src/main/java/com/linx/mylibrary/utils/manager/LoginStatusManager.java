@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.linx.mylibrary.utils.RxSharePreferenceTool;
 
-
+/*登录管理工具类 具体登录状态的管理和更新都在LoginHelper中处理*/
 public class LoginStatusManager {
     private static volatile LoginStatusManager instance;
     private boolean isLoggedIn = false;

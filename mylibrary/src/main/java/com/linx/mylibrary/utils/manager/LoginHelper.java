@@ -10,8 +10,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 /*
-* 用法loginHelper = LoginHelper.getInstance(this);
-*
+* 统领登录用工具类 具体登录状态的管理和更新都在LoginStatusManager中处理 用法loginHelper = LoginHelper.getInstance(this);
+* 登录状态的变化会实时通知到LoginStatusManager
 * */
 public class LoginHelper {
     private static volatile LoginHelper instance;
@@ -108,7 +108,7 @@ public class LoginHelper {
     }
 
     /**
-     * 执行登录操作
+     * 执行登录操作 保存token 保存 用户信息 登录状态信息等
      */
     public void performLogin(String token, String userInfo) {
         loginManager.setLoggedIn(true);
