@@ -1,6 +1,7 @@
 package com.linx.mylibrary.http;
 
 
+import com.google.gson.JsonSyntaxException;
 import com.linx.mylibrary.http.callback.JsonCallback;
 import com.linx.mylibrary.http.config.HttpConfig;
 import com.linx.mylibrary.http.model.BasePostEntity;
@@ -48,7 +49,8 @@ public class HttpManage {
                 .params(mapParameter)
                 .execute(callback);
     }
- /**
+
+    /**
      * get请求,拼接 url参数.
      *
      * @param tag
@@ -90,6 +92,30 @@ public class HttpManage {
                 .tag(tag)
                 //.params("param1", "paramValue1")//  这里不要使用params，upJson 与 params 是互斥的，只有 upJson 的数据会被上传
                 .upJson(setPostBody(Jsonparameter))//
+                .execute(callback);
+    }
+
+    /**
+     * 发送JSON格式的POST请求，参数改为通用Object类型，适配所有可序列化对象
+     *
+     * @param obj 请求参数（支持任意可序列化类型：JSONObject/Map/自定义实体类/String等）
+     */
+    public <T> void postJson(Object tag, String url, Object obj, JsonCallback<T> callback) {
+        String jsonParameter = "";
+        if (obj != null) {
+            try {
+                jsonParameter = RxJsonTool.toJson(obj);
+            } catch (JsonSyntaxException | IllegalArgumentException e) {
+                // 捕获序列化异常（比如传入不可序列化的对象）
+                KLog.e(">>>>-OkGo发送url-参数序列化失败：" + e.getMessage());
+                return;
+            }
+        }
+
+        KLog.d(">>>>--OkGo发送url=" + url + ";参数=" + jsonParameter);
+        OkGo.<T>post(url)
+                .tag(tag)
+                .upJson(setPostBody(jsonParameter)) // 统一传入JSON字符串
                 .execute(callback);
     }
 
@@ -173,7 +199,7 @@ public class HttpManage {
     }
 
 
-      /*---------------------------------------下载api须知↓↓↓↓------------------------------------------*/
+    /*---------------------------------------下载api须知↓↓↓↓------------------------------------------*/
     /*FileCallback()：空参构造
     FileCallback(String destFileName)：可以额外指定文件下载完成后的文件名
     FileCallback(String destFileDir, String destFileName)：可以额外指定文件的下载目录和下载完成后的文件名*/
@@ -197,6 +223,7 @@ public class HttpManage {
                 .execute(fileCallback);
 
     }
+
     /**
      * 通过Url下载,post模式可以传参数,callback可以重载downloadProgress(Progress progress)方法获取下载进度
      *
