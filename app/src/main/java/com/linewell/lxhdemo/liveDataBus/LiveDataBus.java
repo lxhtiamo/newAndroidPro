@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 /*
  * 发送
- * 1. 发送普通事件（非粘性）LiveDataBus.post(new LoginSuccessEvent("1001", "张三"));
+ * 1. 发送普通事件（非粘性）LiveDataBus.post(new LoginSuccessEvent("1001", "张三")); 也可以用MyEvent 数据类来统一发送接收
  * 2. 发送粘性事件（后续订阅也能收到） LiveDataBus.postSticky(new LoginSuccessEvent("1001", "张三"));
  * 3. 可选：异步发送（优化高频事件）LiveDataBus.postAsync(new PaySuccessEvent("ORD2025001", 99.0f));
  *
