@@ -29,10 +29,11 @@ public class WelcomeActivity extends BaseActivity {
         LiveDataBus.postSticky(new MyEvent(MyEvent.What.example, "测试普通事件11111111"));
 
 
-         LiveDataBus.post(new MyEvent(MyEvent.What.example, "测试普通事件"));
         new Handler(getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
+
+                LiveDataBus.post(new MyEvent(MyEvent.What.example, "测试普通事件"));
             }
         },300);
   }

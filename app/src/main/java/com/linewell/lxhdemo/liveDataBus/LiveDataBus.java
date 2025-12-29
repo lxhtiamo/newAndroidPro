@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
  });
  *
  * 清理粘性事件 / 优化内存
-  1. 清除指定类型的粘性事件（后续订阅收不到历史）
+  1. 清除指定类型的粘性事件缓存（后续订阅收不到历史）
  LiveDataBus.removeStickyEvent(LoginSuccessEvent.class);
 
  * 2. 低内存时主动清理 在application 中onTrimMemory 中调用
@@ -116,21 +116,10 @@ public class LiveDataBus {
                                    @NonNull Class<T> eventType,
                                    @NonNull Observer<T> observer) {
         MutableLiveData<Event<T>> liveData = getInstance().createOrGetLiveData(eventType);
-        // 记录订阅时的生命周期状态（用于过滤历史事件）
-        Lifecycle.State subscribeState = owner.getLifecycle().getCurrentState();
         long subscribeTime = System.currentTimeMillis(); // 记录订阅时间
         liveData.observe(owner, event -> {
             // 普通事件：只处理「非粘性事件」+「订阅后发送的事件」
             if (!event.isSticky()) {
-                // 判断是否是订阅后发送的事件（生命周期状态>=订阅时的状态）
-               /* Lifecycle.State currentState = owner.getLifecycle().getCurrentState();
-                if (currentState.isAtLeast(subscribeState)) {
-                    T content = event.getContent();
-                    if (content != null) {
-                        observer.onChanged(content);
-                    }
-                }*/
-
                 if (event.getSendTime() > subscribeTime) {
                     T content = event.getContent();
                     if (content != null) {
@@ -154,18 +143,30 @@ public class LiveDataBus {
     }
 
     /**
-     * 订阅粘性事件：接收所有历史粘性事件，多观察者均可接收
+     * 订阅粘性事件：完全对标EventBus的sticky=true
+     * 1. 订阅时：接收历史的postSticky粘性事件
+     * 2. 订阅后：接收所有post/postSticky发送的事件
      */
     public static <T> void observeSticky(@NonNull LifecycleOwner owner,
                                          @NonNull Class<T> eventType,
                                          @NonNull Observer<T> observer) {
-        getInstance().createOrGetLiveData(eventType).observe(owner, event -> {
-            // 粘性事件：只处理「粘性事件」，无视订阅时间
-            if (event.isSticky()) {
-                T content = event.getContent();
-                if (content != null) {
-                    observer.onChanged(content);
+        MutableLiveData<Event<T>> liveData = getInstance().createOrGetLiveData(eventType);
+        // 核心修改1：记录订阅时间戳，区分历史事件和新事件
+        long subscribeTime = System.currentTimeMillis();
+
+        liveData.observe(owner, event -> {
+            if (event == null || event.getContent() == null) {
+                return;
+            }
+            // 核心修改2：对标EventBus的sticky=true逻辑
+            if (event.getSendTime() <= subscribeTime) {
+                // 情况1：订阅时触发的历史事件 → 仅处理postSticky的粘性事件
+                if (event.isSticky()) {
+                    observer.onChanged(event.getContent());
                 }
+            } else {
+                // 情况2：订阅后发送的新事件 → 处理所有事件（post/postSticky）
+                observer.onChanged(event.getContent());
             }
         });
     }
@@ -220,14 +221,14 @@ public class LiveDataBus {
     }
 
     /**
-     * 事件包装类：新增粘性标记，区分普通/粘性事件
+     * 事件包装类：新增粘性标记 + 发送时间戳
      * @param <T> 事件数据类型
      */
     static class Event<T> {
         private final T content;
         // 核心新增：标记是否是粘性事件
         private final boolean isSticky;
-        private final long sendTime; // 新增：事件发送时间戳
+        private final long sendTime; // 事件发送时间戳
 
         /**
          * 构造方法
@@ -250,7 +251,6 @@ public class LiveDataBus {
             return isSticky;
         }
 
-        // 兼容原有方法（无实际意义，仅避免编译错误）
         @Nullable
         public T getContentIfNotHandled() {
             return content;
