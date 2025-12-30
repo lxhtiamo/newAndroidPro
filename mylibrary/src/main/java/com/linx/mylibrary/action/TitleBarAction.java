@@ -58,6 +58,11 @@ public interface TitleBarAction extends OnTitleBarListener {
             getTitleBar().setTitle(title);
         }
     }
+    default void setTitle(String title) {
+        if (getTitleBar() != null) {
+            getTitleBar().setTitle(title);
+        }
+    }
 
     /**
      * 设置标题栏的左标题

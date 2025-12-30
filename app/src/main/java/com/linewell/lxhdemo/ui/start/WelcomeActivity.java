@@ -6,21 +6,31 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import androidx.annotation.StringRes;
 import androidx.lifecycle.Observer;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.base.BaseActivity;
 import com.linewell.lxhdemo.eventbus.MyEvent;
 import com.linewell.lxhdemo.liveDataBus.LiveDataBus;
+import com.linx.mylibrary.utils.RxResourceTool;
 import com.linx.mylibrary.utils.klog.KLog;
 import com.linx.mylibrary.utils.manager.AppActivityManager;
 import com.linx.mylibrary.utils.manager.AppLogManager;
 
+import java.util.Objects;
+
 public class WelcomeActivity extends BaseActivity {
+
 
     @Override
     protected int getLayoutId() {
+        setTitle("标签");
+        Objects.requireNonNull(getTitleBar()).setBackgroundColor(RxResourceTool.getColor(this,R.color.colorOnBackground));
+        ImmersionBar.setTitleBar(this,getTitleBar());
         return R.layout.activity_welcome;
+
     }
 
     @Override
@@ -95,7 +105,7 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     protected boolean showBar() {
-        return super.showBar();
+        return true;
     }
 
     @Override

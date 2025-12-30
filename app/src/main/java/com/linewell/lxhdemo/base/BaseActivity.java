@@ -48,7 +48,6 @@ import com.linx.mylibrary.utils.permissionUtil.PermissionRejectDialog;
 import com.linx.mylibrary.utils.permissionUtil.PermissionTipDialogUtils;
 import com.linx.mylibrary.view.dialog.ProgressLoadingDialog;
 import com.lzy.okgo.OkGo;
-import com.yanzhenjie.permission.AndPermission;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -472,41 +471,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SETTINGS && mPermissionsToReCheck != null) {
             // 用户从设置页返回后，自动重新检查权限
-            reCheckPermissionsAfterSettings();
         } else if (activityCallback != null && activityRequestCode == requestCode) {
             activityCallback.onActivityResult(resultCode, data);
             activityCallback = null; // 清空引用，避免内存泄漏
         }
-    }
-
-    /**
-     * 从设置页返回后，重新检查权限
-     */
-    private void reCheckPermissionsAfterSettings() {
-        if (mPermissionsToReCheck == null || mPermissionsToReCheck.isEmpty()) return;
-
-        // 将List转换为数组（Permission库要求）
-        String[] permissions = mPermissionsToReCheck.toArray(new String[0]);
-        // 重新检查权限状态
-        AndPermission.with(this).runtime()
-                .permission(permissions)
-                .onGranted(granted -> {
-                    // 权限已在设置中开启
-                    if (permissionCallback != null) {
-                        permissionCallback.PermissionSucceed();
-                    }
-                })
-                .onDenied(denied -> {
-                    // 权限仍未开启
-                    if (permissionCallback != null) {
-                        permissionCallback.PermissionFail();
-                    }
-                })
-                .start();
-
-        // 清空临时存储的权限列表
-        mPermissionsToReCheck.clear();
-        mPermissionsToReCheck = null;
     }
 
 
