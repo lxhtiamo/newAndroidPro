@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
+    //包名
+    namespace 'com.linewell.lxhdemo'
     // 编译源码版本
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -12,26 +14,32 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //AndroidX版本的测试运行器
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         manifestPlaceholders = [
                 qqappid: "12345678" // 替换为你的真实QQ应用ID（从QQ开放平台获取）
         ]
         ndk {
-            // 设置支持的SO库架构
-            //abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            //仅保留主流架构，减少APK体积'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
     }
     signingConfigs {
         config {
             storeFile file('fjwl.jks')       // 密钥库文件（.jks/.keystore）
-            storePassword "StorePassword"     // 密钥库密码
-            keyAlias "KeyAlias"               // 密钥别名
-            keyPassword "KeyPassword"         // 密钥密码
+            storePassword "Desktop"     // 密钥库密码
+            keyAlias "Desktop"               // 密钥别名
+            keyPassword "Desktop"         // 密钥密码
         }
     }
     buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable true
+            minifyEnabled false
+            signingConfig signingConfigs.config //debug包也用正式签名，便于测试
+        }
         release {
             // 调试模式开关
             debuggable false
@@ -51,9 +59,6 @@ android {
         }
     }
     repositories {
-        flatDir {
-            dirs 'libs'
-        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -61,13 +66,19 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
+    //优化：AGP 7.0+ 推荐的依赖版本统一（替代旧版configurations.all）
+    dependenciesInfo {
+        includeInApk true
+        includeInBundle true
+    }
+
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$rootProject.androidxVersion"
-    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.activity:activity:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -97,7 +108,7 @@ variants.all { variant ->
     // 注意这里控制debug下生效，可以自行控制是否生效
     if (!variant.buildType.isDebuggable()) {
         log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
-        return
+        //return
     }
 
     JavaCompile javaCompile = variant.javaCompileProvider.get()

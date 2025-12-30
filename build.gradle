@@ -1,65 +1,65 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-
     repositories {
+        // 优先使用阿里云镜像提升构建速度
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        // 官方仓库兜底
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        // Android Gradle 插件（AGP）
+        classpath 'com.android.tools.build:gradle:8.12.2'
 
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'//3.0配置eventbus注解
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        // 注意：android-apt 插件已过时（AGP 3.0+ 已内置APT支持）
+        // 如需保留请确认项目依赖，建议后续替换为annotationProcessor/kapt
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+
+        // AspectJ 编译工具
         classpath 'org.aspectj:aspectjtools:1.9.6'
+
     }
 }
 
 allprojects {
     repositories {
-        maven {
-            url 'https://maven.aliyun.com/repository/google'
-        }
+        // 阿里云镜像仓库（优先国内源，提升构建速度）
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
 
-        maven {
-            url 'https://maven.aliyun.com/repository/public'
-        }
+        // 第三方仓库
+        maven { url "https://jitpack.io" }
+        maven { url 'https://artifact.bytedance.com/repository/AwemeOpenSDK' } // 抖音开放平台
 
-        maven {
-            url 'https://maven.aliyun.com/repository/jcenter'
-        }
-        maven {
-            url 'https://maven.aliyun.com/repository/central'
-        }
-        maven {
-            url "https://jitpack.io"
-        }
-        maven { url "https://dl.bintray.com/thelasterstar/maven/" } //微博
-        maven { url 'https://artifact.bytedance.com/repository/AwemeOpenSDK' } //抖音
+        // 官方仓库（兜底）
         google()
         mavenCentral()
     }
 }
 
+// 清理构建目录的任务
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
+
+// 全局版本配置（变量名完全保留，避免影响原有引用）
 ext {
     //版本号
     versionCode = 1
-    //版本名
     versionName = "1.0.0"
-    // 编译源码版本
-    compileSdkVersion = 34
+
+    // Android 编译配置
+    compileSdkVersion = 35
     // 构建工具版本
-    buildToolsVersion = '34.0.0'
+    buildToolsVersion = '35.0.0'
     // 最低安装版本
     minSdkVersion = 22
     libMinSdkVersion = 22
     // 目标适配版本
-    targetSdkVersion = 34
-    // 支持库版本
+    targetSdkVersion = 35
+
+    // 第三方库版本
     supportVersion = '28.0.0'
     // AndroidX 版本
     androidxVersion = '1.6.1'

@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import com.gyf.immersionbar.ImmersionBar;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.base.BaseActivity;
+import com.linewell.lxhdemo.base.aop.SingleClick;
 import com.linewell.lxhdemo.eventbus.MyEvent;
 import com.linewell.lxhdemo.liveDataBus.LiveDataBus;
 import com.linx.mylibrary.utils.RxResourceTool;
@@ -27,8 +28,8 @@ public class WelcomeActivity extends BaseActivity {
     @Override
     protected int getLayoutId() {
         setTitle("标签");
-        Objects.requireNonNull(getTitleBar()).setBackgroundColor(RxResourceTool.getColor(this,R.color.colorOnBackground));
-        ImmersionBar.setTitleBar(this,getTitleBar());
+        Objects.requireNonNull(getTitleBar()).setBackgroundColor(RxResourceTool.getColor(this, R.color.colorOnBackground));
+        ImmersionBar.setTitleBar(this, getTitleBar());
         return R.layout.activity_welcome;
 
     }
@@ -45,12 +46,12 @@ public class WelcomeActivity extends BaseActivity {
 
                 LiveDataBus.post(new MyEvent(MyEvent.What.example, "测试普通事件"));
             }
-        },300);
-  }
+        }, 300);
+    }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-       setOnClickListener(R.id.bt,R.id.bt_h,R.id.bt,R.id.bt_b);
+        setOnClickListener(R.id.bt, R.id.bt_h, R.id.bt, R.id.bt_b);
         LiveDataBus.observeSticky(this, MyEvent.class, new Observer<MyEvent>() {
             @Override
             public void onChanged(MyEvent event) {
@@ -81,9 +82,9 @@ public class WelcomeActivity extends BaseActivity {
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bt:
-               // Activity currentActivity = AppActivityManager.getInstance().getCurrentActivity();
+                // Activity currentActivity = AppActivityManager.getInstance().getCurrentActivity();
                 LiveDataBus.post(new MyEvent(MyEvent.What.example, "张三"));
                 break;
             case R.id.bt_h:
@@ -91,12 +92,14 @@ public class WelcomeActivity extends BaseActivity {
                 //Activity topActivity = AppActivityManager.getInstance().getTopActivity();
                 break;
             case R.id.bt_b:
-               // AppActivityManager.getInstance().finishAllActivities();
+                KLog.d("哒哒哒哒");
+                // AppActivityManager.getInstance().finishAllActivities();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
         }
     }
+
     @Override
     protected boolean isNeedEventBus() {
 
