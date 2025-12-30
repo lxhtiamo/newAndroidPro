@@ -18,7 +18,7 @@ import com.linx.mylibrary.view.webView.iface.IJsBridge;
  * 调用 JS：使用 loadJsMethod
  */
 public class JsBridgeManager {
-    // 全局默认的 JS 对象名（JS中通过 window.AndroidJsBridge.xxx() 调用）
+    // 全局默认的 JS 对象名（JS中通过 window.Android.xxx() 调用）
     public static final String DEFAULT_JS_OBJECT_NAME = "Android";
     private final WebView mWebView;
 
@@ -70,7 +70,7 @@ public class JsBridgeManager {
         }
     }
 
-    // ======================== 封装 loadJsMethod：自动拼接参数 ========================
+    // ======================== 封装 loadJsMethod：自动拼接参数 安卓执行js的方法的交互 ========================
 
     /**
      * 执行无参数的 JS 方法

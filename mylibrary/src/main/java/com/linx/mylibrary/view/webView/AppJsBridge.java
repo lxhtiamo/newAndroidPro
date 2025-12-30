@@ -15,6 +15,8 @@ import java.lang.ref.WeakReference;
 
 
 /**
+ *
+ *  安卓调用js的统一接口实现类 所有的js调用安卓方法交互都从这里走  js 调用安卓的方法前面都要添加@JavascriptInterface 注解
  * 同时支持 OnJsDataCallback 回调和 LiveData 数据传递
  * 具体的 JS 交互实现类（包含供 JS 调用的方法，以及数据回调逻辑）
  * 【核心能力】
@@ -62,7 +64,7 @@ public class AppJsBridge implements IJsBridge {
         mJsDataLiveData = null;
     }
 
-    // ======================== 供 JS 调用的方法 示例========================
+    // ======================== 供 JS 调用安卓的的方法 示例========================
     @JavascriptInterface
     public void showToast(String message) {
         // 传递文本消息（同时触发回调和 LiveData）
