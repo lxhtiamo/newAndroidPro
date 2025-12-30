@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'android.aop'
 android {
     // 编译源码版本
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -51,9 +51,7 @@ android {
         }
     }
     repositories {
-        flatDir {
-            dirs 'libs'
-        }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -61,7 +59,10 @@ android {
     }
     buildFeatures {
         viewBinding true
+        //是否生成 BuildConfig 类 若需要保留 BuildConfig（99% 的项目需要，比如用到 BuildConfig.DEBUG）：
+        buildConfig = true
     }
+    namespace 'com.linewell.lxhdemo'
 }
 
 dependencies {
@@ -81,10 +82,14 @@ dependencies {
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.3.1'
     //异常上报Bugly https://bugly.qq.com/docs/user-guide/instruction-manual-android/?v=1.0.0#_3
     implementation 'com.tencent.bugly:crashreport:latest.release'
-    // AOP 插件库：https://mvnrepository.com/artifact/org.aspectj/aspectjrt
-    implementation 'org.aspectj:aspectjrt:1.9.6'
+    //AOP 插件库：https://github.com/FlyJingFish/AndroidAOP/blob/master/README-zh.md
+    implementation 'io.github.flyjingfish:androidaop-core:2.7.4'
+    annotationProcessor 'io.github.flyjingfish:androidaop-apt:2.7.4'
 }
 
+
+
+/*
 import org.aspectj.bridge.IMessage
 import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
@@ -132,4 +137,4 @@ variants.all { variant ->
             }
         }
     }
-}
+}*/

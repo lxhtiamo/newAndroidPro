@@ -7,12 +7,13 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.android.tools.build:gradle:8.12.0'
 
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'//3.0配置eventbus注解
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-        classpath 'org.aspectj:aspectjtools:1.9.6'
+        //https://github.com/FlyJingFish/AndroidAOP/blob/master/README-zh.md
+        classpath 'io.github.flyjingfish:androidaop-plugin:2.7.4'
     }
 }
 
@@ -51,14 +52,14 @@ ext {
     //版本名
     versionName = "1.0.0"
     // 编译源码版本
-    compileSdkVersion = 34
+    compileSdkVersion = 35
     // 构建工具版本
-    buildToolsVersion = '34.0.0'
+    buildToolsVersion = '35.0.0'
     // 最低安装版本
     minSdkVersion = 22
     libMinSdkVersion = 22
     // 目标适配版本
-    targetSdkVersion = 34
+    targetSdkVersion = 35
     // 支持库版本
     supportVersion = '28.0.0'
     // AndroidX 版本

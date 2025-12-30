@@ -3,11 +3,14 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
+    buildFeatures {
+        // 是否生成 BuildConfig 类
+        buildConfig true
+    }
+
     defaultConfig {
         minSdkVersion rootProject.ext.libMinSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
     }
     //强制第三方依赖使用同一个
     configurations.all {
@@ -24,6 +27,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    namespace 'com.linx.mylibrary'
 }
 
 dependencies {
