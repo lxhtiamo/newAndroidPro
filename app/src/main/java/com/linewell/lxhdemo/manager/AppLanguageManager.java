@@ -1,4 +1,4 @@
-package com.linx.mylibrary.utils.manager;
+package com.linewell.lxhdemo.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;

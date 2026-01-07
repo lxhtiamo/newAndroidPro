@@ -1,23 +1,19 @@
 package com.linewell.lxhdemo.ui.start;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
-import androidx.annotation.StringRes;
 import androidx.lifecycle.Observer;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.linewell.lxhdemo.R;
 import com.linewell.lxhdemo.base.BaseActivity;
-import com.linewell.lxhdemo.base.aop.SingleClick;
 import com.linewell.lxhdemo.eventbus.MyEvent;
 import com.linewell.lxhdemo.liveDataBus.LiveDataBus;
 import com.linx.mylibrary.utils.RxResourceTool;
 import com.linx.mylibrary.utils.klog.KLog;
-import com.linx.mylibrary.utils.manager.AppActivityManager;
 import com.linx.mylibrary.utils.manager.AppLogManager;
 
 import java.util.Objects;

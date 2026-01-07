@@ -2,37 +2,16 @@ package com.linewell.lxhdemo.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.text.TextUtils;
 
 import androidx.multidex.MultiDex;
 
 import com.hjq.toast.Toaster;
 import com.linewell.lxhdemo.manager.OkGoManager;
-import com.linewell.lxhdemo.thirdAppUtil.WeChatHelper;
 import com.linewell.lxhdemo.utils.ThemeUtils;
 import com.linx.mylibrary.utils.klog.KLog;
-import com.linx.mylibrary.utils.manager.AppActivityManager;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.cache.CacheEntity;
-import com.lzy.okgo.cache.CacheMode;
-import com.lzy.okgo.cookie.CookieJarImpl;
-import com.lzy.okgo.cookie.store.DBCookieStore;
-import com.lzy.okgo.https.HttpsUtils;
-import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
-import com.lzy.okgo.model.HttpHeaders;
+import com.linewell.lxhdemo.manager.AppActivityManager;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.mmkv.MMKV;
-
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.X509TrustManager;
-
-import okhttp3.OkHttpClient;
 
 /**
  * @author xh

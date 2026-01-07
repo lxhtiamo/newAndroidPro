@@ -43,7 +43,7 @@ import com.linx.mylibrary.action.ToastAction;
 import com.linx.mylibrary.utils.RxAppApplicationMgr;
 import com.linx.mylibrary.utils.RxBarTool;
 import com.linx.mylibrary.utils.klog.KLog;
-import com.linx.mylibrary.utils.manager.AppActivityManager;
+import com.linewell.lxhdemo.manager.AppActivityManager;
 import com.linx.mylibrary.utils.permissionUtil.PermissionRejectDialog;
 import com.linx.mylibrary.utils.permissionUtil.PermissionTipDialogUtils;
 import com.linx.mylibrary.view.dialog.ProgressLoadingDialog;

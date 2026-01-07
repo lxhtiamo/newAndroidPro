@@ -1,6 +1,5 @@
-package com.linx.mylibrary.utils.manager;
+package com.linewell.lxhdemo.manager;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Build;
