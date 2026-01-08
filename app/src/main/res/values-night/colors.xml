@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- ===================== 系统主题色（适配深色背景，提高亮度） ===================== -->
-    <!-- 核心主题色：保留系统默认命名，调整亮度以适配深色背景 -->
     <color name="colorPrimary">#64B5F6</color> <!-- 基准色：调亮的蓝色，适配深色背景 -->
     <color name="colorPrimaryDark">#42A5F5</color> <!-- 状态栏颜色：对应调亮的深主色 -->
     <color name="colorAccent">#FF80AB</color> <!-- 控件强调色：调亮的粉色，保证对比度 -->
@@ -83,6 +82,7 @@
     <color name="bg_card_elevated">#2D2D2D</color> <!-- 提升层级的卡片背景：浅黑色 -->
     <color name="bg_float">#2D2D2D</color> <!-- 悬浮层、弹窗背景：浅黑色 -->
     <color name="bg_button">#64B5F6</color> <!-- 主要按钮背景：复用调亮后的主色 -->
+    <color name="bg_button_disabled">#BBBBBB</color><!-- 主要按钮禁用背景：浅灰，与主色体系协调 -->
     <color name="bg_button_secondary">#2D2D2D</color> <!-- 次要按钮背景：浅黑色 -->
     <color name="bg_input">#1E1E1E</color> <!-- 输入框背景：中黑色 -->
     <color name="bg_overlay">#80FFFFFF</color> <!-- 遮罩层：半透明白色，替代日间的黑色 -->

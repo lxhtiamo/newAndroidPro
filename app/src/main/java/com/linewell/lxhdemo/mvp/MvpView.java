@@ -3,7 +3,6 @@ package com.linewell.lxhdemo.mvp;
 /**
  * @author xh
  * @Description (描述: )
- * @date 2018/6/1 15:59
  */
 public interface MvpView {
     /**

@@ -1,4 +1,4 @@
-package com.linewell.lxhdemo.ui.start;
+package com.linewell.lxhdemo.ui.start.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

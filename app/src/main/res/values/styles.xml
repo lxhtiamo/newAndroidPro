@@ -148,8 +148,23 @@
         <item name="android:insetTop">@dimen/sw_0dp</item> <!-- 顶部内边距：0dp -->
         <item name="android:insetBottom">@dimen/sw_0dp</item> <!-- 底部内边距：0dp -->
         <!-- 显式指定文本色：覆盖colorAccent的错误映射（AppCompat） -->
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
         <!-- AppCompat按钮背景色：避免继承Material3颜色冲突 -->
         <item name="android:backgroundTint">@color/colorPrimary</item>
+    </style>
+
+    <!--==================================通用组件样式=========================================-->
+    <!-- 默认按钮样式 -->
+    <style name="CommonButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:paddingStart">@dimen/sw_20dp</item>
+        <item name="android:paddingEnd">@dimen/sw_20dp</item>
+        <item name="android:paddingTop">@dimen/sw_12dp</item>
+        <item name="android:paddingBottom">@dimen/sw_12dp</item>
+        <item name="android:textSize">@dimen/sw_14sp</item>
+        <item name="android:textColor">@color/white90</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_circle_selector</item>
+        <item name="android:foreground">@null</item>
+        <item name="android:minHeight">0px</item>
     </style>
 </resources>

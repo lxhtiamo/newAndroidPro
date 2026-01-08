@@ -4,7 +4,6 @@ package com.linewell.lxhdemo.mvp;
 import com.linewell.lxhdemo.base.BaseFragment;
 
 /**
- * time   : 2018/11/17
  * desc   : MVP 懒加载 Fragment 基类
  */
 public abstract class MvpFragment<P extends MvpPresenter> extends BaseFragment implements MvpView {

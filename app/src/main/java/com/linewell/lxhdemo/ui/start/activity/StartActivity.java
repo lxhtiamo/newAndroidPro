@@ -1,25 +1,12 @@
-package com.linewell.lxhdemo.ui.start;
+package com.linewell.lxhdemo.ui.start.activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.linewell.lxhdemo.R;
-import com.linx.mylibrary.view.loadingStateView.MultipleStatusView;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -35,7 +22,7 @@ public class StartActivity extends AppCompatActivity {
             // 跳转前：关闭启动屏保持，让启动屏自然消失
             splashScreen.setKeepOnScreenCondition(() -> false);
             // 跳转到欢迎页/主页面
-            startActivity(new Intent(this, WelcomeActivity.class));
+            startActivity(new Intent(this, GuideActivity.class));
             // 关键：结束启动页，避免返回键回到启动页
             finish();
             // 可选：添加跳转动画（避免页面切换生硬）

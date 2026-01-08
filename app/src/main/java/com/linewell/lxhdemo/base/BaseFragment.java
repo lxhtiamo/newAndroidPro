@@ -17,6 +17,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -48,13 +49,13 @@ import java.lang.reflect.Field;
  */
 public abstract class BaseFragment extends Fragment implements
         ToastAction, ResourcesAction, HandlerAction, ClickAction, TitleBarAction,BundleAction, NetworkStateView.OnRefreshListener {
-    protected View rootView;
+    protected View mRootView;
     protected FragmentActivity mActivity;
     private ImmersionBar mImmersionBar; // 状态栏沉浸实例
-    private NetworkStateView networkStateView;
-    private FrameLayout flContent; // 子类布局容器（规范命名）
-    private TitleBar flBar; // 顶部导航栏容器
-    private ProgressLoadingDialog progressDialog;
+    private NetworkStateView mNetworkStateView;
+    private FrameLayout mContentLayout; // 子类布局容器（规范命名）
+    private TitleBar mTitleBar; // 顶部导航栏容器
+    private ProgressLoadingDialog mProgressDialog;
 
     // 懒加载核心状态
     private boolean isLazyLoaded = false; // 是否已完成懒加载
@@ -87,11 +88,11 @@ public abstract class BaseFragment extends Fragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // 加载基础布局（包含导航栏、网络状态View、子类布局容器）
-        rootView = inflater.inflate(R.layout.fragment_base, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_base, container, false);
         // 避免重复添加视图（修复视图复用导致的异常）
-        ViewGroup parent = (ViewGroup) rootView.getParent();
+        ViewGroup parent = (ViewGroup) mRootView.getParent();
         if (parent != null) {
-            parent.removeView(rootView);
+            parent.removeView(mRootView);
         }
         initResult();
         initDialog(); // 初始化加载对话框
@@ -99,7 +100,7 @@ public abstract class BaseFragment extends Fragment implements
         addChildLayout(inflater); // 添加子类布局
         setStatusBarHeight();
         initBarVisibility(); // 控制顶部导航栏显示
-        return rootView;
+        return mRootView;
     }
 
     ActivityResultLauncher<Intent> mIntentActivityResultLauncher;
@@ -124,33 +125,38 @@ public abstract class BaseFragment extends Fragment implements
      * 初始化基础控件（网络状态View、布局容器）
      */
     private void initBaseView() {
-        networkStateView = rootView.findViewById(R.id.nsv_state_view);
-        flContent = rootView.findViewById(R.id.fl_content);
-        flBar = rootView.findViewById(R.id.fl_bar);
-        // 按需显示网络状态View（默认显示）
-        if (isNeedNetworkStateView()) {
-            networkStateView.setVisibility(View.VISIBLE);
-        } else {
-            networkStateView.setVisibility(View.GONE);
+        mNetworkStateView = mRootView.findViewById(R.id.nsv_state_view);
+        mContentLayout = mRootView.findViewById(R.id.fl_content);
+        mTitleBar = mRootView.findViewById(R.id.fl_bar);
+    }
+    /**
+     * 根据资源 id 获取一个 View 对象
+     */
+    @Override
+    public <V extends View> V findViewById(@IdRes int id) {
+        if (mRootView == null) {
+            return null;
         }
+        return mRootView.findViewById(id);
     }
     @Override
     @Nullable
     public TitleBar getTitleBar() {
-        if (flBar == null) {
-            flBar = obtainTitleBar(getContentView());
+
+        if (mTitleBar == null) {
+            mTitleBar = obtainTitleBar(getContentView());
         }
-        return flBar;
+        return mTitleBar;
     }
     public ViewGroup getContentView() {
-        return (ViewGroup) rootView;
+        return (ViewGroup) mRootView;
     }
     /**
      * 初始化加载对话框（避免重复创建）
      */
     private void initDialog() {
-        if (progressDialog == null && mActivity != null) {
-            progressDialog = new ProgressLoadingDialog(mActivity, R.style.dialog_transparent_style);
+        if (mProgressDialog == null && mActivity != null) {
+            mProgressDialog = new ProgressLoadingDialog(mActivity, R.style.dialog_transparent_style);
         }
     }
 
@@ -161,22 +167,22 @@ public abstract class BaseFragment extends Fragment implements
         int childLayoutId = getLayoutId();
         if (childLayoutId <= 0) return;
 
-        View childView = inflater.inflate(childLayoutId, null);
+        View childView = inflater.inflate(childLayoutId, mContentLayout, false);
         // 用FrameLayout.LayoutParams适配容器（原代码用RelativeLayout参数导致布局异常）
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
-        flContent.addView(childView, params);
+        mContentLayout.addView(childView, params);
     }
 
     private void setStatusBarHeight() {
         if (isNeedStatusBarHeight()) {
             int statusBarHeight = RxBarTool.getStatusBarHeight(mActivity);
             if (statusBarHeight > 0) {
-                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) flContent.getLayoutParams();
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mContentLayout.getLayoutParams();
                 layoutParams.topMargin = statusBarHeight;
-                flContent.setLayoutParams(layoutParams);
+                mContentLayout.setLayoutParams(layoutParams);
             }
         }
     }
@@ -189,8 +195,8 @@ public abstract class BaseFragment extends Fragment implements
      * 控制顶部导航栏显示（确保控件初始化后操作）
      */
     private void initBarVisibility() {
-        if (flBar != null) {
-            flBar.setVisibility(ShowBar() ? View.VISIBLE : View.GONE);
+        if (mTitleBar != null) {
+            mTitleBar.setVisibility(ShowBar() ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -330,9 +336,9 @@ public abstract class BaseFragment extends Fragment implements
         isLazyLoaded = false;
         isCurrentVisible = false;
         // 销毁加载对话框（避免窗口泄漏）
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismissProgressDialog();
-            progressDialog = null;
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismissProgressDialog();
+            mProgressDialog = null;
         }
         // 释放沉浸式资源（避免内存泄漏）
         if (mImmersionBar != null) {
@@ -610,8 +616,8 @@ public abstract class BaseFragment extends Fragment implements
      * 显示加载中
      */
     public void showLoading() {
-        if (networkStateView != null && isNeedNetworkStateView()) {
-            networkStateView.showLoading();
+        if (mNetworkStateView != null && isNeedNetworkStateView()) {
+            mNetworkStateView.showLoading();
         }
     }
 
@@ -619,8 +625,8 @@ public abstract class BaseFragment extends Fragment implements
      * 显示内容（子类布局）
      */
     public void showContent() {
-        if (networkStateView != null && isNeedNetworkStateView()) {
-            networkStateView.showSuccess();
+        if (mNetworkStateView != null && isNeedNetworkStateView()) {
+            mNetworkStateView.showSuccess();
         }
     }
 
@@ -628,9 +634,9 @@ public abstract class BaseFragment extends Fragment implements
      * 显示无网络（带刷新）
      */
     public void showNoNetwork() {
-        if (networkStateView != null && isNeedNetworkStateView()) {
-            networkStateView.showNoNetwork();
-            networkStateView.setOnRefreshListener(this);
+        if (mNetworkStateView != null && isNeedNetworkStateView()) {
+            mNetworkStateView.showNoNetwork();
+            mNetworkStateView.setOnRefreshListener(this);
         }
     }
 
@@ -638,9 +644,9 @@ public abstract class BaseFragment extends Fragment implements
      * 显示空数据（带刷新）
      */
     public void showEmpty() {
-        if (networkStateView != null && isNeedNetworkStateView()) {
-            networkStateView.showEmpty();
-            networkStateView.setOnRefreshListener(this);
+        if (mNetworkStateView != null && isNeedNetworkStateView()) {
+            mNetworkStateView.showEmpty();
+            mNetworkStateView.setOnRefreshListener(this);
         }
     }
 
@@ -648,9 +654,9 @@ public abstract class BaseFragment extends Fragment implements
      * 显示错误（带刷新）
      */
     public void showError() {
-        if (networkStateView != null && isNeedNetworkStateView()) {
-            networkStateView.showError();
-            networkStateView.setOnRefreshListener(this);
+        if (mNetworkStateView != null && isNeedNetworkStateView()) {
+            mNetworkStateView.showError();
+            mNetworkStateView.setOnRefreshListener(this);
         }
     }
 
@@ -670,8 +676,8 @@ public abstract class BaseFragment extends Fragment implements
      * 显示加载对话框（无文字）
      */
     public void showProgress() {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.showProgressDialog();
+        if (mProgressDialog != null && !mProgressDialog.isShowing()) {
+            mProgressDialog.showProgressDialog();
         }
     }
 
@@ -679,8 +685,8 @@ public abstract class BaseFragment extends Fragment implements
      * 显示加载对话框（带文字）
      */
     public void showProgress(@NonNull String text) {
-        if (progressDialog != null && !progressDialog.isShowing()) {
-            progressDialog.showProgressDialogWithText(text);
+        if (mProgressDialog != null && !mProgressDialog.isShowing()) {
+            mProgressDialog.showProgressDialogWithText(text);
         }
     }
 
@@ -688,8 +694,8 @@ public abstract class BaseFragment extends Fragment implements
      * 显示加载成功（带文字，自动消失）
      */
     public void showProgressSuccess(@NonNull String text) {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.showProgressSuccess(text);
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.showProgressSuccess(text);
         }
     }
 
@@ -697,8 +703,8 @@ public abstract class BaseFragment extends Fragment implements
      * 显示加载失败（带文字，自动消失）
      */
     public void showProgressFail(@NonNull String text) {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.showProgressFail(text);
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.showProgressFail(text);
         }
     }
 
@@ -706,8 +712,8 @@ public abstract class BaseFragment extends Fragment implements
      * 隐藏加载对话框
      */
     public void dismissProgress() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismissProgressDialog();
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismissProgressDialog();
         }
     }
 

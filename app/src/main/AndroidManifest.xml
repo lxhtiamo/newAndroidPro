@@ -76,7 +76,7 @@
 
         <!--启动页-->
         <activity
-            android:name=".ui.start.StartActivity"
+            android:name=".ui.start.activity.StartActivity"
             android:configChanges="uiMode"
             android:exported="true"
             android:launchMode="standard"
@@ -91,6 +91,8 @@
         <activity
             android:name=".mvp.example.MainActivity"
             android:exported="false" />
+        <activity android:name=".ui.start.activity.GuideActivity"/>
+        <activity android:name=".ui.home.activity.HomeActivity"/>
 
         <meta-data
             android:name="android.max_aspect"
@@ -120,7 +122,7 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="n6aaf7p6SmnvMnfFQjlSbYB9bOuA3qqE"
             tools:replace="android:value" />
-        <activity android:name=".ui.start.WelcomeActivity" />
+        <activity android:name=".ui.start.activity.WelcomeActivity" />
         <!-- 微信登录、小程序等回调 -->
         <activity
             android:name=".wxapi.WXEntryActivity"

@@ -9,7 +9,6 @@ import java.lang.ref.WeakReference;
 /**
  * @author xh
  * @Description (描述: Presenter类)
- * @date 2018/6/1 16:11
  */
 public class BaseMvpPresenter<V extends MvpView> implements MvpPresenter<V> {
     private WeakReference<V> viewRef;

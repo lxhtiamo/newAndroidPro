@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ===================== 系统主题色（安卓核心主题色 + 扩展色阶） ===================== -->
-    <!-- 核心主题色：对应安卓Manifest和styles中的主题配置，保留系统默认命名 -->
+    <!-- ===================== 系统主题色（安卓核心主题色 + 扩展色阶） 如有改动需要在values-night配置夜间模式的颜色 ===================== -->
     <color name="colorPrimary">#2196F3</color> <!-- 基准色：蓝色500（你指定的核心色） -->
     <color name="colorPrimaryDark">#1976D2</color> <!-- 状态栏颜色（你指定的色值） -->
     <color name="colorAccent">#FF4081</color> <!-- 控件强调色（如按钮、单选框，你指定的色值） -->
@@ -93,6 +92,8 @@
     <color name="bg_card_elevated">#F5F5F5</color> <!-- 提升层级的卡片背景：浅灰色 -->
     <color name="bg_float">#FFFFFF</color> <!-- 悬浮层、弹窗、下拉菜单背景 -->
     <color name="bg_button">#2196F3</color> <!-- 主要按钮背景：复用主色 -->
+    <color name="bg_button_disabled">#BBBBBB</color><!-- 主要按钮禁用背景：浅灰，与主色体系协调 -->
+
     <color name="bg_button_secondary">#F5F5F5</color> <!-- 次要按钮背景：浅灰色 -->
     <color name="bg_input">#FFFFFF</color> <!-- 输入框背景：白色 -->
     <!-- 遮罩与透明背景 -->
@@ -122,7 +123,7 @@
     <color name="gray_800">#424242</color>
     <color name="gray_900">#212121</color>
 
-    <!--自定义颜色-->
+    <!--自定义颜色  需要后期在values-night配置夜间模式的颜色-->
     <!-- 矢量图标的颜色 -->
     <color name="common_icon_color">#7C7C7C</color>
 

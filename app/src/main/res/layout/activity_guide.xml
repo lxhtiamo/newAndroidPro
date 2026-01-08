@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_guide_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp_40" />
+
+    <FrameLayout
+        android:id="@+id/fl_guide_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/sw_15dp" >
+
+        <me.relex.circleindicator.CircleIndicator3
+            android:id="@+id/cv_guide_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sw_50dp"
+            app:ci_drawable="@drawable/guide_indicator_selected"
+            app:ci_drawable_unselected="@drawable/guide_indicator_unselected"
+            app:ci_height="@dimen/sw_5dp"
+            app:ci_margin="@dimen/sw_5dp"
+            app:ci_width="@dimen/sw_5dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_guide_complete"
+            style="@style/CommonButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:minWidth="@dimen/sw_160dp"
+            android:text="了解详情"
+            android:visibility="invisible" />
+    </FrameLayout>
+</FrameLayout>

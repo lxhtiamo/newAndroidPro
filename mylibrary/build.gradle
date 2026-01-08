@@ -52,6 +52,9 @@ dependencies {
     api 'io.github.scwang90:refresh-layout-kernel:3.0.0-alpha'
     api 'com.github.bumptech.glide:glide:5.0.5'
 
+    //https://github.com/ongakuer/CircleIndicator  ViewPager 圆点指示器 支撑2 3
+    api 'me.relex:circleindicator:2.1.6'
+
     //Zxing核心包
     api 'com.google.zxing:core:3.5.3'
 
