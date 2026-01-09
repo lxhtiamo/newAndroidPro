@@ -53,6 +53,7 @@ android {
         }
     }
 
+
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs', 'src/main/jniLibs']
@@ -73,7 +74,16 @@ android {
         includeInApk true
         includeInBundle true
     }
-
+    applicationVariants.configureEach { variant ->
+        // apk 输出文件名配置
+        variant.outputs.configureEach { output ->
+            outputFileName = rootProject.getName() + '_v' + variant.versionName + '_' + variant.buildType.name
+            if (variant.buildType.name == buildTypes.release.getName()) {
+                outputFileName += '_' + new Date().format('yyyyMMdd_HHmm')
+            }
+            outputFileName += '.apk'
+        }
+    }
 }
 
 dependencies {

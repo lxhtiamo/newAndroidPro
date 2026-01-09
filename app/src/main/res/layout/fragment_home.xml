@@ -14,9 +14,22 @@
     <Button
         android:text="哒哒哒哒"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="40dp">
 
     </Button>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:text="哒哒哒哒"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"/>
+    <com.google.android.material.button.MaterialButton
+        android:padding="0dp"
+        android:paddingTop="0dp"
+        android:text="哒哒哒哒"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
     <TextView
         android:text="哒哒哒哒哒哒的"
         android:id="@+id/tv_fragment_content"

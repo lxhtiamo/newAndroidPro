@@ -38,6 +38,32 @@ allprojects {
     }
 }
 
+// 批量配置所有子模块（app、mylibrary 等）的构建目录
+subprojects {
+    // 读取 local.properties 文件配置
+    def properties = new Properties()
+    def localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.withInputStream { inputStream ->
+            properties.load(inputStream)
+        }
+    }
+
+    // 优化空值判断：去除首尾空格，避免无效配置
+    String buildDirPath = properties.getProperty("build.dir")?.trim()
+    def targetBuildDir
+
+    if (buildDirPath != null && !buildDirPath.isEmpty()) {
+        // 自定义目录：指定路径 + 项目名 + 模块路径
+        targetBuildDir = new File(buildDirPath, "${rootProject.name}/build/${path.replaceAll(':', '/')}")
+    } else {
+        // 默认目录：项目根目录 build + 模块路径
+        targetBuildDir = new File(rootDir, "build/${path.replaceAll(':', '/')}")
+    }
+
+    // 对所有模块应用自定义构建目录（AGP 8.0+ 非过时写法）
+    layout.buildDirectory.set(targetBuildDir)
+}
 // 清理构建目录的任务
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
