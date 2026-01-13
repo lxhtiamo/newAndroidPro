@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"/>
     <Button
         android:text="哒哒哒哒"
+        style="@style/CommonButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
