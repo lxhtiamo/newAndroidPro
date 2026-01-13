@@ -14,8 +14,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
-        //AndroidX版本的测试运行器
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         manifestPlaceholders = [
                 qqappid: "12345678" // 替换为你的真实QQ应用ID（从QQ开放平台获取）
@@ -94,7 +92,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment:2.6.0'
     implementation 'androidx.navigation:navigation-ui:2.6.0'
-    testImplementation 'junit:junit:4.13.2'
     // Dex分包，解决 65k 问题
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation project(':mylibrary')

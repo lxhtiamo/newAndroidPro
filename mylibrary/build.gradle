@@ -34,9 +34,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api files('libs\\okgo-3.0.4.jar')
     api files('libs\\okserver-2.0.5.jar')
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    testImplementation 'junit:junit:4.13.2'
     api "androidx.appcompat:appcompat:$rootProject.androidxVersion"
     api 'androidx.core:core:1.13.0'
     api 'com.google.android.material:material:1.12.0'
