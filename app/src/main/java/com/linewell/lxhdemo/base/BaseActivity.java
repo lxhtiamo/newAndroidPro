@@ -95,7 +95,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Nullable
     public TitleBar getTitleBar() {
         if (flBar == null) {
-            flBar = obtainTitleBar(getContentView());
+            flBar = findTitleBar(getContentView());
         }
         return flBar;
     }

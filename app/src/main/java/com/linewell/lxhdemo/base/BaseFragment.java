@@ -144,7 +144,7 @@ public abstract class BaseFragment extends Fragment implements
     public TitleBar getTitleBar() {
 
         if (mTitleBar == null) {
-            mTitleBar = obtainTitleBar(getContentView());
+            mTitleBar = findTitleBar(getContentView());
         }
         return mTitleBar;
     }
