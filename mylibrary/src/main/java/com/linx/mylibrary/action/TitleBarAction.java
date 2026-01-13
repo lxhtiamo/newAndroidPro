@@ -164,12 +164,13 @@ public interface TitleBarAction extends OnTitleBarListener {
         for (int i = 0; i < group.getChildCount(); i++) {
             View view = group.getChildAt(i);
             if ((view instanceof TitleBar)) {
-                return (TitleBar) view;
+                if (view.getVisibility()==View.VISIBLE){
+                    return (TitleBar) view;
+                }
             }
-
             if (view instanceof ViewGroup) {
                 TitleBar titleBar = obtainTitleBar((ViewGroup) view);
-                if (titleBar != null) {
+                if (titleBar.getVisibility()==View.VISIBLE&&titleBar != null){
                     return titleBar;
                 }
             }

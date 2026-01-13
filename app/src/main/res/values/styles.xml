@@ -138,19 +138,43 @@
     <style name="MD_Button_Default_Padding" parent="Widget.Material3.Button">
         <item name="android:insetTop">@dimen/sw_0dp</item> <!-- 顶部内边距：0dp -->
         <item name="android:insetBottom">@dimen/sw_0dp</item> <!-- 底部内边距：0dp -->
+        <item name="android:insetLeft">@dimen/sw_0dp</item>
+        <item name="android:insetRight">@dimen/sw_0dp</item>
         <!-- ========== Material3 Button 配色补充 ========== -->
         <item name="backgroundTint">@color/colorPrimary</item> <!-- M3按钮背景色 -->
         <item name="android:textColor">@color/colorOnPrimary</item> <!-- M3按钮文本色 -->
+        <item name="android:textSize">@dimen/sw_14sp</item>
+        <!-- 继承通用按钮的padding/min尺寸（和AppCompatButton保持一致） -->
+        <item name="android:paddingStart">@dimen/sw_20dp</item>
+        <item name="android:paddingEnd">@dimen/sw_20dp</item>
+        <item name="android:paddingTop">@dimen/sw_12dp</item>
+        <item name="android:paddingBottom">@dimen/sw_12dp</item>
+        <item name="android:minWidth">@dimen/sw_0dp</item>
+        <item name="android:minHeight">@dimen/sw_0dp</item>
+        <item name="android:foreground">@null</item>
     </style>
 
     <!-- AppCompat Button样式：移除默认上下内边距 + 配色修正 -->
     <style name="AppCompat_Button_Default_Padding" parent="Widget.AppCompat.Button">
         <item name="android:insetTop">@dimen/sw_0dp</item> <!-- 顶部内边距：0dp -->
         <item name="android:insetBottom">@dimen/sw_0dp</item> <!-- 底部内边距：0dp -->
+        <item name="android:insetLeft">@dimen/sw_0dp</item>
+        <item name="android:insetRight">@dimen/sw_0dp</item>
         <!-- 显式指定文本色：覆盖colorAccent的错误映射（AppCompat） -->
         <item name="android:textColor">@color/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/sw_14sp</item>
         <!-- AppCompat按钮背景色：避免继承Material3颜色冲突 -->
-        <item name="android:backgroundTint">@color/colorPrimary</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@drawable/button_circle_selector</item>
+        <!-- 统一内边距（核心） -->
+        <item name="android:paddingStart">@dimen/sw_20dp</item>
+        <item name="android:paddingEnd">@dimen/sw_20dp</item>
+        <item name="android:paddingTop">@dimen/sw_12dp</item>
+        <item name="android:paddingBottom">@dimen/sw_12dp</item>
+        <!-- 统一最小尺寸：取消系统默认88dp/36dp限制（关键） -->
+        <item name="android:minWidth">@dimen/sw_0dp</item>
+        <item name="android:minHeight">@dimen/sw_0dp</item>
+        <item name="android:foreground">@null</item>
     </style>
 
     <!--==================================通用组件样式=========================================-->
@@ -164,7 +188,12 @@
         <item name="android:textColor">@color/white90</item>
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/button_circle_selector</item>
+        <item name="android:minWidth">@dimen/sw_0dp</item>
+        <item name="android:minHeight">@dimen/sw_0dp</item>
         <item name="android:foreground">@null</item>
-        <item name="android:minHeight">0px</item>
+        <!-- 禁用英文自动大写（统一体验） -->
+        <item name="android:textAllCaps">false</item>
+        <!-- 取消字体内边距（精准控制排版） -->
+        <item name="android:includeFontPadding">false</item>
     </style>
 </resources>

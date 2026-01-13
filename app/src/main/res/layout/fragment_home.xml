@@ -14,17 +14,15 @@
     <Button
         android:text="哒哒哒哒"
         android:layout_width="wrap_content"
-        android:layout_height="40dp">
+        android:layout_height="wrap_content">
 
     </Button>
 
     <androidx.appcompat.widget.AppCompatButton
         android:text="哒哒哒哒"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"/>
+        android:layout_height="wrap_content"/>
     <com.google.android.material.button.MaterialButton
-        android:padding="0dp"
-        android:paddingTop="0dp"
         android:text="哒哒哒哒"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
