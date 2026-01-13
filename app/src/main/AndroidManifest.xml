@@ -19,12 +19,17 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <!-- 改变WiFi状态 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!-- 麦克风权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- 保持屏幕唤醒 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- 读写 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <!--蓝牙-->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- 写入日历 -->
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <!-- 写入设置 -->
@@ -38,7 +43,8 @@
     <!-- 读取手机状态 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
-
+    <!-- 发送通知权限（Android 13.0 新增的权限）-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Android 13+ 媒体权限（替代旧存储权限） -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -91,8 +97,8 @@
         <activity
             android:name=".mvp.example.MainActivity"
             android:exported="false" />
-        <activity android:name=".ui.start.activity.GuideActivity"/>
-        <activity android:name=".ui.home.activity.HomeActivity"/>
+        <activity android:name=".ui.start.activity.GuideActivity" />
+        <activity android:name=".ui.home.activity.HomeActivity" />
 
         <meta-data
             android:name="android.max_aspect"
