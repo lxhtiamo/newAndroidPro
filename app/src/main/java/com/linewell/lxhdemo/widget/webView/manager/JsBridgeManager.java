@@ -9,13 +9,13 @@ import com.linewell.lxhdemo.widget.webView.iface.IJsBridge;
 /**
  * JS 与 Android 交互的管理类（封装核心逻辑，对外暴露简洁API）
  * 普通webview 中使用
- * 创建 JsBridgeManager 实例（关联普通 WebView）
+ * 1.创建 JsBridgeManager 实例（关联普通 WebView）
  * mJsBridgeManager = new JsBridgeManager(mNormalWebView);
- * 创建 AppJsBridge 实例（传入回调，支持 LiveData）LiveData观察者模式 getJsDataLiveData().observe(this,)
+ * 2.创建 AppJsBridge 实例（传入回调，支持 LiveData）LiveData观察者模式 getJsDataLiveData().observe(this,)
  * mAppJsBridge = new AppJsBridge(this, this); 第二参数为监听回调
- * 注册 JS 交互接口（复用封装的逻辑）
+ * 3.注册 JS 交互接口（复用封装的逻辑）
  * mJsBridgeManager.registerJsInterface(mAppJsBridge);
- * 调用 JS：使用 loadJsMethod
+ * Android调用 JS函数：使用 loadJsMethod
  */
 public class JsBridgeManager {
     // 全局默认的 JS 对象名（JS中通过 window.Android.xxx() 调用）
