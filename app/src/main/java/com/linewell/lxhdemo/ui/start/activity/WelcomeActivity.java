@@ -1,6 +1,7 @@
 package com.linewell.lxhdemo.ui.start.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -47,7 +48,7 @@ public class WelcomeActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        setOnClickListener(R.id.bt, R.id.bt_h, R.id.bt, R.id.bt_b);
+        setOnClickListener(R.id.bt, R.id.bt_h, R.id.bt, R.id.bt_b, R.id.tv);
         LiveDataBus.observeSticky(this, MyEvent.class, new Observer<MyEvent>() {
             @Override
             public void onChanged(MyEvent event) {
@@ -82,6 +83,10 @@ public class WelcomeActivity extends BaseActivity {
             case R.id.bt:
                 // Activity currentActivity = AppActivityManager.getInstance().getCurrentActivity();
                 LiveDataBus.post(new MyEvent(MyEvent.What.example, "张三"));
+                break;
+            case R.id.tv:
+                setResult(RESULT_OK, new Intent().putExtra("11", "1111"));
+                finish();
                 break;
             case R.id.bt_h:
                 LiveDataBus.postSticky(new MyEvent(MyEvent.What.example, "张三"));

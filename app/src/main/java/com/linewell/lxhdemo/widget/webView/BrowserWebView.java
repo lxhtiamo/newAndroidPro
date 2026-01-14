@@ -1,4 +1,4 @@
-package com.linx.mylibrary.view.webView;
+package com.linewell.lxhdemo.widget.webView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,8 +25,8 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.chad.library.BuildConfig;
 import com.linx.mylibrary.action.ActivityAction;
-import com.linx.mylibrary.view.webView.iface.IJsBridge;
-import com.linx.mylibrary.view.webView.manager.JsBridgeManager;
+import com.linewell.lxhdemo.widget.webView.iface.IJsBridge;
+import com.linewell.lxhdemo.widget.webView.manager.JsBridgeManager;
 
 import java.util.Locale;
 
@@ -185,7 +185,7 @@ public final class BrowserWebView extends NestedScrollWebView
         setVerticalScrollBarEnabled(false);
         setHorizontalScrollBarEnabled(false);
         setBrowserViewClient(new BrowserViewClient());
-        setBrowserChromeClient(new BrowserChromeClient(this));
+        setBrowserChromeClient(new AppChromeClient(this));
     }
 
     /**
@@ -373,12 +373,13 @@ public final class BrowserWebView extends NestedScrollWebView
     }
 
     // ======================== 内部类：BrowserChromeClient（精简版）========================
-    public static class BrowserChromeClient extends WebChromeClient {
+    public static class AppChromeClient extends BrowserChromeClient {
 
         private final BrowserWebView mWebView;
         private final Context mContext;
 
-        public BrowserChromeClient(BrowserWebView view) {
+        public AppChromeClient(BrowserWebView view) {
+            super(view);
             mWebView = view;
             if (mWebView == null) {
                 throw new IllegalArgumentException("BrowserView 不能为空!");

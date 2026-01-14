@@ -1,6 +1,6 @@
-package com.linx.mylibrary.view.webView.iface;
+package com.linewell.lxhdemo.widget.webView.iface;
 
-import com.linx.mylibrary.view.webView.bean.JsInteractionData;
+import com.linewell.lxhdemo.widget.webView.bean.JsInteractionData;
 
 /**
  * 简化版：JS 数据回调接口（仅一个通用方法，接收字符串数据的通用对象）

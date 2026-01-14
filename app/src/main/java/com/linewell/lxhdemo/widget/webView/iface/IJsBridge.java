@@ -1,4 +1,4 @@
-package com.linx.mylibrary.view.webView.iface;
+package com.linewell.lxhdemo.widget.webView.iface;
 
 import android.content.Context;
 

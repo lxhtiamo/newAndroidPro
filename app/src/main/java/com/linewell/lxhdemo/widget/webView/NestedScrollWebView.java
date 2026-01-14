@@ -1,4 +1,4 @@
-package com.linx.mylibrary.view.webView;
+package com.linewell.lxhdemo.widget.webView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

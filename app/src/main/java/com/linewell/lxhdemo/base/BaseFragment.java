@@ -495,6 +495,11 @@ public abstract class BaseFragment extends Fragment implements
         }
         return intent;
     }
+    //新的打开新页面回调的 相当于startActivityForResult
+    public void readyGoForCallback(@NonNull Class<? extends Activity> clazz, @Nullable ActivityCallback callback) {
+        Intent intent = new Intent(getFragmentActivity(), clazz);
+        readyGoForCallback(intent, callback);
+    }
 
     //新的打开新页面回调的 相当于startActivityForResult
     public void readyGoForCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
@@ -520,6 +525,10 @@ public abstract class BaseFragment extends Fragment implements
      */
     public void readyGoWithCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
         readyGoWithCallback(intent, null, callback);
+    }
+
+    public void readyGoWithCallback(@NonNull Class<? extends Activity> clazz, @Nullable ActivityCallback callback) {
+        readyGoWithCallback(new Intent(getFragmentActivity(), clazz), null, callback);
     }
 
     /**

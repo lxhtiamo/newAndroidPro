@@ -1,4 +1,4 @@
-package com.linx.mylibrary.view.webView;
+package com.linewell.lxhdemo.widget.webView;
 
 import android.content.Context;
 import android.os.Handler;
@@ -7,9 +7,9 @@ import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 
-import com.linx.mylibrary.view.webView.bean.JsInteractionData;
-import com.linx.mylibrary.view.webView.iface.IJsBridge;
-import com.linx.mylibrary.view.webView.iface.OnJsDataCallback;
+import com.linewell.lxhdemo.widget.webView.bean.JsInteractionData;
+import com.linewell.lxhdemo.widget.webView.iface.IJsBridge;
+import com.linewell.lxhdemo.widget.webView.iface.OnJsDataCallback;
 
 import java.lang.ref.WeakReference;
 

@@ -1,10 +1,10 @@
-package com.linx.mylibrary.view.webView.manager;
+package com.linewell.lxhdemo.widget.webView.manager;
 
 import android.annotation.SuppressLint;
 import android.webkit.WebView;
 
 import com.google.gson.Gson;
-import com.linx.mylibrary.view.webView.iface.IJsBridge;
+import com.linewell.lxhdemo.widget.webView.iface.IJsBridge;
 
 /**
  * JS 与 Android 交互的管理类（封装核心逻辑，对外暴露简洁API）

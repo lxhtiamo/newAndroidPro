@@ -1,4 +1,4 @@
-package com.linx.mylibrary.view.webView.bean;
+package com.linewell.lxhdemo.widget.webView.bean;
 
 import android.os.Build;
 

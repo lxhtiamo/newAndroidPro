@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,16 +60,12 @@ import java.util.List;
  */
 public abstract class BaseActivity extends AppCompatActivity implements
         ToastAction, HandlerAction, ActivityAction, BundleAction, ClickAction, TitleBarAction, NetworkStateView.OnRefreshListener {
-    // 静态常量：替代硬编码，提升可维护性
     private static final long JUMP_INTERVAL = 500; // 防重复跳转间隔（毫秒）
     private static final int SOFT_INPUT_MODE = WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
             | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN; // 软键盘防冲突模式
     private static final FrameLayout.LayoutParams DEFAULT_FRAME_PARAMS = new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-    private static final int REQUEST_CODE_SETTINGS = 10086; // 设置页返回的请求码
     private static int sNextRequestCode = 1000; // 跳转回调自增请求码（避免重复）
-
-    // 成员变量：按功能归类，减少内存泄漏风险
     // 视图控件
     private NetworkStateView networkStateView;
     private FrameLayout flContent;
@@ -80,10 +77,13 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private String jumpTag;
     private long jumpTime;
     private ActivityCallback activityCallback;
+    /**
+     * Activity 回调集合
+     */
+    private SparseArray<ActivityCallback> mActivityCallbacks;
     private int activityRequestCode;
     private PermissionCallback permissionCallback;
     // 权限相关
-    private List<String> mPermissionsToReCheck; // 需要重新检查的权限
     // 沉浸式状态栏
     private ImmersionBar mImmersionBar;
     ActivityResultLauncher<Intent> mIntentActivityResultLauncher;
@@ -91,6 +91,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public Context getContext() {
         return this;
     }
+
     @Override
     @Nullable
     public TitleBar getTitleBar() {
@@ -99,12 +100,14 @@ public abstract class BaseActivity extends AppCompatActivity implements
         }
         return flBar;
     }
+
     public ViewGroup getContentView() {
         // 1. 获取Activity的最顶层根视图DecorView
         View decorView = getWindow().getDecorView();
         // 2. 从DecorView中查找content区域（android.R.id.content）
         return decorView.findViewById(android.R.id.content);
     }
+
     @Override
     public Bundle getBundle() {
         return getIntent().getExtras();
@@ -402,7 +405,15 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     //新的打开新页面回调的 相当于startActivityForResult
-    public void readyGoForCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
+    public void readyGoForCallback(@NonNull Class<? extends Activity> clazz, @Nullable ActivityCallback callback) {
+        Intent intent = new Intent(this, clazz);
+        readyGoForCallback(intent, callback);
+    }
+
+    public void readyGoForCallback(@NonNull Intent intent,final  @Nullable ActivityCallback  callback) {
+        if (!checkJumpValid(intent)) {
+            return;
+        }
         if (mIntentActivityResultLauncher != null) {
             mIntentActivityResultLauncher.launch(intent);
         }
@@ -413,17 +424,27 @@ public abstract class BaseActivity extends AppCompatActivity implements
      * 优化版带回调跳转：支持接口回调（替代传统requestCode判断）
      * 优化：用静态自增请求码替代随机数，避免重复
      */
-    public void readyGoWithCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
-        readyGoWithCallback(intent, null, callback);
+    public void readyGoForResultCallback(@NonNull Intent intent, @Nullable ActivityCallback callback) {
+        readyGoForResultCallback(intent, null, callback);
     }
 
-    public void readyGoWithCallback(@NonNull Intent intent, @Nullable Bundle options, @Nullable ActivityCallback callback) {
+    public void readyGoForResultCallback(@NonNull Class<? extends Activity> clazz, @Nullable ActivityCallback callback) {
+        readyGoForResultCallback(new Intent(this, clazz), null, callback);
+    }
+
+    public void readyGoForResultCallback(@NonNull Intent intent, @Nullable Bundle options, @Nullable ActivityCallback callback) {
+        if (mActivityCallbacks == null) {
+            mActivityCallbacks = new SparseArray<>(1);
+        }
         if (activityCallback != null || !checkJumpValid(intent)) {
             return; // 避免重复回调或无效跳转
         }
-        activityCallback = callback;
+        // activityCallback = callback;
         // 优化：静态自增请求码，确保唯一（替代new Random()）
         activityRequestCode = sNextRequestCode++;
+        if (callback != null) {
+            mActivityCallbacks.put(activityRequestCode, callback);
+        }
         startActivityForResult(intent, activityRequestCode, options);
     }
 
@@ -469,10 +490,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SETTINGS && mPermissionsToReCheck != null) {
-            // 用户从设置页返回后，自动重新检查权限
-        } else if (activityCallback != null && activityRequestCode == requestCode) {
+        // 核心：从SparseArray获取并移除回调（避免内存泄漏）
+        if (mActivityCallbacks != null && activityRequestCode == requestCode) {
+            activityCallback = mActivityCallbacks.get(requestCode);
             activityCallback.onActivityResult(resultCode, data);
+            mActivityCallbacks.remove(requestCode);
             activityCallback = null; // 清空引用，避免内存泄漏
         }
     }
@@ -707,6 +729,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
         // 1. 释放回调引用（避免内存泄漏）
         permissionCallback = null;
         activityCallback = null;
+        mIntentActivityResultLauncher = null;
+        if (mActivityCallbacks != null) {
+            mActivityCallbacks.clear();
+            mActivityCallbacks = null;
+        }
         // 2. 取消网络请求（OkGo库标准用法，避免回调内存泄漏）
         OkGo.getInstance().cancelTag(this);
         // 3. 移除布局监听（兼容API 16+，避免内存泄漏）
