@@ -1,6 +1,7 @@
 package com.linewell.lxhdemo.base;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.DownloadListener;
+import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -17,7 +19,13 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.hjq.permissions.XXPermissions;
+import com.hjq.permissions.permission.PermissionLists;
+import com.hjq.permissions.permission.base.IPermission;
 import com.linewell.lxhdemo.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -124,11 +132,53 @@ public class BaseWebViewActivity extends BaseActivity {
             }
 
             @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                List<IPermission> permissions = new ArrayList<>();
+                String[] requestResources = request.getResources();
+                if (requestResources == null) {
+                    // 如果网页请求的资源为空
+                    request.deny();
+                    return;
+                }
+                for (String resource : requestResources) {
+
+                    // 如果网页请求的是摄像头资源
+                    if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource)) {
+                        permissions.add(PermissionLists.getCameraPermission());
+                        continue;
+                    }
+
+                    // 如果网页请求的是麦克风资源
+                    if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource)) {
+                        permissions.add(PermissionLists.getRecordAudioPermission());
+                        continue;
+                    }
+
+                    // 如果网页请求的是别的资源
+                    request.deny();
+                    return;
+                }
+
+                XXPermissions.with(getActivity())
+                        .permissions(permissions)
+                        .request((grantedList, deniedList) -> {
+                            boolean allGranted = deniedList.isEmpty();
+                            if (!allGranted) {
+                                request.deny();
+                                return;
+                            }
+                            request.grant(requestResources);
+                        });
+            }
+
+            @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 // TODO Auto-generated method stub
                 pbWebBase.setProgress(newProgress);
                 super.onProgressChanged(view, newProgress);
             }
+
+
         });
         //设置此方法可在WebView中打开链接，反之用浏览器打开
         webBase.setWebViewClient(new WebViewClient() {
