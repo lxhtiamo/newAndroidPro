@@ -9,10 +9,11 @@ import android.text.TextUtils;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+
 /*
-* 统领登录用工具类 具体登录状态的管理和更新都在LoginStatusManager中处理 用法loginHelper = LoginHelper.getInstance(this);
-* 登录状态的变化会实时通知到LoginStatusManager
-* */
+ * 统领登录用工具类 具体登录状态的管理和更新都在LoginStatusManager中处理 用法loginHelper = LoginHelper.getInstance(this);
+ * 登录状态的变化会实时通知到LoginStatusManager
+ * */
 public class LoginHelper {
     private static volatile LoginHelper instance;
     private final LoginStatusManager loginManager;
@@ -34,7 +35,8 @@ public class LoginHelper {
 
     /**
      * 观察登录状态变化（推荐使用）
-     * @param owner LifecycleOwner (Activity/Fragment)
+     *
+     * @param owner    LifecycleOwner (Activity/Fragment)
      * @param listener 状态变化监听器
      */
     public void observeLoginStatus(LifecycleOwner owner, OnLoginStatusChangeListener listener) {
@@ -49,10 +51,12 @@ public class LoginHelper {
             }
         });
     }
+
     //原始版
     public void observeLoginStatus(LifecycleOwner owner, Observer<Boolean> observer) {
         loginManager.getLoginStatusLiveData().observe(owner, observer);
     }
+
     /**
      * 观察登录状态变化（返回原始 LiveData，更灵活）
      */
@@ -157,6 +161,12 @@ public class LoginHelper {
         return loginManager.getUserToken();
     }
 
+    public void setUserToken(String token) {
+        if (token != null) {
+            loginManager.saveUserToken(token);
+        }
+    }
+
     /**
      * 获取用户信息
      */
@@ -183,11 +193,13 @@ public class LoginHelper {
     // 接口定义
     public interface OnLoginCheckListener {
         void onLoggedIn();
+
         void onNotLoggedIn();
     }
 
     public interface OnLoginStatusChangeListener {
         void onLogin();
+
         void onLogout();
     }
 

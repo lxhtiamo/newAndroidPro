@@ -36,7 +36,7 @@ import okhttp3.OkHttpClient;
 public class OkGoManager {
     private static volatile OkGoManager instance;
     private static final int DEFAULT_TIMEOUT = 30000; // 默认连接超时时间
-    private Context mContext;
+    private final Context mContext;
     private String mAccessToken; // 全局 Token
 
     // 私有构造方法，避免外部实例化
