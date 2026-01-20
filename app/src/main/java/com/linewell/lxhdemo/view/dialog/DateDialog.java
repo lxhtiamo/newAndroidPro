@@ -69,7 +69,7 @@ public final class DateDialog {
             super(context);
             mStartYear = startYear;
 
-            setCustomView(R.layout.date_dialog);
+            setCustomView(R.layout.dialog_date);
             setTitle(R.string.time_title);
 
             mYearView = findViewById(R.id.rv_date_year);
