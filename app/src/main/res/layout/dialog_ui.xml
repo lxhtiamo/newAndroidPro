@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/sw_240dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/sw_15dp"
+    app:cardElevation="0px">
+
+    <LinearLayout
+        android:id="@+id/ll_ui_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/sw_20dp">
+
+        <com.linx.mylibrary.view.SmartTextView
+            android:id="@+id/tv_ui_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#333333"
+            android:textSize="@dimen/sw_16sp"
+            android:textStyle="bold"
+            tools:text="标题" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/sw_10dp"
+            android:background="@color/divider_line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.linx.mylibrary.view.SmartTextView
+                android:id="@+id/tv_ui_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/transparent_selector"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingVertical="@dimen/sw_15dp"
+                android:text="@string/cancel"
+                android:textColor="@color/common_cancel_text_color"
+                android:textSize="@dimen/sw_14sp" />
+
+            <View
+                android:id="@+id/v_ui_line"
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/divider_line" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_ui_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/transparent_selector"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingVertical="@dimen/sw_15dp"
+                android:text="@string/common_confirm"
+                android:textColor="@color/common_confirm_text_color"
+                android:textSize="@dimen/sw_14sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

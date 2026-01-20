@@ -126,5 +126,8 @@
     <!--自定义颜色  需要后期在values-night配置夜间模式的颜色-->
     <!-- 矢量图标的颜色 -->
     <color name="common_icon_color">#7C7C7C</color>
+    <!-- 对话框取消按钮的文本颜色 -->
+    <color name="common_cancel_text_color">#F44336</color>
+    <color name="common_confirm_text_color">#2196F3</color>
 
 </resources>
